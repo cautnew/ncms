@@ -1,0 +1,43 @@
+{
+  "name": "cautnew/ncms",
+  "description": "Any CMS, fast, manageble, optimized.",
+  "minimum-stability": "dev",
+  "authors": [
+    {
+      "name": "Felipe Martins",
+      "email": "felipedesmartins@gmail.com",
+      "homepage": "http://www.cautnew.com.br",
+      "role": "Back-End Developer"
+    }
+  ],
+  "config": {
+    "vendor-dir": "vendor"
+  },
+  "autoload": {
+    "psr-4": {
+      "Source\\": "source/"
+    },
+    "files": [
+      "boot/Config.php",
+      "boot/Minify.php"
+    ]
+  },
+  "require": {
+    "php": ">=8.0",
+    "ext-pdo": ">=7.1",
+    "phpmailer/phpmailer": ">=6.0",
+    "matthiasmullie/minify": ">=1.3",
+    "cautnew/html": ">=1.0.0",
+    "cautnew/qb": ">=2.0.0"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:cautnew/HTML.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:cautnew/QB.git"
+    }
+  ]
+}

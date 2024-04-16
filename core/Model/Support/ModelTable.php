@@ -1,0 +1,30 @@
+<?php
+
+namespace Core\Model\Support;
+
+use Cautnew\QB\CONDITION as COND;
+use Core\Model\ModelCrud;
+
+class ModelTable extends ModelCrud {
+  public function __construct() {
+    parent::__construct('information_schema.columns', 't');
+    $this->setColumns([
+      'TABLE_SCHEMA' => 'string',
+      'TABLE_NAME' => 'string',
+      'COLUMN_NAME' => 'string',
+      'DATA_TYPE' => 'string',
+      'COLUMN_TYPE' => 'string',
+      'COLUMN_KEY' => 'string',
+      'EXTRA' => 'string',
+      'COLUMN_COMMENT' => 'string'
+    ]);
+  }
+
+  public function findByTableName(string $tableName): self {
+    $this->prepareQuerySelect();
+    $this->getQuerySelect()->getCondition()
+      ->and((new COND('TABLE_NAME'))->equals("'$tableName'"));
+
+    return $this;
+  }
+}
