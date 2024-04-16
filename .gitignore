@@ -1,0 +1,8 @@
+/.ddev
+/sobremim
+/vendor
+/tests
+
+.htaccess
+
+composer.lock
