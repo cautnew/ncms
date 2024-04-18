@@ -94,6 +94,8 @@ class ModelCRUD {
 
   private array $insertingData = [];
   private array $preparedDataToInsert = [];
+  private array $preparedDataToUpdate = [];
+  private array $preparedDataToDelete = [];
 
   private int $fetchMode = PDO::FETCH_DEFAULT;
 
@@ -614,10 +616,35 @@ class ModelCRUD {
   }
 
   public function delete(): self {
+    $this->preparedDataToDelete[] = $this->get($this->getPrimaryKey());
     return $this;
   }
 
   public function commitDelete(): self {
+    if (empty($this->preparedDataToDelete)) {
+      return $this;
+    }
+
+    $this->queryDelete = new DELETE($this->getTableName());
+    $this->queryDelete->limit(1);
+    $this->queryDelete->addCondition("{$this->getPrimaryKey()}=:{$this->getPrimaryKey()}");
+    $data = [];
+
+    foreach($this->preparedDataToDelete as $id) {
+      $data[":{$this->getPrimaryKey()}"] = $id;
+
+      $stm = $this->getConn()->prepare($this->queryDelete);
+
+      try {
+        $stm->execute($data);
+      } catch (\Exception $e) {
+        Logger::regException($e);
+        throw new Exception('Error on delete data | ' . $e->getMessage() . ' | ' . $e->getCode());
+      }
+    }
+
+    $this->preparedDataToDelete = [];
+
     return $this;
   }
 
