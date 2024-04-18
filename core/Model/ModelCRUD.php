@@ -302,6 +302,10 @@ class ModelCRUD {
     return $this;
   }
 
+  public function getCurrentData() {
+    return $this->selectedData[$this->currentIndex];
+  }
+
   public function getPage(): int {
     return $this->page;
   }
@@ -514,6 +518,18 @@ class ModelCRUD {
 
   public function setInsertingMode(bool $isInsertingMode = true): self {
     $this->insertingMode = $isInsertingMode;
+
+    return $this;
+  }
+
+  public function startInsertingMode(): self {
+    $this->setInsertingMode(true);
+
+    return $this;
+  }
+
+  public function stopInsertingMode(): self {
+    $this->setInsertingMode(false);
 
     return $this;
   }
