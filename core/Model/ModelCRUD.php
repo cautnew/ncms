@@ -342,6 +342,14 @@ class ModelCRUD {
     return $this->maxIndex ?? 0;
   }
 
+  /**
+   * Returns if there are no selected rows.
+   * @return bool
+   */
+  public function isEmpty(): bool {
+    return $this->numSelectedRows() == 0;
+  }
+
   public function setFechMode(int $fetchMode): self {
     $this->fetchMode = $fetchMode;
 
@@ -488,6 +496,11 @@ class ModelCRUD {
 
   public function loadData(array $data): self {
     $this->clearSelectedData();
+
+    if (empty($data)) {
+      return $this;
+    }
+
     $this->selectedData = $data;
     $this->selectedColumns = array_keys(json_decode(json_encode($this->selectedData[0]), true));
     $this->currentIndex = 0;
