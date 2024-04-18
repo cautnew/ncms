@@ -117,15 +117,7 @@ class ModelCRUD {
   }
 
   public function __get(string $key) {
-    if ($this->isInsertingMode()) {
-      if (array_search($key, array_keys($this->columnsAllowInsert)) === false) {
-        throw new Exception\NotAllowedColumnToInsertException($key);
-      }
-
-      return $this->insertingData[$key];
-    }
-
-    return $this->selectedData[$this->currentIndex]->$key;
+    return $this->get($key);
   }
 
   public function __set(string $key, $value) {
@@ -138,7 +130,19 @@ class ModelCRUD {
       return;
     }
 
-    $this->selectedData[$this->currentIndex]->$key = $value;
+    $this->getCurrentData()->$key = $value;
+  }
+
+  public function get(string $key) {
+    if ($this->isInsertingMode()) {
+      if (array_search($key, array_keys($this->columnsAllowInsert)) === false) {
+        throw new NotAllowedColumnToInsertException($key);
+      }
+
+      return $this->insertingData[$key];
+    }
+
+    return $this->getCurrentData()->$key;
   }
 
   public function getConn(): PDO {
