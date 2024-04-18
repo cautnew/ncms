@@ -158,11 +158,11 @@ class Log
 
   public function regException(Exception $e, string | null $desc = null): self
   {
-    $this->regErro($e->getMessage());
-    $this->regErro($e->getCode());
+    $this->regError($e->getMessage());
+    $this->regError($e->getCode());
 
     if (!empty($desc)) {
-      return $this->regErro($desc);
+      return $this->regError($desc);
     }
 
     return $this;
