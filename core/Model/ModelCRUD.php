@@ -5,11 +5,13 @@ namespace Core\Model;
 use \PDO;
 use Core\Conn\DB;
 use Core\Support\Logger;
+use Core\Model\Exception\NotAllowedColumnToInsertException;
 use Cautnew\QB\CONDITION as COND;
 use Cautnew\QB\SELECT;
 use Cautnew\QB\INSERT;
 use Cautnew\QB\UPDATE;
 use Cautnew\QB\DELETE;
+use \Exception;
 
 /**
  * Class to manage CRUD operations on the database
@@ -129,7 +131,7 @@ class ModelCRUD {
   public function __set(string $key, $value) {
     if ($this->isInsertingMode()) {
       if (array_search($key, array_keys($this->columnsAllowInsert)) === false) {
-        throw new Exception\NotAllowedColumnToInsertException($key);
+        throw new NotAllowedColumnToInsertException($key);
       }
 
       $this->insertingData[$key] = $value;
