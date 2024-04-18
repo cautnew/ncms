@@ -62,7 +62,7 @@ class ModelPessoa extends ModelCrud {
       'cod_usuario_expiracao' => 'string'
     ]);
 
-    $this->setPrimaryKey('pess.cod_pessoa');
+    $this->setPrimaryKey('cod_pessoa');
 
     $this->addColumnRelationship('cod_sexo', [
       'type' => 'left',
