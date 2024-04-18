@@ -509,25 +509,54 @@ class ModelCRUD {
   }
 
   public function insert(?array $data = null): self {
-    if ($data === null) {
-      $insertingData = $this->insertingData;
+    if (empty($this->insertingData) && empty($data)) {
+      return $this;
     }
 
-    $this->preparedDataToInsert[] = $insertingData;
-
+    $this->preparedDataToInsert[] = ($data === null) ? $this->insertingData : $data;
+    
     $this->insertingData = [];
 
     return $this;
   }
 
   public function insertFromCurrentData(): self {
-    $this->preparedDataToInsert[] = json_decode(json_encode($this->selectedData[$this->currentIndex]), true);
+    $this->preparedDataToInsert[] = json_decode(json_encode($this->getCurrentData()), true);
 
     return $this;
   }
 
   public function commitInsert(): self {
-    $this->insert();
+    if (empty($this->preparedDataToInsert)) {
+      return $this;
+    }
+
+    $this->queryInsert = new INSERT($this->getTableName());
+    $this->queryInsert->setIndAssoc(true);
+    $this->queryInsert->setColumns(array_keys($this->preparedDataToInsert[0]));
+    $data = [];
+    $rows = [];
+
+    foreach($this->preparedDataToInsert as $key => $row) {
+      $idKey = ":{$this->getPrimaryKey()}_{$key}";
+      $data[$idKey] = uniqid(md5(rand()), true);
+      $rows[$key][$this->getPrimaryKey()] = $idKey;
+      foreach($this->queryInsert->getColumns() as $column) {
+        $idKey = ":{$column}_{$key}";
+        $data[$idKey] = $row[$column];
+        $rows[$key][$column] = $idKey;
+      }
+    }
+
+    $this->queryInsert->addRows($rows);
+    $stm = $this->getConn()->prepare($this->queryInsert);
+
+    try {
+      $stm->execute($data);
+    } catch (\Exception $e) {
+      Logger::regException($e);
+      throw new Exception('Error on insert data | ' . $e->getMessage(), $e->getCode());
+    }
 
     $this->preparedDataToInsert = [];
     return $this;
