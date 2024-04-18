@@ -27,14 +27,13 @@ class ModelSexo extends ModelCrud {
       'cod_usuario_criacao' => 'string'
     ]);
     $this->setColumnsAllowUpdate([
-      'cod_sexo' => 'string',
       'dsc_sexo' => 'string',
       'cod_sexo_abrev' => 'string',
       'cod_usuario_alteracao' => 'string',
       'cod_usuario_expiracao' => 'string'
     ]);
 
-    $this->setPrimaryKey('sexo.cod_sexo');
+    $this->setPrimaryKey('cod_sexo');
   }
 
   public function findByCodAbrev(string $codAbrev): self {
