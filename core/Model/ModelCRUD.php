@@ -229,6 +229,10 @@ class ModelCRUD {
     return $this;
   }
 
+  public function getColumnsAllowUpdate(): array {
+    return $this->columnsAllowUpdate;
+  }
+
   /**
    * Set the limit of rows to be selected.
    */
@@ -563,10 +567,45 @@ class ModelCRUD {
   }
 
   public function update(): self {
+    $this->preparedDataToUpdate[] = $this->getCurrentData();
     return $this;
   }
 
   public function commitUpdate(): self {
+    if (empty($this->preparedDataToUpdate)) {
+      return $this;
+    }
+
+    $setList = [];
+    foreach($this->getColumnsAllowUpdate() as $column => $type) {
+      $setList[$column] = ":{$column}";
+    }
+
+    $this->queryUpdate = new UPDATE($this->getTableName(), $this->getTableAlias());
+    $this->queryUpdate->limit(1);
+    $this->queryUpdate->addSetList($setList);
+    $this->queryUpdate->addCondition("{$this->getPrimaryKey()}=:{$this->getPrimaryKey()}");
+
+    foreach($this->preparedDataToUpdate as $row) {
+      $data = [];
+      foreach($row as $column => $value) {
+        if (in_array($column, array_keys($setList)) || $column == $this->getPrimaryKey()) {
+          $data[":{$column}"] = $value;
+        }
+      }
+
+      $stm = $this->getConn()->prepare($this->queryUpdate);
+
+      try {
+        $stm->execute($data);
+      } catch (\Exception $e) {
+        Logger::regException($e);
+        throw new Exception('Error on update data | ' . $e->getMessage() . ' | ' . $e->getCode());
+      }
+    }
+
+    $this->preparedDataToUpdate = [];
+
     return $this;
   }
 
