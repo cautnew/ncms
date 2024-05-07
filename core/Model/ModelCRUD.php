@@ -26,6 +26,13 @@ class ModelCRUD {
   private bool $insertingMode = false;
 
   /**
+   * Version of the model. Use this version control to update the definitions of the table
+   * as the triggers, indexes, constraints, columns etc.
+   * @var string $version
+   */
+  protected string $version = '0.0.0';
+
+  /**
    * Table name.
    * @var string $table
    */
@@ -517,6 +524,13 @@ class ModelCRUD {
     return $this;
   }
 
+  /**
+   * Loads the data into the model from an array.
+   * @param array $data
+   * Each index is a row of the table formatted as an associative array
+   * as described in the array $this->columns.
+   * @return self
+   */
   public function loadData(array $data): self {
     $this->clearSelectedData();
 

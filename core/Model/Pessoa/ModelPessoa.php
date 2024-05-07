@@ -8,6 +8,8 @@ use Boot\Constants\Constant as CNT;
 use Core\Model\Dim\ModelSexo;
 
 class ModelPessoa extends ModelCrud {
+  protected string $version = '0.0.1';
+
   private ModelSexo $modelSexo;
 
   public function __construct() {

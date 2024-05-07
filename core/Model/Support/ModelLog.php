@@ -7,6 +7,8 @@ use Core\Model\ModelCRUD;
 use Boot\Constants\Constant as CNT;
 
 class ModelLog extends ModelCrud {
+  protected string $version = '0.0.1';
+
   public const ll = 10;
 
   public function __construct() {

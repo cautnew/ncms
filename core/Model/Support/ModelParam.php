@@ -7,6 +7,8 @@ use Core\Model\ModelCRUD;
 use Boot\Constants\Constant as CNT;
 
 class ModelParam extends ModelCrud {
+  protected string $version = '0.0.1';
+
   public function __construct() {
     parent::__construct(CNT::DB_NAME . '.aux_param', 'pram');
     $this->setColumns([

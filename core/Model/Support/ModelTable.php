@@ -6,6 +6,8 @@ use Cautnew\QB\CONDITION as COND;
 use Core\Model\ModelCrud;
 
 class ModelTable extends ModelCrud {
+  protected string $version = '0.0.1';
+
   protected bool $indAllowSelect = true;
   protected bool $indAllowDelete = false;
   protected bool $indAllowInsert = false;
