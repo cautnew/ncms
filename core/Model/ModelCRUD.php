@@ -7,6 +7,7 @@ use Core\Conn\DB;
 use Core\Support\Logger;
 use Core\Model\Exception\NotAllowedColumnToInsertException;
 use Cautnew\QB\CONDITION as COND;
+use Cautnew\QB\CREATE_TABLE;
 use Cautnew\QB\SELECT;
 use Cautnew\QB\INSERT;
 use Cautnew\QB\UPDATE;
@@ -17,10 +18,10 @@ use \Exception;
  * Class to manage CRUD operations on the database
  */
 class ModelCRUD {
-  private bool $indAllowDelete = true;
-  private bool $indAllowInsert = true;
-  private bool $indAllowSelect = true;
-  private bool $indAllowUpdate = true;
+  protected bool $indAllowSelect = true;
+  protected bool $indAllowDelete = true;
+  protected bool $indAllowInsert = true;
+  protected bool $indAllowUpdate = true;
 
   private bool $insertingMode = false;
 
@@ -50,6 +51,7 @@ class ModelCRUD {
    * @var array $columns
    */
   private array $columns = [];
+  private array $tableTriggers = [];
 
   private array $columnsDefinitions = [];
   private array $columnsSelect = [];
@@ -110,6 +112,7 @@ class ModelCRUD {
   private bool $commited = false;
   private bool $limitedSelect = true;
 
+  private CREATE_TABLE $queryCreateTable;
   private DELETE $queryDelete;
   private INSERT $queryInsert;
   private SELECT $querySelect;
@@ -125,7 +128,7 @@ class ModelCRUD {
 
   public function __set(string $key, $value) {
     if ($this->isInsertingMode()) {
-      if (array_search($key, array_keys($this->columnsAllowInsert)) === false) {
+      if (array_search($key, array_values($this->columnsAllowInsert)) === false) {
         throw new NotAllowedColumnToInsertException($key);
       }
 
@@ -138,7 +141,7 @@ class ModelCRUD {
 
   public function get(string $key) {
     if ($this->isInsertingMode()) {
-      if (array_search($key, array_keys($this->columnsAllowInsert)) === false) {
+      if (array_search($key, array_values($this->columnsAllowInsert)) === false) {
         throw new NotAllowedColumnToInsertException($key);
       }
 
@@ -200,11 +203,15 @@ class ModelCRUD {
     return $this;
   }
 
+  public function setTableTriggers(array $triggers): self {
+    $this->tableTriggers = $triggers;
+
+    return $this;
+  }
 
   /**
    * Set the array of columns of the table.
-   * key = column name
-   * value = column type
+   * value = column name
    */
   public function setColumns(array $columns): self {
     $this->columns = $columns;
@@ -447,7 +454,7 @@ class ModelCRUD {
   }
 
   private function prepareColumnsQuerySelect(): void {
-    $this->getQuerySelect()->setColumns(array_keys($this->columns));
+    $this->getQuerySelect()->setColumns(array_values($this->columns));
     if (!empty($this->columnsAlias)) {
       $this->getQuerySelect()->setColumnsAliases($this->columnsAlias);
     }
@@ -563,44 +570,107 @@ class ModelCRUD {
     return $this;
   }
 
+  public function createTable(): self {
+    $this->queryCreateTable = new CREATE_TABLE($this->getTableName());
+    $this->queryCreateTable->setDefinitions($this->columnsDefinitions);
+    $this->queryCreateTable->setPrimaryKey($this->getPrimaryKey());
+
+    $stm = $this->getConn()->prepare($this->queryCreateTable);
+
+    try {
+      $stm->execute();
+      echo $this->queryCreateTable;
+    } catch (\Exception $e) {
+      Logger::regException($e);
+      throw new Exception("[{$e->getCode()}] Error on create table | " . $e->getMessage());
+    }
+
+    return $this;
+  }
+
+  public function createTriggers(): self {
+    foreach($this->tableTriggers as $triggerName => $trigger) {
+      $stm = $this->getConn()->prepare($trigger);
+
+      try {
+        $stm->execute();
+        echo $trigger;
+      } catch (\Exception $e) {
+        Logger::regException($e);
+        throw new Exception("[{$e->getCode()}] Error on create trigger \"$triggerName\" | " . $e->getMessage());
+      }
+    }
+
+    return $this;
+  }
+
+  public function dropTable(): self {
+    $query = "DROP TABLE IF EXISTS {$this->getTableName()}";
+    $stm = $this->getConn()->prepare($query);
+
+    try {
+      $stm->execute();
+    } catch (\Exception $e) {
+      Logger::regException($e);
+      throw new Exception("[{$e->getCode()}] Error on drop table | " . $e->getMessage());
+    }
+
+    return $this;
+  }
+
   public function insert(?array $data = null): self {
     if (empty($this->insertingData) && empty($data)) {
       return $this;
     }
 
-    $this->preparedDataToInsert[] = ($data === null) ? $this->insertingData : $data;
-    
-    $this->insertingData = [];
+    if ($data === null) {
+      $this->preparedDataToInsert[] = $this->insertingData;
+      $this->insertingData = [];
+
+      return $this;
+    }
+
+    $this->preparedDataToInsert[] = $data;
 
     return $this;
   }
 
   public function insertFromCurrentData(): self {
-    $this->preparedDataToInsert[] = json_decode(json_encode($this->getCurrentData()), true);
+    return $this->insert(json_decode(json_encode($this->getCurrentData()), true));
+  }
 
-    return $this;
+  private function uniqId(int $len): string {
+    return substr(uniqid(md5(rand()), true), 0, $len);
   }
 
   public function commitInsert(): self {
+    if (!$this->indAllowInsert) {
+      throw new Exception("It's not allowed to insert data.");
+    }
+
     if (empty($this->preparedDataToInsert)) {
       return $this;
     }
 
-    $this->queryInsert = new INSERT($this->getTableName());
-    $this->queryInsert->setIndAssoc(true);
-    $this->queryInsert->setColumns(array_keys($this->preparedDataToInsert[0]));
+    if (!isset($this->queryInsert)) {
+      $this->queryInsert = new INSERT($this->getTableName());
+      $this->queryInsert->setIndAssoc(true);
+      $this->queryInsert->setColumns(array_keys($this->preparedDataToInsert[0]));
+    }
+
+    $this->queryInsert->clearRows();
     $data = [];
     $rows = [];
 
     foreach($this->preparedDataToInsert as $key => $row) {
-      $idKey = ":{$this->getPrimaryKey()}_{$key}";
-      $data[$idKey] = uniqid(md5(rand()), true);
-      $rows[$key][$this->getPrimaryKey()] = $idKey;
       foreach($this->queryInsert->getColumns() as $column) {
         $idKey = ":{$column}_{$key}";
-        $data[$idKey] = $row[$column];
+        $data[$idKey] = $row[$column] ?? '';
         $rows[$key][$column] = $idKey;
       }
+      $idKey = ":{$this->getPrimaryKey()}_{$key}";
+      $data[$idKey] = $this->uniqId(40);
+      $rows[$key][$this->getPrimaryKey()] = $idKey;
     }
 
     $this->queryInsert->addRows($rows);
@@ -610,7 +680,7 @@ class ModelCRUD {
       $stm->execute($data);
     } catch (\Exception $e) {
       Logger::regException($e);
-      throw new Exception('Error on insert data | ' . $e->getMessage(), $e->getCode());
+      throw new Exception("{$e->getCode()} Error on insert data | " . $e->getMessage());
     }
 
     $this->preparedDataToInsert = [];
@@ -623,6 +693,10 @@ class ModelCRUD {
   }
 
   public function commitUpdate(): self {
+    if (!$this->indAllowUpdate) {
+      throw new Exception("It's not allowed to update data.");
+    }
+
     if (empty($this->preparedDataToUpdate)) {
       return $this;
     }
@@ -632,10 +706,12 @@ class ModelCRUD {
       $setList[$column] = ":{$column}";
     }
 
-    $this->queryUpdate = new UPDATE($this->getTableName(), $this->getTableAlias());
-    $this->queryUpdate->limit(1);
-    $this->queryUpdate->addSetList($setList);
-    $this->queryUpdate->addCondition("{$this->getPrimaryKey()}=:{$this->getPrimaryKey()}");
+    if (!isset($this->queryUpdate)) {
+      $this->queryUpdate = new UPDATE($this->getTableName(), $this->getTableAlias());
+      $this->queryUpdate->limit(1);
+      $this->queryUpdate->addSetList($setList);
+      $this->queryUpdate->addCondition("{$this->getPrimaryKey()}=:{$this->getPrimaryKey()}");
+    }
 
     foreach($this->preparedDataToUpdate as $row) {
       $data = [];
@@ -651,7 +727,7 @@ class ModelCRUD {
         $stm->execute($data);
       } catch (\Exception $e) {
         Logger::regException($e);
-        throw new Exception('Error on update data | ' . $e->getMessage() . ' | ' . $e->getCode());
+        throw new Exception("{$e->getCode()} Error on update data | " . $e->getMessage());
       }
     }
 
@@ -666,13 +742,20 @@ class ModelCRUD {
   }
 
   public function commitDelete(): self {
+    if (!$this->indAllowDelete) {
+      throw new Exception("It's not allowed to delete data.");
+    }
+
     if (empty($this->preparedDataToDelete)) {
       return $this;
     }
 
-    $this->queryDelete = new DELETE($this->getTableName());
-    $this->queryDelete->limit(1);
-    $this->queryDelete->addCondition("{$this->getPrimaryKey()}=:{$this->getPrimaryKey()}");
+    if (!isset($this->queryDelete)) {
+      $this->queryDelete = new DELETE($this->getTableName());
+      $this->queryDelete->limit(1);
+      $this->queryDelete->addCondition("{$this->getPrimaryKey()}=:{$this->getPrimaryKey()}");
+    }
+
     $data = [];
 
     foreach($this->preparedDataToDelete as $id) {
@@ -684,7 +767,7 @@ class ModelCRUD {
         $stm->execute($data);
       } catch (\Exception $e) {
         Logger::regException($e);
-        throw new Exception('Error on delete data | ' . $e->getMessage() . ' | ' . $e->getCode());
+        throw new Exception("[{$e->getCode()}] Error on delete data | " . $e->getMessage());
       }
     }
 
