@@ -4,12 +4,14 @@ namespace Core\Support;
 
 use Boot\Constants\DirConstant as DC;
 use Boot\Constants\DatesConstant as DTC;
+use Core\Model\Support\ModelParam;
 use DateTime;
 use Exception;
 
-class Log
-{
+class Log {
   protected Session $ses;
+
+  private ModelParam $modelParam;
 
   private string $cod;
   private string $prefix;
@@ -26,6 +28,7 @@ class Log
   public function __construct()
   {
 		$this->setIndShowLog(false);
+    $this->modelParam = new ModelParam();
   }
 
   public function setSession(Session $ses): self

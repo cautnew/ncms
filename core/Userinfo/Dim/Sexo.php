@@ -19,9 +19,21 @@ class Sexo {
     return $this->modelSexo;
   }
 
+  public function getCodSexo(string $codSexoAbrev = null): ?string {
+    if (!empty($codSexoAbrev)) {
+      $this->findByCodSexoAbrev($codSexoAbrev);
+    }
+
+    if ($this->getModel()->numSelectedRows() >= 0) {
+      return $this->getModel()->cod_sexo;
+    }
+
+    return null;
+  }
+
   public function findByCodSexoAbrev(string $codSexoAbrev): self {
-    $this->modelSexo->findByCodAbrev($codSexoAbrev);
-    $this->modelSexo->select();
+    $this->getModel()->findByCodAbrev($codSexoAbrev);
+    $this->getModel()->select();
 
     return $this;
   }

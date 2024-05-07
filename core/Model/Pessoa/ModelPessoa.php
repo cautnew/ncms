@@ -35,6 +35,7 @@ class ModelPessoa extends ModelCrud {
       'pess.cod_usuario_alteracao' => 'string',
       'pess.cod_usuario_expiracao' => 'string'
     ]);
+
     $this->setColumnsAllowInsert([
       'cod_pessoa' => 'string',
       'dsc_nome' => 'string',
@@ -48,6 +49,7 @@ class ModelPessoa extends ModelCrud {
       'cod_genero' => 'int',
       'cod_usuario_criacao' => 'string'
     ]);
+
     $this->setColumnsAllowUpdate([
       'dsc_nome' => 'string',
       'dsc_segundonome' => 'string',

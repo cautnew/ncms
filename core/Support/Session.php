@@ -10,7 +10,7 @@ class Session
   private string | null $prefixSessId = null;
   private $indAutoFlush = false;
 
-  public function __construct(string $sessId = null)
+  public function __construct(?string $sessId = null)
   {
     if (!empty($sessId)) {
       $this->setSessId($sessId);

@@ -2,8 +2,7 @@
 
 namespace Boot\Constants;
 
-readonly class Constant
-{
+readonly class Constant {
   public DatesConstant $Dates;
 
   public const DEFAULT_CHARSET = 'UTF-8';
@@ -30,7 +29,7 @@ readonly class Constant
   public const PW_DEFAULT_ALGO =  PASSWORD_DEFAULT;
   public const PW_OPTION =  ["cost" => 10];
 
-  public const DB_NAME = 'syslefe';
+  public const DB_NAME = 'ncms';
 
   public const COD_NIVEL_ADM = '6c4361bd3aafb49cb8215420aa53ca58';
   public const COD_NIVEL_USR = '70bf7ee48326071a373a464730002dc1';

@@ -16,23 +16,31 @@ class Param {
 
   public function __get(string $key) {
     $this->findByAliasParam($key);
-    return $this->modelParam->val_param;
+
+    if ($this->getModel()->numSelectedRows() > 0) {
+      return $this->getModel()->val_param;
+    }
+
+    return null;
   }
 
   public function __set(string $key, string $value) {
     $this->findByAliasParam($key);
-    if ($this->modelParam->isEmpty()) {
-      $this->modelParam->startInsertingMode();
-      $this->modelParam->alias_param = $key;
-      $this->modelParam->val_param = $value;
-      $this->modelParam->insert()->commitInsert();
-      $this->modelParam->stopInsertingMode();
+    if ($this->getModel()->isEmpty()) {
+      $this->getModel()->startInsertingMode();
+      $this->getModel()->alias_param = $key;
+      $this->getModel()->val_param = $value;
+      $this->getModel()->dsc_param = $key;
+      $this->getModel()->cod_tipo_param = '1';
+      $this->getModel()->insert()->commitInsert();
+      $this->getModel()->stopInsertingMode();
 
       return;
     }
 
-    $this->modelParam->val_param = $value;
-    $this->modelParam->update()->commitUpdate();
+    $this->getModel()->val_param = $value;
+    $this->getModel()->dsc_param = $key;
+    $this->getModel()->update()->commitUpdate();
   }
 
   public function getModel(): ModelParam {

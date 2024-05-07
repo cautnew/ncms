@@ -6,6 +6,11 @@ use Cautnew\QB\CONDITION as COND;
 use Core\Model\ModelCrud;
 
 class ModelTable extends ModelCrud {
+  protected bool $indAllowSelect = true;
+  protected bool $indAllowDelete = false;
+  protected bool $indAllowInsert = false;
+  protected bool $indAllowUpdate = false;
+
   public function __construct() {
     parent::__construct('information_schema.columns', 't');
     $this->setColumns([
@@ -26,5 +31,12 @@ class ModelTable extends ModelCrud {
       ->and((new COND('TABLE_NAME'))->equals("'$tableName'"));
 
     return $this;
+  }
+
+  public function tableExists(string $tableName): bool {
+    $this->findByTableName($tableName);
+    $this->select();
+
+    return $this->numSelectedRows() > 0;
   }
 }
