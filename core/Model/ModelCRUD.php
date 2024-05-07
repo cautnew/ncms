@@ -51,6 +51,7 @@ class ModelCRUD {
    */
   private array $columns = [];
 
+  private array $columnsDefinitions = [];
   private array $columnsSelect = [];
   private array $selectedColumns = [];
 
@@ -184,6 +185,21 @@ class ModelCRUD {
   public function getPrimaryKey(): ?string {
     return $this->primaryKey;
   }
+
+  /**
+   * Set the array of columns of the table and it's definitions.
+   * key = column name
+   * value = [
+   *  'type' => 'varchar' | 'int' | 'decimal' | 'double' | 'float' | 'bool' | 'date' | 'datetime' | 'time' | 'timestamp',
+   *  'length' => int (optional, only used for string, default 255),
+   * ]
+   */
+  public function setColumnsDefinitions(array $columns): self {
+    $this->columnsDefinitions = $columns;
+
+    return $this;
+  }
+
 
   /**
    * Set the array of columns of the table.
