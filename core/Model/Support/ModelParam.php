@@ -6,10 +6,12 @@ use Cautnew\QB\CONDITION as COND;
 use Core\Model\ModelCRUD;
 use Boot\Constants\Constant as CNT;
 
-class ModelParam extends ModelCrud {
+class ModelParam extends ModelCrud
+{
   protected string $version = '0.0.1';
 
-  public function __construct() {
+  public function __construct()
+  {
     parent::__construct(CNT::DB_NAME . '.aux_param', 'pram');
     $this->setColumns([
       'pram.cod_param' => 'string',
@@ -44,7 +46,8 @@ class ModelParam extends ModelCrud {
     $this->setRowsLimit(1);
   }
 
-  public function findByAliasParam(string $aliasParam): self {
+  public function findByAliasParam(string $aliasParam): self
+  {
     $this->prepareQuerySelect();
     $this->getQuerySelect()->getCondition()
       ->and((new COND('pram.alias_param'))->equals("'$aliasParam'"));

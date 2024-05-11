@@ -6,12 +6,14 @@ use Cautnew\QB\CONDITION as COND;
 use Core\Model\ModelCRUD;
 use Boot\Constants\Constant as CNT;
 
-class ModelLog extends ModelCrud {
+class ModelLog extends ModelCrud
+{
   protected string $version = '0.0.1';
 
   public const ll = 10;
 
-  public function __construct() {
+  public function __construct()
+  {
     parent::__construct(CNT::DB_NAME . '.aux_log', 'alog');
 
     $this->setColumns([
@@ -40,7 +42,8 @@ class ModelLog extends ModelCrud {
     $this->setRowsLimit(1);
   }
 
-  public function findByTypeParam(int $typeParam): self {
+  public function findByTypeParam(int $typeParam): self
+  {
     $this->prepareQuerySelect();
     $this->getQuerySelect()->getCondition()
       ->and((new COND('alog.alias_param'))->equals("'$typeParam'"));

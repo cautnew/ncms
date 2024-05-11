@@ -7,12 +7,14 @@ use Core\Model\ModelCRUD;
 use Boot\Constants\Constant as CNT;
 use Core\Model\Dim\ModelSexo;
 
-class ModelPessoa extends ModelCrud {
+class ModelPessoa extends ModelCrud
+{
   protected string $version = '0.0.1';
 
   private ModelSexo $modelSexo;
 
-  public function __construct() {
+  public function __construct()
+  {
     parent::__construct(CNT::DB_NAME . '.dim_pessoa', 'pess');
     $this->setColumns([
       'pess.cod_pessoa' => 'string',
@@ -85,7 +87,8 @@ class ModelPessoa extends ModelCrud {
     $this->setRowsLimit(1);
   }
 
-  protected function prepareConditionsQuerySelect(): void {
+  protected function prepareConditionsQuerySelect(): void
+  {
     $this->getQuerySelect()->where((new COND('pess.dat_expiracao'))->isnull());
   }
 }

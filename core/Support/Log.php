@@ -8,7 +8,8 @@ use Core\Model\Support\ModelParam;
 use DateTime;
 use Exception;
 
-class Log {
+class Log
+{
   protected Session $ses;
 
   private ModelParam $modelParam;
@@ -27,7 +28,7 @@ class Log {
 
   public function __construct()
   {
-		$this->setIndShowLog(false);
+    $this->setIndShowLog(false);
     $this->modelParam = new ModelParam();
   }
 
@@ -146,9 +147,9 @@ class Log {
     $txt = $this->prepareTxt($txt);
     $txtErro = "{$instant->format(DTC::FORMAT_DATETIME_PHP_UNI)} - [{$this->getCod()}] {$txt}";
 
-		if ($this->indShowLog) {
-			echo $txtErro . "\n";
-		}
+    if ($this->indShowLog) {
+      echo $txtErro . "\n";
+    }
 
     try {
       file_put_contents(DC::PLOGS . $this->genFilename(), $txtErro);
@@ -159,7 +160,7 @@ class Log {
     return $this;
   }
 
-  public function regException(Exception $e, string | null $desc = null): self
+  public function regException(Exception $e, string|null $desc = null): self
   {
     $this->regError($e->getMessage());
     $this->regError($e->getCode());
@@ -171,77 +172,77 @@ class Log {
     return $this;
   }
 
-  public function regError(string | Exception $txt): Log
+  public function regError(string|Exception $txt): Log
   {
     return $this->log(self::TYPE_ERROR, $txt);
   }
 
-  public function error(string | Exception $txt): Log
+  public function error(string|Exception $txt): Log
   {
     return $this->regError($txt);
   }
 
-  public function regErro(string | Exception $txt): Log
+  public function regErro(string|Exception $txt): Log
   {
     return $this->regError($txt);
   }
 
-  public function erro(string | Exception $txt): Log
+  public function erro(string|Exception $txt): Log
   {
     return $this->regError($txt);
   }
 
-  public function regWarning(string | Exception $txt): Log
+  public function regWarning(string|Exception $txt): Log
   {
     return $this->log(self::TYPE_WARNING, $txt);
   }
 
-  public function warning(string | Exception $txt): Log
+  public function warning(string|Exception $txt): Log
   {
     return $this->regWarning($txt);
   }
 
-  public function regAviso(string | Exception $txt): Log
+  public function regAviso(string|Exception $txt): Log
   {
     return $this->regWarning($txt);
   }
 
-  public function aviso(string | Exception $txt): Log
+  public function aviso(string|Exception $txt): Log
   {
     return $this->regWarning($txt);
   }
 
-  public function regLog(string | Exception $txt): Log
+  public function regLog(string|Exception $txt): Log
   {
     return $this->log(self::TYPE_LOG, $txt);
   }
 
-  public function reg(string | Exception $txt): Log
+  public function reg(string|Exception $txt): Log
   {
     return $this->regLog($txt);
   }
 
-  public function regInfo(string | Exception $txt): Log
+  public function regInfo(string|Exception $txt): Log
   {
     return $this->log(self::TYPE_INFO, $txt);
   }
 
-  public function info(string | Exception $txt): Log
+  public function info(string|Exception $txt): Log
   {
     return $this->regInfo($txt);
   }
 
-  public function regDanger(string | Exception $txt): Log
+  public function regDanger(string|Exception $txt): Log
   {
     return $this->log(self::TYPE_DANGER, $txt);
   }
 
-  public function regSuccess(string | Exception $txt): Log
+  public function regSuccess(string|Exception $txt): Log
   {
     return $this->log(self::TYPE_SUCCESS, $txt);
   }
 
-  public function success(string | Exception $txt): Log
+  public function success(string|Exception $txt): Log
   {
     return $this->regSuccess($txt);
   }

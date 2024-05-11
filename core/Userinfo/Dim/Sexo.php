@@ -8,18 +8,29 @@ use Core\Model\Dim\ModelSexo;
 /**
  * Class Sexo
  */
-class Sexo {
-  private ModelSexo $modelSexo;
+class Sexo
+{
+  private ModelSexo $model;
 
-  public function __construct() {
-    $this->modelSexo = new ModelSexo();
+  public function __construct()
+  {
+    $this->model = new ModelSexo();
   }
 
-  public function getModel(): ModelSexo {
-    return $this->modelSexo;
+  public function getModel(): ModelSexo
+  {
+    return $this->model;
   }
 
-  public function getCodSexo(string $codSexoAbrev = null): ?string {
+  public function startTable(): void
+  {
+    $this->model->dropTable();
+    $this->model->createTable();
+    $this->model->createTriggers();
+  }
+
+  public function getCodSexo(string $codSexoAbrev = null): ?string
+  {
     if (!empty($codSexoAbrev)) {
       $this->findByCodSexoAbrev($codSexoAbrev);
     }
@@ -31,7 +42,8 @@ class Sexo {
     return null;
   }
 
-  public function findByCodSexoAbrev(string $codSexoAbrev): self {
+  public function findByCodSexoAbrev(string $codSexoAbrev): self
+  {
     $this->getModel()->findByCodAbrev($codSexoAbrev);
     $this->getModel()->select();
 

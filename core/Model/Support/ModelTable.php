@@ -5,7 +5,8 @@ namespace Core\Model\Support;
 use Cautnew\QB\CONDITION as COND;
 use Core\Model\ModelCrud;
 
-class ModelTable extends ModelCrud {
+class ModelTable extends ModelCrud
+{
   protected string $version = '0.0.1';
 
   protected bool $indAllowSelect = true;
@@ -13,7 +14,8 @@ class ModelTable extends ModelCrud {
   protected bool $indAllowInsert = false;
   protected bool $indAllowUpdate = false;
 
-  public function __construct() {
+  public function __construct()
+  {
     parent::__construct('information_schema.columns', 't');
     $this->setColumns([
       'TABLE_SCHEMA' => 'string',
@@ -27,7 +29,8 @@ class ModelTable extends ModelCrud {
     ]);
   }
 
-  public function findByTableName(string $tableName): self {
+  public function findByTableName(string $tableName): self
+  {
     $this->prepareQuerySelect();
     $this->getQuerySelect()->getCondition()
       ->and((new COND('TABLE_NAME'))->equals("'$tableName'"));
@@ -35,7 +38,8 @@ class ModelTable extends ModelCrud {
     return $this;
   }
 
-  public function tableExists(string $tableName): bool {
+  public function tableExists(string $tableName): bool
+  {
     $this->findByTableName($tableName);
     $this->select();
 

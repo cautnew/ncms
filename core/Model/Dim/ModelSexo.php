@@ -6,10 +6,12 @@ use Core\Model\ModelCRUD;
 use Cautnew\QB\CONDITION as COND;
 use Boot\Constants\Constant as CNT;
 
-class ModelSexo extends ModelCrud {
+class ModelSexo extends ModelCrud
+{
   protected string $version = '0.0.1';
 
-  public function __construct() {
+  public function __construct()
+  {
     parent::__construct(CNT::DB_NAME . '.dim_sexo', 'sexo');
     $this->setColumns([
       'sexo.cod_sexo' => 'string',
@@ -38,7 +40,8 @@ class ModelSexo extends ModelCrud {
     $this->setPrimaryKey('cod_sexo');
   }
 
-  public function findByCodAbrev(string $codAbrev): self {
+  public function findByCodAbrev(string $codAbrev): self
+  {
     $this->prepareQuerySelect();
     $this->getQuerySelect()->getCondition()
       ->and((new COND('sexo.cod_sexo_abrev'))->equals("'$codAbrev'"));

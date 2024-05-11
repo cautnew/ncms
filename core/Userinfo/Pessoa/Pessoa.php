@@ -8,19 +8,23 @@ use Core\Userinfo\Dim\Sexo;
 /**
  * Class Pessoa
  */
-class Pessoa {
-  private ModelPessoa $modelPessoa;
+class Pessoa
+{
+  private ModelPessoa $model;
   private Sexo $sexo;
 
-  public function __construct() {
-    $this->modelPessoa = new ModelPessoa();
+  public function __construct()
+  {
+    $this->model = new ModelPessoa();
   }
 
-  public function getModel(): ModelPessoa {
-    return $this->modelPessoa;
+  public function getModel(): ModelPessoa
+  {
+    return $this->model;
   }
 
-  public function getObjSexo(): Sexo {
+  public function getObjSexo(): Sexo
+  {
     return $this->sexo;
   }
 }

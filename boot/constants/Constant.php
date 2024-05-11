@@ -2,7 +2,8 @@
 
 namespace Boot\Constants;
 
-readonly class Constant {
+readonly class Constant
+{
   public DatesConstant $Dates;
 
   public const DEFAULT_CHARSET = 'UTF-8';
@@ -24,10 +25,10 @@ readonly class Constant {
 
   public const URL_TELEGRAM_BOT = "https://api.telegram.org/bot";
 
-  public const PW_MIN_LEN =  8;
-  public const PW_MAX_LEN =  40;
-  public const PW_DEFAULT_ALGO =  PASSWORD_DEFAULT;
-  public const PW_OPTION =  ["cost" => 10];
+  public const PW_MIN_LEN = 8;
+  public const PW_MAX_LEN = 40;
+  public const PW_DEFAULT_ALGO = PASSWORD_DEFAULT;
+  public const PW_OPTION = ["cost" => 10];
 
   public const DB_NAME = 'ncms';
 

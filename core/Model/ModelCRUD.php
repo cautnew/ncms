@@ -17,7 +17,8 @@ use \Exception;
 /**
  * Class to manage CRUD operations on the database
  */
-class ModelCRUD {
+class ModelCRUD
+{
   protected bool $indAllowSelect = true;
   protected bool $indAllowDelete = true;
   protected bool $indAllowInsert = true;
@@ -125,15 +126,18 @@ class ModelCRUD {
   private SELECT $querySelect;
   private UPDATE $queryUpdate;
 
-  public function __construct(string $table, string $aliasTableName) {
+  public function __construct(string $table, string $aliasTableName)
+  {
     $this->setTableName($table, $aliasTableName);
   }
 
-  public function __get(string $key) {
+  public function __get(string $key)
+  {
     return $this->get($key);
   }
 
-  public function __set(string $key, $value) {
+  public function __set(string $key, $value)
+  {
     if ($this->isInsertingMode()) {
       if (array_search($key, array_values($this->columnsAllowInsert)) === false) {
         throw new NotAllowedColumnToInsertException($key);
@@ -146,7 +150,8 @@ class ModelCRUD {
     $this->getCurrentData()->$key = $value;
   }
 
-  public function get(string $key) {
+  public function get(string $key)
+  {
     if ($this->isInsertingMode()) {
       if (array_search($key, array_values($this->columnsAllowInsert)) === false) {
         throw new NotAllowedColumnToInsertException($key);
@@ -158,19 +163,23 @@ class ModelCRUD {
     return $this->getCurrentData()->$key;
   }
 
-  public function getConn(): PDO {
+  public function getConn(): PDO
+  {
     return DB::getConn();
   }
 
-  public function getTableName(): string {
+  public function getTableName(): string
+  {
     return $this->table;
   }
 
-  public function getTableAlias(): string {
+  public function getTableAlias(): string
+  {
     return $this->aliasTableName;
   }
 
-  public function setTableName(string $table, ?string $tableAlias=null): self {
+  public function setTableName(string $table, ?string $tableAlias = null): self
+  {
     $this->table = $table;
 
     if (!empty($tableAlias)) {
@@ -180,19 +189,22 @@ class ModelCRUD {
     return $this;
   }
 
-  public function setTableAlias(string $tableAlias): self {
+  public function setTableAlias(string $tableAlias): self
+  {
     $this->aliasTableName = $tableAlias;
 
     return $this;
   }
 
-  public function setPrimaryKey(string $primaryKey): self {
+  public function setPrimaryKey(string $primaryKey): self
+  {
     $this->primaryKey = $primaryKey;
 
     return $this;
   }
 
-  public function getPrimaryKey(): ?string {
+  public function getPrimaryKey(): ?string
+  {
     return $this->primaryKey;
   }
 
@@ -204,13 +216,15 @@ class ModelCRUD {
    *  'length' => int (optional, only used for string, default 255),
    * ]
    */
-  public function setColumnsDefinitions(array $columns): self {
+  public function setColumnsDefinitions(array $columns): self
+  {
     $this->columnsDefinitions = $columns;
 
     return $this;
   }
 
-  public function setTableTriggers(array $triggers): self {
+  public function setTableTriggers(array $triggers): self
+  {
     $this->tableTriggers = $triggers;
 
     return $this;
@@ -220,13 +234,15 @@ class ModelCRUD {
    * Set the array of columns of the table.
    * value = column name
    */
-  public function setColumns(array $columns): self {
+  public function setColumns(array $columns): self
+  {
     $this->columns = $columns;
 
     return $this;
   }
 
-  public function getSelectedColumns(): array {
+  public function getSelectedColumns(): array
+  {
     return $this->selectedColumns;
   }
 
@@ -236,7 +252,8 @@ class ModelCRUD {
    * value = column name
    * @param array $columnsAlias
    */
-  public function setColumnsAlias(array $columnsAlias): self {
+  public function setColumnsAlias(array $columnsAlias): self
+  {
     $this->aliasColumns = $columnsAlias;
     $this->columnsAlias = array_flip($columnsAlias);
 
@@ -248,7 +265,8 @@ class ModelCRUD {
    * value = column name
    * @param array $columnsAllowInsert
    */
-  public function setColumnsAllowInsert(array $columnsAllowInsert): self {
+  public function setColumnsAllowInsert(array $columnsAllowInsert): self
+  {
     $this->columnsAllowInsert = $columnsAllowInsert;
 
     return $this;
@@ -259,26 +277,30 @@ class ModelCRUD {
    * value = column name
    * @param array $columnsAllowUpdate
    */
-  public function setColumnsAllowUpdate(array $columnsAllowUpdate): self {
+  public function setColumnsAllowUpdate(array $columnsAllowUpdate): self
+  {
     $this->columnsAllowUpdate = $columnsAllowUpdate;
 
     return $this;
   }
 
-  public function getColumnsAllowUpdate(): array {
+  public function getColumnsAllowUpdate(): array
+  {
     return $this->columnsAllowUpdate;
   }
 
   /**
    * Set the limit of rows to be selected.
    */
-  public function setRowsLimit(int $rowsLimit): self {
+  public function setRowsLimit(int $rowsLimit): self
+  {
     $this->rowsLimit = $rowsLimit;
 
     return $this;
   }
 
-  public function getRowsLimit(): ?int {
+  public function getRowsLimit(): ?int
+  {
     if (empty($this->rowsLimit)) {
       return null;
     }
@@ -286,13 +308,15 @@ class ModelCRUD {
     return $this->rowsLimit;
   }
 
-  public function setOffset(int $offset): self {
+  public function setOffset(int $offset): self
+  {
     $this->offset = $offset;
 
     return $this;
   }
 
-  public function getOffset(): ?int {
+  public function getOffset(): ?int
+  {
     if (empty($this->offset)) {
       return null;
     }
@@ -305,7 +329,8 @@ class ModelCRUD {
    * It's possible to iterate in $this until the end of the selected data
    * @return self|null
    */
-  public function next(): ?self {
+  public function next(): ?self
+  {
     $this->currentIndex++;
 
     if ($this->currentIndex >= $this->numSelectedRows()) {
@@ -321,7 +346,8 @@ class ModelCRUD {
    * It's possible to iterate in $this until the beginning of the selected data
    * @return self|null
    */
-  public function prev(): ?self {
+  public function prev(): ?self
+  {
     $this->currentIndex--;
 
     if ($this->currentIndex < 0) {
@@ -332,21 +358,25 @@ class ModelCRUD {
     return $this;
   }
 
-  public function getCurrentData() {
+  public function getCurrentData()
+  {
     return $this->selectedData[$this->currentIndex];
   }
 
-  public function getPage(): int {
+  public function getPage(): int
+  {
     return $this->page;
   }
 
-  public function setPage(int $page): self {
+  public function setPage(int $page): self
+  {
     $this->page = $page;
 
     return $this;
   }
 
-  public function nextPage(): ?self {
+  public function nextPage(): ?self
+  {
     $this->setPage($this->getPage() + 1);
     $this->setOffset((int) $this->getRowsLimit() * $this->page);
     $this->select();
@@ -360,7 +390,8 @@ class ModelCRUD {
     return $this;
   }
 
-  public function getCurrentIndex(): int {
+  public function getCurrentIndex(): int
+  {
     return $this->currentIndex ?? 0;
   }
 
@@ -368,7 +399,8 @@ class ModelCRUD {
    * Returns the count of selected rows.
    * @return int|null
    */
-  public function numSelectedRows(): int {
+  public function numSelectedRows(): int
+  {
     return $this->maxIndex ?? 0;
   }
 
@@ -376,17 +408,20 @@ class ModelCRUD {
    * Returns if there are no selected rows.
    * @return bool
    */
-  public function isEmpty(): bool {
+  public function isEmpty(): bool
+  {
     return $this->numSelectedRows() == 0;
   }
 
-  public function setFechMode(int $fetchMode): self {
+  public function setFechMode(int $fetchMode): self
+  {
     $this->fetchMode = $fetchMode;
 
     return $this;
   }
 
-  public function getFetchMode(): int {
+  public function getFetchMode(): int
+  {
     if (!isset($this->fetchMode)) {
       $this->setFechMode(PDO::FETCH_DEFAULT);
     }
@@ -394,27 +429,32 @@ class ModelCRUD {
     return $this->fetchMode;
   }
 
-  public function setCommited(bool $commited = true): self {
+  public function setCommited(bool $commited = true): self
+  {
     $this->commited = $commited;
 
     return $this;
   }
 
-  public function isCommited(): bool {
+  public function isCommited(): bool
+  {
     return $this->commited;
   }
 
-  public function setLimitedSelect(bool $limitedSelect = true): self {
+  public function setLimitedSelect(bool $limitedSelect = true): self
+  {
     $this->limitedSelect = $limitedSelect;
 
     return $this;
   }
 
-  public function isLimitedSelect(): bool {
+  public function isLimitedSelect(): bool
+  {
     return $this->limitedSelect;
   }
 
-  public function isInsertingMode(): bool {
+  public function isInsertingMode(): bool
+  {
     return $this->insertingMode;
   }
 
@@ -429,7 +469,8 @@ class ModelCRUD {
    *   'condition': string (ignored if table is ModelCRUD)
    * ]
    */
-  public function setColumnsRelationships(array $relationships): self {
+  public function setColumnsRelationships(array $relationships): self
+  {
     $this->columnsRelationships = $relationships;
 
     return $this;
@@ -446,13 +487,15 @@ class ModelCRUD {
    *   'condition': string (ignored if table is ModelCRUD)
    * ]
    */
-  public function addColumnRelationship(string $column, array $relationship): self {
+  public function addColumnRelationship(string $column, array $relationship): self
+  {
     $this->columnsRelationships[$column] = $relationship;
 
     return $this;
   }
 
-  public function getQuerySelect(): SELECT {
+  public function getQuerySelect(): SELECT
+  {
     if (!isset($this->querySelect)) {
       $this->querySelect = new SELECT($this->getTableName(), $this->getTableAlias());
     }
@@ -460,25 +503,40 @@ class ModelCRUD {
     return $this->querySelect;
   }
 
-  private function prepareColumnsQuerySelect(): void {
+  private function prepareColumnsQuerySelect(): void
+  {
     $this->getQuerySelect()->setColumns(array_values($this->columns));
     if (!empty($this->columnsAlias)) {
       $this->getQuerySelect()->setColumnsAliases($this->columnsAlias);
     }
   }
 
-  private function addJoinFromModel(ModelCRUD $model, string $column): void {
-    //
+  /**
+   * Adds a LEFT JOIN to the query according to the column in this current
+   * table referenced by the primary key in the passed model.
+   * @param string $column
+   * @param ModelCRUD $model
+   */
+  private function addJoinFromModel(string $column, ModelCRUD $model): void
+  {
+    $columnLocal = "{$this->getTableAlias()}.{$column}";
+    $columnReference = "{$model->getTableAlias()}.{$model->getPrimaryKey()}";
+    $condition = (new COND($columnLocal))->equals($columnReference);
+
+    $this->getQuerySelect()
+      ->join('LEFT', $model->getTableName(), $model->getTableAlias(), $condition);
   }
 
-  private function prepareJoinsQuerySelect(): void {
+  private function prepareJoinsQuerySelect(): void
+  {
     foreach ($this->columnsRelationships as $column => $relationship) {
-      if ($relationship['table'] instanceof ModelCRUD) {
-        $this->addJoinFromModel($relationship, $column);
+      if ($relationship instanceof ModelCRUD) {
+        $this->addJoinFromModel($column, $relationship);
         continue;
       }
 
-      $this->getQuerySelect()->join($relationship['type'], $relationship['table'], $relationship['alias'], $relationship['condition']);
+      $this->getQuerySelect()
+        ->join($relationship['type'], $relationship['table'], $relationship['alias'], $relationship['condition']);
     }
   }
 
@@ -488,11 +546,13 @@ class ModelCRUD {
    * For exemple, if you want valid values, or only for one type of user, etc.
    * @return void
    */
-  protected function prepareConditionsQuerySelect(): void {
+  protected function prepareConditionsQuerySelect(): void
+  {
     $this->getQuerySelect()->where((new COND('1'))->equals('1'));
   }
 
-  protected function prepareQuerySelect(): void {
+  protected function prepareQuerySelect(): void
+  {
     if ($this->getrowsLimit() != null) {
       $this->getQuerySelect()->limit($this->getrowsLimit());
     }
@@ -506,7 +566,17 @@ class ModelCRUD {
     $this->prepareConditionsQuerySelect();
   }
 
-  public function findById(string $id): self {
+  /**
+   * Prepare the table definitions to this model.
+   * It's not about the select columns, it's according to the creation of the table.
+   */
+  protected function prepareTableCreate(): void
+  {
+    //
+  }
+
+  public function findById(string $id): self
+  {
     $this->prepareQuerySelect();
     $this->getQuerySelect()->getCondition()
       ->and((new COND($this->getPrimaryKey()))->equals("'$id'"));
@@ -514,7 +584,8 @@ class ModelCRUD {
     return $this;
   }
 
-  protected function clearSelectedData(): self {
+  protected function clearSelectedData(): self
+  {
     $this->selectedData = [];
     $this->currentIndex = 0;
     $this->maxIndex = 0;
@@ -531,7 +602,8 @@ class ModelCRUD {
    * as described in the array $this->columns.
    * @return self
    */
-  public function loadData(array $data): self {
+  public function loadData(array $data): self
+  {
     $this->clearSelectedData();
 
     if (empty($data)) {
@@ -546,7 +618,8 @@ class ModelCRUD {
     return $this;
   }
 
-  public function select(): self {
+  public function select(): self
+  {
     if (!isset($this->querySelect)) {
       $this->prepareQuerySelect();
     }
@@ -566,25 +639,29 @@ class ModelCRUD {
     return $this;
   }
 
-  public function setInsertingMode(bool $isInsertingMode = true): self {
+  public function setInsertingMode(bool $isInsertingMode = true): self
+  {
     $this->insertingMode = $isInsertingMode;
 
     return $this;
   }
 
-  public function startInsertingMode(): self {
+  public function startInsertingMode(): self
+  {
     $this->setInsertingMode(true);
 
     return $this;
   }
 
-  public function stopInsertingMode(): self {
+  public function stopInsertingMode(): self
+  {
     $this->setInsertingMode(false);
 
     return $this;
   }
 
-  public function createTable(): self {
+  public function createTable(): self
+  {
     $this->queryCreateTable = new CREATE_TABLE($this->getTableName());
     $this->queryCreateTable->setDefinitions($this->columnsDefinitions);
     $this->queryCreateTable->setPrimaryKey($this->getPrimaryKey());
@@ -602,8 +679,9 @@ class ModelCRUD {
     return $this;
   }
 
-  public function createTriggers(): self {
-    foreach($this->tableTriggers as $triggerName => $trigger) {
+  public function createTriggers(): self
+  {
+    foreach ($this->tableTriggers as $triggerName => $trigger) {
       $stm = $this->getConn()->prepare($trigger);
 
       try {
@@ -618,7 +696,8 @@ class ModelCRUD {
     return $this;
   }
 
-  public function dropTable(): self {
+  public function dropTable(): self
+  {
     $query = "DROP TABLE IF EXISTS {$this->getTableName()}";
     $stm = $this->getConn()->prepare($query);
 
@@ -632,7 +711,8 @@ class ModelCRUD {
     return $this;
   }
 
-  public function insert(?array $data = null): self {
+  public function insert(?array $data = null): self
+  {
     if (empty($this->insertingData) && empty($data)) {
       return $this;
     }
@@ -649,15 +729,18 @@ class ModelCRUD {
     return $this;
   }
 
-  public function insertFromCurrentData(): self {
+  public function insertFromCurrentData(): self
+  {
     return $this->insert(json_decode(json_encode($this->getCurrentData()), true));
   }
 
-  private function uniqId(int $len): string {
+  private function uniqId(int $len): string
+  {
     return substr(uniqid(md5(rand()), true), 0, $len);
   }
 
-  public function commitInsert(): self {
+  public function commitInsert(): self
+  {
     if (!$this->indAllowInsert) {
       throw new Exception("It's not allowed to insert data.");
     }
@@ -676,8 +759,8 @@ class ModelCRUD {
     $data = [];
     $rows = [];
 
-    foreach($this->preparedDataToInsert as $key => $row) {
-      foreach($this->queryInsert->getColumns() as $column) {
+    foreach ($this->preparedDataToInsert as $key => $row) {
+      foreach ($this->queryInsert->getColumns() as $column) {
         $idKey = ":{$column}_{$key}";
         $data[$idKey] = $row[$column] ?? '';
         $rows[$key][$column] = $idKey;
@@ -701,12 +784,14 @@ class ModelCRUD {
     return $this;
   }
 
-  public function update(): self {
+  public function update(): self
+  {
     $this->preparedDataToUpdate[] = $this->getCurrentData();
     return $this;
   }
 
-  public function commitUpdate(): self {
+  public function commitUpdate(): self
+  {
     if (!$this->indAllowUpdate) {
       throw new Exception("It's not allowed to update data.");
     }
@@ -716,7 +801,7 @@ class ModelCRUD {
     }
 
     $setList = [];
-    foreach($this->getColumnsAllowUpdate() as $column => $type) {
+    foreach ($this->getColumnsAllowUpdate() as $column => $type) {
       $setList[$column] = ":{$column}";
     }
 
@@ -727,9 +812,9 @@ class ModelCRUD {
       $this->queryUpdate->addCondition("{$this->getPrimaryKey()}=:{$this->getPrimaryKey()}");
     }
 
-    foreach($this->preparedDataToUpdate as $row) {
+    foreach ($this->preparedDataToUpdate as $row) {
       $data = [];
-      foreach($row as $column => $value) {
+      foreach ($row as $column => $value) {
         if (in_array($column, array_keys($setList)) || $column == $this->getPrimaryKey()) {
           $data[":{$column}"] = $value;
         }
@@ -750,12 +835,14 @@ class ModelCRUD {
     return $this;
   }
 
-  public function delete(): self {
+  public function delete(): self
+  {
     $this->preparedDataToDelete[] = $this->get($this->getPrimaryKey());
     return $this;
   }
 
-  public function commitDelete(): self {
+  public function commitDelete(): self
+  {
     if (!$this->indAllowDelete) {
       throw new Exception("It's not allowed to delete data.");
     }
@@ -772,7 +859,7 @@ class ModelCRUD {
 
     $data = [];
 
-    foreach($this->preparedDataToDelete as $id) {
+    foreach ($this->preparedDataToDelete as $id) {
       $data[":{$this->getPrimaryKey()}"] = $id;
 
       $stm = $this->getConn()->prepare($this->queryDelete);
@@ -790,7 +877,8 @@ class ModelCRUD {
     return $this;
   }
 
-  public function commit(): self {
+  public function commit(): self
+  {
     /**
      * @todo Implement this method with the following order:
      *  1 - Insert

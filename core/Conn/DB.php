@@ -23,7 +23,7 @@ class DB {
 
   private const DB_CONID_LOCAL = 1;
   private const DB_CONID_UMBLER = 2;
-  private const DB_PRINCIPAL_CONID = self::DB_CONID_UMBLER;
+  private const DB_PRINCIPAL_CONID = self::DB_CONID_LOCAL;
 
   private const PATH_CRED_LOCALHOST = DC::PSUPPORT . '/creddblocalhost.cdb';
   private const PATH_CRED_UMBLER = DC::PSUPPORT . '/credumbler.cdb';
