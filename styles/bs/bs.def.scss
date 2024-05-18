@@ -1,0 +1,14 @@
+// bs.def.scss
+
+@import "../../vendor/twbs/bootstrap/scss/functions";
+
+// Default variables overrides
+$body-bg: #000;
+$body-color: #111;
+
+@import "../../vendor/twbs/bootstrap/scss/variables";
+@import "../../vendor/twbs/bootstrap/scss/variables-dark";
+@import "../../vendor/twbs/bootstrap/scss/maps";
+@import "../../vendor/twbs/bootstrap/scss/mixins";
+@import "../../vendor/twbs/bootstrap/scss/modal";
+
