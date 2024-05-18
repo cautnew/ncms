@@ -2,7 +2,7 @@
 
 namespace Core\Model\Support;
 
-use Cautnew\QB\CONDITION as COND;
+use QB\CONDITION as COND;
 use Core\Model\ModelCrud;
 
 class ModelTable extends ModelCrud

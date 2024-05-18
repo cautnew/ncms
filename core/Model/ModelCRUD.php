@@ -6,12 +6,12 @@ use \PDO;
 use Core\Conn\DB;
 use Core\Support\Logger;
 use Core\Model\Exception\NotAllowedColumnToInsertException;
-use Cautnew\QB\CONDITION as COND;
-use Cautnew\QB\CREATE_TABLE;
-use Cautnew\QB\SELECT;
-use Cautnew\QB\INSERT;
-use Cautnew\QB\UPDATE;
-use Cautnew\QB\DELETE;
+use QB\CONDITION as COND;
+use QB\CREATE_TABLE;
+use QB\SELECT;
+use QB\INSERT;
+use QB\UPDATE;
+use QB\DELETE;
 use \Exception;
 
 /**

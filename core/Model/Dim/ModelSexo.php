@@ -3,7 +3,7 @@
 namespace Core\Model\Dim;
 
 use Core\Model\ModelCRUD;
-use Cautnew\QB\CONDITION as COND;
+use QB\CONDITION as COND;
 use Boot\Constants\Constant as CNT;
 
 class ModelSexo extends ModelCrud

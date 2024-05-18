@@ -2,7 +2,7 @@
 
 namespace Core\Userinfo\Dim;
 
-use Cautnew\QB\CONDITION as COND;
+use QB\CONDITION as COND;
 use Core\Model\Dim\ModelSexo;
 
 /**

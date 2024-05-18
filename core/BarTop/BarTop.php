@@ -2,14 +2,14 @@
 
 namespace Core\BarTop;
 
-use Cautnew\HTML\A;
-use Cautnew\HTML\BUTTON;
-use Cautnew\HTML\DIV;
-use Cautnew\HTML\H5;
-use Cautnew\HTML\IMG;
-use Cautnew\HTML\LI;
-use Cautnew\HTML\NAV;
-use Cautnew\HTML\UL;
+use HTML\A;
+use HTML\BUTTON;
+use HTML\DIV;
+use HTML\H5;
+use HTML\IMG;
+use HTML\LI;
+use HTML\NAV;
+use HTML\UL;
 use Core\Support\Session;
 use DateTime;
 

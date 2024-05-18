@@ -5,7 +5,7 @@ namespace Core\Model\User;
 use Core\Conn\DB;
 use Core\Model\ModelCRUD;
 use Boot\Constants\Constant as CNT;
-use Cautnew\QB\CREATE_TRIGGER;
+use QB\CREATE_TRIGGER;
 
 class ModelUser extends ModelCRUD
 {

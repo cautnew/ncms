@@ -2,7 +2,7 @@
 
 namespace Core\Model\Pessoa;
 
-use Cautnew\QB\CONDITION as COND;
+use QB\CONDITION as COND;
 use Core\Model\ModelCRUD;
 use Boot\Constants\Constant as CNT;
 use Core\Model\Dim\ModelSexo;

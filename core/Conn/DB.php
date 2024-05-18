@@ -1,6 +1,6 @@
 <?php
 
-namespace core\Conn;
+namespace Core\Conn;
 
 use \PDO;
 use \PDOException;

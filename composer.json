@@ -15,12 +15,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Source\\": "source/"
+      "Boot\\": "boot/",
+      "Boot\\Constants\\": "boot/constants/",
+      "Source\\": "source/",
+      "Core\\": "core/"
     },
-    "files": [
-      "boot/Config.php",
-      "boot/Minify.php"
-    ]
+    "files": []
   },
   "require": {
     "php": ">=8.0",

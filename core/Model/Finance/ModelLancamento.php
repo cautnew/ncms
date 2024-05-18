@@ -2,10 +2,10 @@
 
 namespace Core\Model\Finance;
 
-use Cautnew\QB\CONDITION as COND;
+use QB\CONDITION as COND;
 use Core\Model\ModelCRUD;
 use Boot\Constants\Constant as CNT;
-use Cautnew\QB\CREATE_TRIGGER;
+use QB\CREATE_TRIGGER;
 
 class ModelLancamento extends ModelCrud
 {

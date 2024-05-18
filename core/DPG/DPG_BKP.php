@@ -8,13 +8,13 @@ use Core\Support\Session;
 use Core\Support\InVar;
 use DateTime;
 
-use Cautnew\HTML\HTML;
-use Cautnew\HTML\HEAD;
-use Cautnew\HTML\BODY;
-use Cautnew\HTML\TITLE;
-use Cautnew\HTML\FOOTER;
-use Cautnew\HTML\LINK;
-use Cautnew\HTML\SCRIPT;
+use HTML\HTML;
+use HTML\HEAD;
+use HTML\BODY;
+use HTML\TITLE;
+use HTML\FOOTER;
+use HTML\LINK;
+use HTML\SCRIPT;
 
 class DPG
 {
