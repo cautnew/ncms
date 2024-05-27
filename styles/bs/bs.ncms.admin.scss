@@ -47,4 +47,5 @@ $success: #0a5316;
   @extend .fixed-top;
   position: sticky;
   top: 0;
+  z-index: 10000;
 }
