@@ -2,7 +2,8 @@
 
 use Boot\Constants\DirConstant as DC;
 
-readonly class AutoloadListDirectories {
+//readonly
+class AutoloadListDirectories {
   public const DEFAULT_DIRECTORIES = [
     'Boot\\' => DC::PBOOT,
     'Boot\\Constants\\' => DC::PBOOT . '/constants',

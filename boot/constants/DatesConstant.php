@@ -2,7 +2,8 @@
 
 namespace Boot\Constants;
 
-readonly class DatesConstant
+//readonly
+class DatesConstant
 {
   public const FORMAT_CODTIMESTAMP = 'YmdHis';
   public const FORMAT_YEAR_PHP = 'Y';

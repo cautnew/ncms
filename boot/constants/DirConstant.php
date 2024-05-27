@@ -2,7 +2,8 @@
 
 namespace Boot\Constants;
 
-readonly class DirConstant
+//readonly
+class DirConstant
 {
   public const PBOOT = __DIR__ . '/..';
   public const PROOT = self::PBOOT . '/..';

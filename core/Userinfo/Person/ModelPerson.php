@@ -1,13 +1,13 @@
 <?php
 
-namespace Core\Model\Pessoa;
+namespace Core\Userinfo\Person;
 
 use QB\CONDITION as COND;
 use Core\Model\ModelCRUD;
 use Boot\Constants\Constant as CNT;
-use Core\Model\Dim\ModelSexo;
+use Core\Userinfo\Dim\ModelSexo;
 
-class ModelPessoa extends ModelCrud
+class ModelPerson extends ModelCRUD
 {
   protected string $version = '0.0.1';
 

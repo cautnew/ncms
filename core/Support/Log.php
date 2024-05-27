@@ -4,7 +4,7 @@ namespace Core\Support;
 
 use Boot\Constants\DirConstant as DC;
 use Boot\Constants\DatesConstant as DTC;
-use Core\Model\Support\ModelParam;
+use Core\Support\ModelParam;
 use DateTime;
 use Exception;
 

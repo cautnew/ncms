@@ -18,17 +18,10 @@
       "Boot\\": "boot/",
       "Boot\\Constants\\": "boot/constants/",
       "Source\\": "source/",
-      "Core\\": "core/"
+      "Core\\": "core/",
+      "CustomCore\\": "customcore/"
     },
     "files": []
-  },
-  "require": {
-    "php": ">=8.0",
-    "ext-pdo": ">=7.1",
-    "phpmailer/phpmailer": ">=6.0",
-    "cautnew/html": ">=1.0.0",
-    "cautnew/qb": ">=2.0.0",
-    "twbs/bootstrap": "5.3.3"
   },
   "repositories": [
     {
@@ -38,6 +31,20 @@
     {
       "type": "vcs",
       "url": "git@github.com:cautnew/QB.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:cautnew/summernote.git"
     }
-  ]
+  ],
+  "require": {
+    "php": ">=8.0",
+    "ext-pdo": ">=7.1",
+    "phpmailer/phpmailer": ">=6.0",
+    "cautnew/html": ">=1.0.0",
+    "cautnew/qb": ">=2.0.0",
+    "cautnew/summernote": ">=0.8.18",
+    "twbs/bootstrap": "5.3.3",
+    "cboden/ratchet": "dev-master"
+  }
 }

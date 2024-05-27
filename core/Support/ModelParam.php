@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Model\Support;
+namespace Core\Support;
 
 use QB\CONDITION as COND;
 use Core\Model\ModelCRUD;

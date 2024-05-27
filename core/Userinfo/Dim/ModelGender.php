@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Model\Dim;
+namespace Core\Userinfo\Dim;
 
 use Core\Model\ModelCRUD;
 use QB\CONDITION as COND;

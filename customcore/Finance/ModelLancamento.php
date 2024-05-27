@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Model\Finance;
+namespace CustomCore\Finance;
 
 use QB\CONDITION as COND;
 use Core\Model\ModelCRUD;

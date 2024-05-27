@@ -21,6 +21,7 @@ class DB {
 
   private static int $currentConId = 0;
 
+  private const PDO_DATABASE_DONT_EXISTS = 1049;
   private const DB_CONID_LOCAL = 1;
   private const DB_CONID_UMBLER = 2;
   private const DB_PRINCIPAL_CONID = self::DB_CONID_LOCAL;
@@ -46,8 +47,13 @@ class DB {
     return null;
   }
 
-  private static function createDSN(array $cred): string {
-    $dsn = "mysql:charset=utf8;host={$cred['host']};dbname={$cred['dbname']};port={$cred['port']}";
+  private static function createDSN(array $cred, bool $noDBName = false): string {
+    if ($noDBName) {
+      $dsn = "mysql:charset=utf8;host={$cred['host']};port={$cred['port']}";
+    } else {
+      $dsn = "mysql:charset=utf8;host={$cred['host']};dbname={$cred['dbname']};port={$cred['port']}";
+    }
+
     return $dsn;
   }
 
@@ -77,6 +83,15 @@ class DB {
     } catch (PDOException $e) {
       $txtErro = "Não foi possível conectar ao banco ({$e->getMessage()} - {$dsn})";
       Logger::reg($txtErro);
+
+      if ($e->getCode() == self::PDO_DATABASE_DONT_EXISTS) {
+        $dsn = self::createDSN($cred, true);
+        self::$con = new PDO($dsn, $cred['us'], $cred['pw'], self::CONN_OPTIONS);
+        self::$con->exec("CREATE DATABASE {$cred['dbname']}");
+        Logger::reg("Banco de dados criado com sucesso ({$cred['dbname']})");
+        return self::getConn($conId);
+      }
+
       throw new Exception($txtErro);
     }
 

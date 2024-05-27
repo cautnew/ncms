@@ -2,7 +2,8 @@
 
 namespace Boot\Constants;
 
-readonly class Constant
+//readonly
+class Constant
 {
   public DatesConstant $Dates;
 

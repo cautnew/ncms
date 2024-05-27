@@ -1,8 +1,8 @@
 <?php
 
-namespace Core\Finance;
+namespace CustomCore\Finance;
 
-use Core\Model\Finance\ModelLancamento;
+use CustomCore\Finance\ModelLancamento;
 use Core\Support\Session;
 
 class Lancamento
@@ -33,6 +33,6 @@ class Lancamento
 
     $this->model->select();
 
-    return $this->model->fetchAll();
+    return $this->model->getCurrentData();
   }
 }

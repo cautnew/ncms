@@ -2,15 +2,20 @@
 
 namespace Core\Userinfo\User;
 
-use Core\Model\User\ModelUser;
+use Core\Userinfo\User\UserModelCRUD;
 
 class User
 {
-  private ModelUser $model;
+  private UserModelCRUD $model;
 
   public function __construct()
   {
-    echo "User";
+    $this->model = new UserModelCRUD();
+  }
+
+  public function getModel(): UserModelCRUD
+  {
+    return $this->model;
   }
 
   public function startTable(): void

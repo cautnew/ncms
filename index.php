@@ -1,23 +1,26 @@
 <?php
 
-use Cautnew\HTML\BODY;
-use Cautnew\HTML\HEAD;
-use Cautnew\HTML\H1;
-use Cautnew\HTML\HTML;
-use Cautnew\HTML\TITLE;
-use Cautnew\HTML\STYLE;
 use Boot\Constants\DirConstant as DC;
+use Core\Route\Request;
+use Core\Route\Route;
 
-$body = new BODY();
-$head = new HEAD(append: new TITLE("Sudoku"));
-$head->append(new STYLE(append: <<<CSS
-  body {
-    background-color: #000;
-    color: #fff;
-  }
-CSS));
-$html = new HTML(lang: "pt-br", appendList: [$head, $body]);
+require_once __DIR__ . '/autoload.php';
 
-$body->append(new H1(html: "Sudoku " . DC::PSUPPORT));
+$request = new Request();
 
-return $html;
+Route::get('/', function() {
+  $content = require_once DC::PSOURCE . '/admin/page-type.php';
+  echo $content;
+});
+
+Route::get('/admin', function() {
+  $content = require_once DC::PSOURCE . '/admin/admin.php';
+  echo $content;
+});
+
+Route::get('/admin/{qt}', function($qt) {
+  $content = require_once DC::PSOURCE . '/admin/admin.php';
+  echo $qt . $content;
+});
+
+Route::resolve($request);

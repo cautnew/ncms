@@ -7,7 +7,6 @@ use Core\Conn\DB;
 use Core\Support\Logger;
 use Core\Model\Exception\NotAllowedColumnToInsertException;
 use QB\CONDITION as COND;
-use QB\CREATE_TABLE;
 use QB\SELECT;
 use QB\INSERT;
 use QB\UPDATE;
@@ -24,11 +23,13 @@ class ModelCRUD
   protected bool $indAllowInsert = true;
   protected bool $indAllowUpdate = true;
 
+  private ModelTable $modelTable;
+
   private bool $insertingMode = false;
 
   /**
    * Version of the model. Use this version control to update the definitions of the table
-   * as the triggers, indexes, constraints, columns etc.
+   * as the ModelTable.
    * @var string $version
    */
   protected string $version = '0.0.0';
@@ -59,10 +60,7 @@ class ModelCRUD
    * @var array $columns
    */
   private array $columns = [];
-  private array $tableTriggers = [];
 
-  private array $columnsDefinitions = [];
-  private array $columnsSelect = [];
   private array $selectedColumns = [];
 
   /**
@@ -120,11 +118,12 @@ class ModelCRUD
   private bool $commited = false;
   private bool $limitedSelect = true;
 
-  private CREATE_TABLE $queryCreateTable;
   private DELETE $queryDelete;
   private INSERT $queryInsert;
   private SELECT $querySelect;
   private UPDATE $queryUpdate;
+
+  private const PDO_TABLE_DOESNT_EXISTS = '42S02';
 
   public function __construct(string $table, string $aliasTableName)
   {
@@ -206,28 +205,6 @@ class ModelCRUD
   public function getPrimaryKey(): ?string
   {
     return $this->primaryKey;
-  }
-
-  /**
-   * Set the array of columns of the table and it's definitions.
-   * key = column name
-   * value = [
-   *  'type' => 'varchar' | 'int' | 'decimal' | 'double' | 'float' | 'bool' | 'date' | 'datetime' | 'time' | 'timestamp',
-   *  'length' => int (optional, only used for string, default 255),
-   * ]
-   */
-  public function setColumnsDefinitions(array $columns): self
-  {
-    $this->columnsDefinitions = $columns;
-
-    return $this;
-  }
-
-  public function setTableTriggers(array $triggers): self
-  {
-    $this->tableTriggers = $triggers;
-
-    return $this;
   }
 
   /**
@@ -506,6 +483,7 @@ class ModelCRUD
   private function prepareColumnsQuerySelect(): void
   {
     $this->getQuerySelect()->setColumns(array_values($this->columns));
+
     if (!empty($this->columnsAlias)) {
       $this->getQuerySelect()->setColumnsAliases($this->columnsAlias);
     }
@@ -660,57 +638,6 @@ class ModelCRUD
     return $this;
   }
 
-  public function createTable(): self
-  {
-    $this->queryCreateTable = new CREATE_TABLE($this->getTableName());
-    $this->queryCreateTable->setDefinitions($this->columnsDefinitions);
-    $this->queryCreateTable->setPrimaryKey($this->getPrimaryKey());
-
-    $stm = $this->getConn()->prepare($this->queryCreateTable);
-
-    try {
-      $stm->execute();
-      echo $this->queryCreateTable;
-    } catch (\Exception $e) {
-      Logger::regException($e);
-      throw new Exception("[{$e->getCode()}] Error on create table | " . $e->getMessage());
-    }
-
-    return $this;
-  }
-
-  public function createTriggers(): self
-  {
-    foreach ($this->tableTriggers as $triggerName => $trigger) {
-      $stm = $this->getConn()->prepare($trigger);
-
-      try {
-        $stm->execute();
-        echo $trigger;
-      } catch (\Exception $e) {
-        Logger::regException($e);
-        throw new Exception("[{$e->getCode()}] Error on create trigger \"$triggerName\" | " . $e->getMessage());
-      }
-    }
-
-    return $this;
-  }
-
-  public function dropTable(): self
-  {
-    $query = "DROP TABLE IF EXISTS {$this->getTableName()}";
-    $stm = $this->getConn()->prepare($query);
-
-    try {
-      $stm->execute();
-    } catch (\Exception $e) {
-      Logger::regException($e);
-      throw new Exception("[{$e->getCode()}] Error on drop table | " . $e->getMessage());
-    }
-
-    return $this;
-  }
-
   public function insert(?array $data = null): self
   {
     if (empty($this->insertingData) && empty($data)) {
@@ -775,8 +702,15 @@ class ModelCRUD
 
     try {
       $stm->execute($data);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
       Logger::regException($e);
+
+      if ($e->getCode() == self::PDO_TABLE_DOESNT_EXISTS) {
+        $this->modelTable->create();
+        $this->modelTable->createTriggers();
+        return $this->commitInsert();
+      }
+
       throw new Exception("{$e->getCode()} Error on insert data | " . $e->getMessage());
     }
 

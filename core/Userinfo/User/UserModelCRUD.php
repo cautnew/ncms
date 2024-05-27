@@ -1,13 +1,13 @@
 <?php
 
-namespace Core\Model\User;
+namespace Core\Userinfo\User;
 
 use Core\Conn\DB;
 use Core\Model\ModelCRUD;
 use Boot\Constants\Constant as CNT;
 use QB\CREATE_TRIGGER;
 
-class ModelUser extends ModelCRUD
+class UserModelCRUD extends ModelCRUD
 {
   protected string $version = '0.0.1';
   public function __construct()
@@ -17,6 +17,7 @@ class ModelUser extends ModelCRUD
       'cod_user' => [
         'type' => 'varchar',
         'length' => '40',
+        'is_null' => false,
         'is_primary_key' => true
       ],
       'cod_pessoa' => [
@@ -45,7 +46,8 @@ class ModelUser extends ModelCRUD
       ],
       'dat_blocked' => [
         'type' => 'datetime',
-        'default' => 0
+        'is_null' => true,
+        'default' => null
       ],
       'dat_created' => [
         'type' => 'datetime',

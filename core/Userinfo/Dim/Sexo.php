@@ -3,21 +3,21 @@
 namespace Core\Userinfo\Dim;
 
 use QB\CONDITION as COND;
-use Core\Model\Dim\ModelSexo;
+use Core\Userinfo\Dim\SexoModelCRUD;
 
 /**
  * Class Sexo
  */
 class Sexo
 {
-  private ModelSexo $model;
+  private SexoModelCRUD $model;
 
   public function __construct()
   {
-    $this->model = new ModelSexo();
+    $this->model = new SexoModelCRUD();
   }
 
-  public function getModel(): ModelSexo
+  public function getModel(): SexoModelCRUD
   {
     return $this->model;
   }
