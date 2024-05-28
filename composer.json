@@ -44,6 +44,7 @@
     "cautnew/html": ">=1.0.0",
     "cautnew/qb": ">=2.0.0",
     "cautnew/summernote": ">=0.8.18",
+    "fortawesome/font-awesome": "^6.5",
     "twbs/bootstrap": "5.3.3",
     "cboden/ratchet": "dev-master"
   }
