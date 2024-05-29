@@ -3,6 +3,7 @@
 namespace Core\Route;
 
 use Boot\Autoload;
+use Boot\Constants\DirConstant as DC;
 use Core\Route\Dispacher;
 use Core\Route\RouteCollection;
 
@@ -51,28 +52,58 @@ class Router
     return $this->dispacher->dispach($route->callback, $params, $namespace);
   }
   
-  public function notFound()
+  public function notFound(bool $isAPI=false): void
   {
     header("HTTP/1.0 404 Not Found", true, 404);
-    Autoload::setToJsonResponse();
-    echo json_encode([
-      'erro' => [
-        'cod' => '404',
-        'txt' => 'Rota não encontrada.'
-      ]
-    ]);
+    if ($isAPI) {
+      Autoload::setToJsonResponse();
+      echo json_encode([
+        'erro' => [
+          'cod' => '404',
+          'txt' => 'Route not found.'
+        ]
+      ]);
+
+      return;
+    }
+    
+    echo require_once DC::PSOURCE . '/defresponse/cod-404.php';
   }
   
-  public function notAllowed()
+  public function notAllowed(bool $isAPI=false): void
   {
-    header("HTTP/1.0 401 Not Authentidated", true, 401);
-    Autoload::setToJsonResponse();
-    echo json_encode([
-      'erro' => [
-        'cod' => '401',
-        'txt' => 'Você precisa estar autenticado para acessar essa rota.'
-      ]
-    ]);
+    header("HTTP/1.0 403 Forbidden", true, 403);
+    if ($isAPI) {
+      Autoload::setToJsonResponse();
+      echo json_encode([
+        'erro' => [
+          'cod' => '403',
+          'txt' => "You don't have permission to access this resource."
+        ]
+      ]);
+
+      return;
+    }
+
+    echo require_once DC::PSOURCE . '/defresponse/cod-401.php';
+  }
+  
+  public function notAutenticated(bool $isAPI=false): void
+  {
+    header("HTTP/1.0 401 Unauthorized", true, 401);
+    if ($isAPI) {
+      Autoload::setToJsonResponse();
+      echo json_encode([
+        'erro' => [
+          'cod' => '401',
+          'txt' => 'You must be authenticated to access this resource.'
+        ]
+      ]);
+
+      return;
+    }
+
+    echo require_once DC::PSOURCE . '/defresponse/cod-401.php';
   }
 
   public function resolve(Request $request)
