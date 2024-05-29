@@ -1,6 +1,8 @@
 // fa.def.scss
 
-$fa-font-path: '6_5_2/webfonts';
+$fa-source-path: '../../vendor/fortawesome/font-awesome';
 
-@import "6_5_2/scss/fontawesome";
-@import "6_5_2/scss/solid";
+$fa-font-path: '../../vendor/fortawesome/font-awesome/webfonts';
+
+@import '../../vendor/fortawesome/font-awesome/scss/fontawesome';
+@import '../../vendor/fortawesome/font-awesome/scss/solid';
