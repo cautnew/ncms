@@ -402,9 +402,4 @@ class Autoload
     self::setToCsvResponse($charset);
     self::setToAttachmentResponse($filename);
   }
-
-  public static function requireAux(string $auxName): void
-  {
-    require_once __DIR__ . '/clock-add-currentmoment-aux.php';
-  }
 }

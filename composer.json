@@ -17,9 +17,11 @@
     "psr-4": {
       "Boot\\": "boot/",
       "Boot\\Constants\\": "boot/constants/",
-      "Source\\": "source/",
       "Core\\": "core/",
-      "CustomCore\\": "customcore/"
+      "CustomCore\\": "customcore/",
+      "CustomPage\\": "custompage/",
+      "Route\\": "route/",
+      "Source\\": "source/"
     },
     "files": []
   },

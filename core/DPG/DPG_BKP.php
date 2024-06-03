@@ -16,7 +16,7 @@ use HTML\FOOTER;
 use HTML\LINK;
 use HTML\SCRIPT;
 
-class DPG
+class DPGO
 {
   private Session $ses;
   private InVar $data;
