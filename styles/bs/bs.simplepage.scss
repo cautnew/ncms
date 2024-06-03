@@ -3,13 +3,9 @@
 @import "../../vendor/twbs/bootstrap/scss/functions";
 
 // Default variables overrides
-$body-bg: #f2f2f2;
-$body-color: #333;
+$body-bg: #fff;
+$body-color: #222;
 $border-radius: .5rem;
-$primary: #183c5e;
-$text-bg-primary: white;
-$success: #0a5316;
-$text-bg-success: white;
 
 @import "../../vendor/twbs/bootstrap/scss/variables";
 @import "../../vendor/twbs/bootstrap/scss/variables-dark";
@@ -28,11 +24,9 @@ $text-bg-success: white;
 
 @import "../../vendor/twbs/bootstrap/scss/alert";
 @import "../../vendor/twbs/bootstrap/scss/badge";
-@import "../../vendor/twbs/bootstrap/scss/breadcrumb";
 @import "../../vendor/twbs/bootstrap/scss/buttons";
 @import "../../vendor/twbs/bootstrap/scss/card";
 @import "../../vendor/twbs/bootstrap/scss/forms";
-@import "../../vendor/twbs/bootstrap/scss/tables";
 @import "../../vendor/twbs/bootstrap/scss/transitions";
 @import "../../vendor/twbs/bootstrap/scss/toasts";
 @import "../../vendor/twbs/bootstrap/scss/popover";
@@ -42,14 +36,6 @@ $text-bg-success: white;
 @import "../../vendor/twbs/bootstrap/scss/offcanvas";
 
 @import "../../vendor/twbs/bootstrap/scss/utilities/api";
-
-.text-bg-primary {
-  color: $text-bg-primary;
-}
-
-.text-bg-success {
-  color: $text-bg-success;
-}
 
 .form-text-counter {
   font-weight: bold;
