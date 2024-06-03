@@ -9,13 +9,12 @@ class Request
   protected $uri;
   protected $method;
   protected $protocol;
-  protected $data = [];
+  protected array $data = [];
 
   public function __construct()
   {
     $this->base = $_SERVER['REQUEST_URI'];
-    // $this->uri  = $_REQUEST['route'] ?? '/';
-    $this->uri  = $_SERVER['REQUEST_URI'] ?? '/';
+    $this->uri  = $this->base ?? '/';
     $this->method = $this->getMethod();
     $this->protocol = isset($_SERVER["HTTPS"]) ? 'https' : 'http';
     $this->setData();
@@ -67,7 +66,7 @@ class Request
     return $this->uri;
   }
 
-  public function all()
+  public function all(): array
   {
     return $this->data;
   }

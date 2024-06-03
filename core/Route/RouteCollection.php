@@ -28,7 +28,7 @@ class RouteCollection
     }
   }
 
-  public function where($request_type, $pattern)
+  public function where(string $request_type, string $pattern)
   {
     switch ($request_type) {
       case 'GET':
@@ -44,12 +44,12 @@ class RouteCollection
     }
   }
 
-  protected function parseUri($uri)
+  protected function parseUri(string $uri)
   {
     return implode(DIRECTORY_SEPARATOR, array_filter(explode(DIRECTORY_SEPARATOR, $uri)));
   }
 
-  protected function definePattern($pattern)
+  protected function definePattern(string $pattern)
   {
     $pattern = implode(DIRECTORY_SEPARATOR, array_filter(explode(DIRECTORY_SEPARATOR, $pattern)));
 

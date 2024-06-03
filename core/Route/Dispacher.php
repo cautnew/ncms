@@ -7,7 +7,7 @@ use ReflectionClass;
 
 class Dispacher
 {
-  public function dispach($callback, array $params = [], $namespace = "App\\")
+  public function dispach($callback, array $params = [], $namespace = "")
   {  
     if (is_callable($callback['callback'])) {
       return call_user_func_array($callback['callback'], array_values($params));
@@ -17,9 +17,8 @@ class Dispacher
           $namespace = $callback['namespace'];
         }
 
-        $callback['callback'] = explode('@', $callback['callback']);
-        $controller = $namespace.$callback['callback'][0];
-        $method = $callback['callback'][1];
+        list($method, $controller) = explode('@', $callback['callback']);
+        $controller = $namespace.$controller;
 
         $rc = new ReflectionClass($controller);
 
