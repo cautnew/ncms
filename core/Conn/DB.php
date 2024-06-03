@@ -26,22 +26,23 @@ class DB {
   private const DB_CONID_UMBLER = 2;
   private const DB_PRINCIPAL_CONID = self::DB_CONID_LOCAL;
 
-  private const PATH_CRED_LOCALHOST = DC::PSUPPORT . '/creddblocalhost.cdb';
-  private const PATH_CRED_UMBLER = DC::PSUPPORT . '/credumbler.cdb';
+  private const KEY_CRED_LOCALHOST = 'local';
+  private const KEY_CRED_UMBLER = 'umbler';
+  private const PATH_CRED_JSON = DC::PSUPPORT . '/conf.jdb';
 
   private static function getCredentials(int $conId): ?array {
-    $jsonCred = function ($path): ?array {
-      $fileContent = file_get_contents($path);
+    $jsonCred = function ($key): ?array {
+      $fileContent = file_get_contents(self::PATH_CRED_JSON);
       $fileContentDecoded = base64_decode($fileContent, true);
       $json = json_decode($fileContentDecoded, true);
-      return $json;
+      return $json[$key];
     };
 
     switch ($conId) {
       case self::DB_CONID_LOCAL:
-        return $jsonCred(self::PATH_CRED_LOCALHOST);
+        return $jsonCred(self::KEY_CRED_LOCALHOST);
       case self::DB_CONID_UMBLER:
-        return $jsonCred(self::PATH_CRED_UMBLER);
+        return $jsonCred(self::KEY_CRED_UMBLER);
     }
 
     return null;
