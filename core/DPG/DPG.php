@@ -21,7 +21,7 @@ use HTML\SCRIPT;
  */
 class DPG
 {
-  public HTML $html;
+  private HTML $html;
   private HEAD $head;
   private TITLE $title;
   private BODY $body;
@@ -31,6 +31,11 @@ class DPG
   private string $lang = 'en';
   private string $titleTextAppended = 'NCMS';
   private string $titleAppendSeparator = '|';
+
+  private array $jsHeader = [];
+  private array $jsBody = [];
+  private array $cssHeader = [];
+  private array $cssBody = [];
 
   public function __construct(?string $lang = null)
   {
@@ -49,25 +54,52 @@ class DPG
   {
     if (empty($this->getTitleText())) {
       $this->getTitle()->setHtml($this->getTitleTextAppended());
-    } else {
-      $this->getTitle()->setHtml(
-        implode(' ', [
-          $this->getTitleText(),
-          $this->getTitleAppendSeparator(),
-          $this->getTitleTextAppended()
-        ])
-      );
+      return;
     }
+
+    $strTitle = implode(' ', [
+      $this->getTitleText(),
+      $this->getTitleAppendSeparator(),
+      $this->getTitleTextAppended()
+    ]);
+
+    $this->getTitle()->setHtml($strTitle);
+  }
+
+  protected function prepareHead(): void
+  {
+    $this->prepareTitle();
+
+    foreach ($this->getJSHeader() as $js) {
+      $this->getHead()->append($js);
+    }
+
+    foreach ($this->getCSSHeader() as $css) {
+      $this->getHead()->append($css);
+    }
+
+    $this->getHead()->append($this->getTitle());
+    $this->getHtml()->append($this->getHead());
+  }
+
+  protected function prepareBody(): void
+  {
+    foreach ($this->getCSSBody() as $css) {
+      $this->getBody()->append($css);
+    }
+
+    foreach ($this->getJSBody() as $js) {
+      $this->getBody()->append($js);
+    }
+
+    $this->getHtml()->append($this->getBody());
   }
 
   public function render(): string
   {
-    $this->prepareTitle();
-
-    $this->getHead()->append($this->getTitle());
-
-    $this->getHtml()->append($this->getHead());
-    $this->getHtml()->append($this->getBody());
+    $this->getHtml()->setLang($this->getLang());
+    $this->prepareHead();
+    $this->prepareBody();
 
     return $this->getHtml()->getHtml();
   }
@@ -189,5 +221,85 @@ class DPG
   public function getTitleAppendSeparator(): string
   {
     return $this->titleAppendSeparator;
+  }
+
+  public function getJSHeader(): array
+  {
+    return $this->jsHeader;
+  }
+
+  public function addJSHeader(SCRIPT | array $jsscript): self
+  {
+    if (is_array($jsscript)) {
+      foreach ($jsscript as $script) {
+        $this->addJSHeader($script);
+      }
+
+      return $this;
+    }
+
+    $this->jsHeader[] = $jsscript;
+
+    return $this;
+  }
+
+  public function getJSBody(): array
+  {
+    return $this->jsBody;
+  }
+
+  public function addJSBody(SCRIPT | array $jsscript): self
+  {
+    if (is_array($jsscript)) {
+      foreach ($jsscript as $script) {
+        $this->addJSBody($script);
+      }
+
+      return $this;
+    }
+
+    $this->jsBody[] = $jsscript;
+
+    return $this;
+  }
+
+  public function getCSSHeader(): array
+  {
+    return $this->cssHeader;
+  }
+
+  public function addCSSHeader(LINK | array $cssscript): self
+  {
+    if (is_array($cssscript)) {
+      foreach ($cssscript as $script) {
+        $this->addCSSHeader($script);
+      }
+
+      return $this;
+    }
+
+    $this->cssHeader[] = $cssscript;
+
+    return $this;
+  }
+
+  public function getCSSBody(): array
+  {
+    return $this->cssBody;
+  }
+
+  public function addCSSBody(LINK | array $cssscript): self
+  {
+    if (is_array($cssscript)) {
+      foreach ($cssscript as $script) {
+        $this->addCSSBody($script);
+      }
+
+      return $this;
+    }
+
+    $this->cssBody[] = $cssscript;
+
+    return $this;
   }
 }
