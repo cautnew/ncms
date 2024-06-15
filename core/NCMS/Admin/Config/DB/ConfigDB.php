@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\NCMS\Admin\DB;
+namespace Core\NCMS\Admin\Config\DB;
 
 use \Exception;
 use \PDO;
@@ -8,11 +8,13 @@ use Boot\Constants\DirConstant as DC;
 use Core\DPG\AdminPage;
 use Core\Route\Request;
 use Core\Route\Response;
+use HTML\BS\BREADCRUMB_ITEM;
 use HTML\BS\CARD;
 use HTML\BS\FORM_CHECK_SWITCH;
 use HTML\BS\FORM_SELECT;
 use HTML\BS\ROW;
 use HTML\A;
+use HTML\BS\COL;
 use HTML\BUTTON;
 use HTML\DIV;
 use HTML\FORM;
@@ -22,8 +24,6 @@ use HTML\INPUT_TEXT;
 use HTML\INPUT_PASSWORD;
 use HTML\LABEL;
 use HTML\LI;
-use HTML\NAV;
-use HTML\OL;
 use HTML\OPTION;
 use HTML\P;
 use HTML\SCRIPT;
@@ -36,9 +36,9 @@ class ConfigDB extends AdminPage
 
   public function __construct()
   {
-    parent::__construct();
     $this->setTitleText('Connection settings');
-    $this->addJSBody(new SCRIPT('/core/NCMS/Admin/DB/configdb.js'));
+    $this->setBodyTitleText('Database connection settings');
+    $this->addJSBody(new SCRIPT('/core/NCMS/Admin/Config/DB/configdb.js'));
   }
 
   private function getConfigString(): string
@@ -54,65 +54,63 @@ class ConfigDB extends AdminPage
 
   public function renderGet(): string
   {
+    $this->getMainBreadCrumbList()->append([
+      new BREADCRUMB_ITEM('NCMS', false, '/ncms'),
+      new BREADCRUMB_ITEM('Admin', false, '/ncms/admin'),
+      new BREADCRUMB_ITEM('Config', false, '/ncms/admin/config'),
+      new BREADCRUMB_ITEM('DB', true)
+    ]);
+
     $form = new FORM('form', 'form-config-db', method: 'post');
     $row1 = new ROW([
-      new DIV('col-lg-3 col-md-4 col-sm-6 mb-3', append: [
+      (new COL('mb-3', onLg: 3, onMd: 6, onSm: 6, append: [
         new FORM_SELECT('connname', 'connname', 'Connection name', optionsList: [
           new OPTION('local', 'Localhost', selected: true),
           new OPTION('umbler', 'Umbler', selected: false),
         ])
-      ]),
-      new DIV('col-lg-3 col-md-4 col-sm-6 mb-3', append: [
+      ])),
+      (new COL('mb-3', onLg: 3, onMd: 6, onSm: 6, append: [
         new LABEL('dbname', 'form-label', txt: 'DB Name'),
         new INPUT_TEXT('form-control', 'dbname', 'dbname', placeholder: 'Database name')
-      ]),
-      new DIV('col-lg-3 col-md-4 col-sm-6 mb-3', append: [
+      ])),
+      (new COL('mb-3', onLg: 3, onMd: 6, onSm: 6, append: [
         new LABEL('host', 'form-label', txt: 'Host'),
         new INPUT_TEXT('form-control', 'host', 'host', placeholder: 'Hostname'),
         new SPAN('form-text', html: 'We recommend using the IP address instead of the domain name.')
-      ]),
-      new DIV('col-lg-3 col-md-4 col-sm-6 mb-3', append: [
+      ])),
+      (new COL('mb-3', onLg: 3, onMd: 6, onSm: 6, append: [
         new LABEL('port', 'form-label', txt: 'Port'),
         new INPUT_NUMBER('form-control', 'port', 'port', min: 0, max: 65000, placeholder: 'Port number')
-      ])
+      ]))
     ]);
     $row2 = new ROW([
-      new DIV('col-lg-4 col-md-4 col-sm-6 mb-3', append: [
+      (new COL('mb-3', onLg: 4, onMd: 4, onSm: 6, append: [
         new LABEL('us', 'form-label', txt: 'Username'),
         new INPUT_TEXT('form-control', 'us', 'us', placeholder: 'Username')
-      ]),
-      new DIV('col-lg-4 col-md-4 col-sm-6 mb-3', append: [
+      ])),
+      (new COL('mb-3', onLg: 4, onMd: 4, onSm: 6, append: [
         new LABEL('pw', 'form-label', txt: 'Password'),
         new INPUT_PASSWORD('form-control', 'pw', 'pw', placeholder: 'Password')
-      ]),
-      new DIV('col-12 mb-3', append: [
+      ])),
+      (new COL('mb-3', 12, append: [
         new FORM_CHECK_SWITCH('indupdateuspw', 'indupdateuspw', 'Update username and password')
-      ])
+      ]))
     ]);
     $form->append([$row1->getTag(), $row2->getTag()]);
-    $form->append(new DIV('col-12 d-flex justify-content-end', append: [
+    $form->append(new COL('d-flex justify-content-end align-items-middle', 12, append: [
+      new DIV('d-flex align-items-center me-2', 'status-txt'),
       new BUTTON('btn btn-warning me-2', 'btn-testconnection', 'Test connection', alt: 'Test this current data to connect to the database.'),
       new BUTTON('btn btn-primary', 'btn-submit', 'Save', type: 'submit')
     ]));
 
-    $cardPrinc = new CARD('card-principal');
-    $cardPrinc->getBody()->append(new H1('card-title', html: 'Database connection settings'));
-    $cardPrinc->getBody()->append(new P(html: 'Here you can set all the necessary data to connect to the database.'));
-    $cardPrinc->getBody()->append($form);
-
-    $this->getBodyContainer()->append([
-      new NAV(append: new OL('breadcrumb', appendList: [
-        new LI('breadcrumb-item', append: new A('/ncms', 'NCMS')),
-        new LI('breadcrumb-item', append: new A('/ncms/admin', 'Admin')),
-        new LI('breadcrumb-item', append: new A('/ncms/admin/config', 'Config')),
-        new LI('breadcrumb-item active', append: 'DB'),
-      ])),
-      $cardPrinc
-    ]);
+    $this->getCardPrinc()->getBody()->append(new P(html: 'Here you can set all the necessary data to connect to the database.'));
+    $this->getCardPrinc()->getBody()->append($form);
 
     $this->addJSBody((new SCRIPT())->innerHTML(<<<JS
     var tokenConfigDBData = '{$this->getConfigString()}';
     JS));
+
+    parent::__construct();
 
     return $this->render();
   }
@@ -176,7 +174,7 @@ class ConfigDB extends AdminPage
 
     return json_encode([
       'status' => 'success',
-      'message' => 'Connection successfully made.'
+      'message' => 'Connection successfully stabilished.'
     ]);
   }
 }

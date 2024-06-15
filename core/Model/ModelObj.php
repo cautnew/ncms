@@ -2,79 +2,72 @@
 
 namespace Core\Model;
 
-use Core\Model\ModelCRUD;
-use Core\Model\ModelTable;
-
-abstract class ModelObj
+class ModelObj
 {
-  private ModelCRUD $model;
-  private ModelTable $table;
+  private ModelTable $modelTable;
+  private ModelInsert $modelInsert;
+  private ModelSelect $modelSelect;
+  private ModelUpdate $modelUpdate;
 
-  private string $schema;
-  private string $tableName;
-  private string $tableAlias;
-
-  public function __construct()
+  public function __construct(ModelTable $modelTable, ?ModelSelect $modelSelect = null, ?ModelInsert $modelInsert = null, ?ModelUpdate $modelUpdate)
   {
-    $this->setSchema('schema_name');
-    $this->setTableName('table_name');
-    $this->setTableAlias('table_alias');
-    $this->table = new ModelTable($this->getSchema(), $this->getTableName());
-    $this->model = new ModelCRUD($this->getTableName(), $this->getTableAlias());
+    $this->setModelTable($modelTable);
+    if ($modelSelect !== null) {
+      $this->setModelSelect($modelSelect);
+    }
+    if ($modelInsert !== null) {
+      $this->setModelInsert($modelInsert);
+    }
+    if ($modelUpdate !== null) {
+      $this->setModelUpdate($modelUpdate);
+    }
   }
 
-  public function getSchema(): string
+  public function getModelTable(): ModelTable
   {
-    return $this->schema;
+    return $this->modelTable;
   }
 
-  public function setSchema(string $schema): self
+  public function setModelTable(ModelTable $modelTable): self
   {
-    $this->schema = $schema;
+    $this->modelTable = $modelTable;
+
     return $this;
   }
 
-  public function getTableName(): string
+  public function getModelInsert(): ModelInsert
   {
-    return $this->tableName;
+    return $this->modelInsert;
   }
 
-  public function setTableName(string $tableName): self
+  public function setModelInsert(ModelInsert $modelInsert): self
   {
-    $this->tableName = $tableName;
+    $this->modelInsert = $modelInsert;
+
     return $this;
   }
 
-  public function getTableAlias(): string
+  public function getModelSelect(): ModelSelect
   {
-    return $this->tableAlias;
+    return $this->modelSelect;
   }
 
-  public function setTableAlias(string $tableAlias): self
+  public function setModelSelect(ModelSelect $modelSelect): self
   {
-    $this->tableAlias = $tableAlias;
+    $this->modelSelect = $modelSelect;
+
     return $this;
   }
 
-  public function next(): self
+  public function getModelUpdate(): ModelUpdate
   {
-    $this->model->next();
+    return $this->modelUpdate;
+  }
+
+  public function setModelUpdate(ModelUpdate $modelUpdate): self
+  {
+    $this->modelUpdate = $modelUpdate;
+
     return $this;
-  }
-
-  public function prev(): self
-  {
-    $this->model->prev();
-    return $this;
-  }
-
-  public function getModel(): ModelCRUD
-  {
-    return $this->model;
-  }
-
-  public function procedureCreateDataBase(): void
-  {
-    $this->model->createTable();
   }
 }

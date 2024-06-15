@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\NCMS\Users;
+namespace Core\NCMS\User;
 
 use \Exception;
 use \PDO;
@@ -9,7 +9,7 @@ use Core\DPG\AdminPage;
 use Core\Route\Request;
 use Core\Route\Response;
 use HTML\BS\CARD;
-use HTML\BS\FORM_CHECK_SWITCH;
+use HTML\BS\BREADCRUMB_ITEM;
 use HTML\BS\FORM_SELECT;
 use HTML\BS\ROW;
 use HTML\A;
@@ -46,12 +46,12 @@ class User extends AdminPage
 
   public function renderList(): string
   {
-    $breadcrumb = new NAV(append: new OL('breadcrumb', appendList: [
-      new LI('breadcrumb-item', append: new A('/ncms', 'NCMS')),
-      new LI('breadcrumb-item active', append: 'Users'),
-    ]));
+    $this->getMainBreadCrumbList()->append([
+      new BREADCRUMB_ITEM('NCMS', false, '/ncms'),
+      new BREADCRUMB_ITEM('User', true)
+    ]);
 
-    $tableList = new TABLE('table table-striped table-hover');
+    $tableList = new TABLE('table table-striped table-hover', 'table-users-list');
     $tableList->append([
       new THEAD('table-dark', append: new TR(appendList: [
         new TH('text-center', html: 'ID'),
@@ -84,7 +84,6 @@ class User extends AdminPage
     $cardPrinc->getBody()->append($tableList);
 
     $this->getBodyContainer()->append([
-      $breadcrumb,
       $cardPrinc
     ]);
 

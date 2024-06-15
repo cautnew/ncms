@@ -435,6 +435,18 @@ class ModelCRUD
     return $this->insertingMode;
   }
 
+  public function getModelTable(): ModelTable
+  {
+    return $this->modelTable;
+  }
+
+  public function setModelTable(ModelTable $modelTable): self
+  {
+    $this->modelTable = $modelTable;
+
+    return $this;
+  }
+
   /**
    * Set the relationships of the columns of the table.
    * @param array $relationships
@@ -606,7 +618,7 @@ class ModelCRUD
 
     try {
       $stm->execute();
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
       $this->clearSelectedData();
       Logger::regException($e);
       return $this;
@@ -758,7 +770,7 @@ class ModelCRUD
 
       try {
         $stm->execute($data);
-      } catch (\Exception $e) {
+      } catch (Exception $e) {
         Logger::regException($e);
         throw new Exception("{$e->getCode()} Error on update data | " . $e->getMessage());
       }
@@ -800,7 +812,7 @@ class ModelCRUD
 
       try {
         $stm->execute($data);
-      } catch (\Exception $e) {
+      } catch (Exception $e) {
         Logger::regException($e);
         throw new Exception("[{$e->getCode()}] Error on delete data | " . $e->getMessage());
       }

@@ -9,6 +9,7 @@ use Core\Conn\DB;
 use Core\Model\Exception\TableAlreadyExists;
 use Core\Model\Exception\TableDoesntExist;
 use Core\Support\Logger;
+use PDOException;
 use QB\CREATE_TABLE;
 use QB\CREATE_TRIGGER;
 use QB\DROP_TABLE;
@@ -24,13 +25,16 @@ class ModelTable
   private DROP_TABLE $dropTableQuery;
   private string $schema;
   private string $tableName;
+  private string $commonAlias;
   private array $columnsDefinitions = [];
   private array $tableTriggers = [];
 
-  public function __construct(string $schema, string $tableName)
+  public function __construct(string $schema, string $tableName, ?string $commonAlias = null)
   {
     $this->setSchema($schema);
     $this->setTableName($tableName);
+    $this->setCommonAlias($commonAlias);
+    $this->prepareDefaultTriggers();
   }
 
   public function getCreateTableQuery(): CREATE_TABLE
@@ -73,9 +77,56 @@ class ModelTable
     return $this;
   }
 
+  public function getCommonAlias(): string
+  {
+    if (!isset($this->commonAlias)) {
+      return $this->getTableName();
+    }
+
+    return $this->commonAlias;
+  }
+
+  public function setCommonAlias(string $commonAlias): self
+  {
+    $this->commonAlias = $commonAlias;
+    return $this;
+  }
+
   public function getConn(): PDO
   {
     return DB::getConn();
+  }
+
+  public function getPrimaryKey(): ?string
+  {
+    foreach ($this->columnsDefinitions as $columnName => $columnDefinition) {
+      if (isset($columnDefinition['is_primary_key']) && $columnDefinition['is_primary_key']) {
+        return $columnName;
+      }
+    }
+
+    return null;
+  }
+
+  public function getColumnTableReference(string $columnName): ?ModelTable
+  {
+    if (!isset($this->columnsDefinitions[$columnName]['table_reference'])) {
+      return null;
+    }
+
+    return $this->columnsDefinitions[$columnName]['table_reference'];
+  }
+
+  public function getColumnsTableReference(): array
+  {
+    $references = [];
+    foreach ($this->getColumnsDefinitions() as $columnName => $columnDefinition) {
+      if (isset($columnDefinition['table_reference'])) {
+        $references[$columnName] = $columnDefinition['table_reference'];
+      }
+    }
+
+    return $references;
   }
 
   /**
@@ -99,17 +150,55 @@ class ModelTable
 
     return $this;
   }
+  public function getColumnsDefinitions(): array
+  {
+    return $this->columnsDefinitions;
+  }
 
   public function setTableTriggers(array $triggers): self
   {
-    $this->tableTriggers = $triggers;
+    foreach ($triggers as $triggerName => $definition) {
+      $this->setTableTrigger($triggerName, $definition);
+    }
 
     return $this;
   }
 
-  public function setTableTrigger(string $triggerName, array $definition): self
+  public function setTableTrigger(string $triggerName, ?CREATE_TRIGGER $definition): self
   {
+    if ($definition === null) {
+      unset($this->tableTriggers[$triggerName]);
+
+      return $this;
+    }
+
     $this->tableTriggers[$triggerName] = $definition;
+
+    return $this;
+  }
+
+  public function addTableTrigger(string $triggerName, CREATE_TRIGGER $definition): self
+  {
+    return $this->setTableTrigger($triggerName, $definition);
+  }
+
+  /**
+   * Add a foreign key to this table.
+   * @param string $column
+   * The column that will be the foreign key.
+   * @param ModelTable|string $table_source
+   * The table that will be the source of the foreign key. Prioritize the ModelTable instance.
+   * @param string $column_source
+   * The column that will be the source of the foreign key.
+   */
+  public function addForeignKey(string $column, ModelTable | string $table_source, string $column_source): self
+  {
+    if ($table_source instanceof ModelTable) {
+      $table_source = $table_source->getTableName();
+    }
+
+    $fkName = "fk_{$this->getTableName()}_{$column}_{$table_source}_{$column_source}";
+    $this->getCreateTableQuery()->addForeignKey($fkName, $column, $table_source, $column_source);
 
     return $this;
   }
@@ -205,7 +294,7 @@ class ModelTable
   public function recreate(): self
   {
     try {
-    $this->drop();
+      $this->drop();
     } catch (TableDoesntExist $e) {
       Logger::regException($e, "Table doesn't exists. Proceeding to create it.");
     } catch (Exception $e) {
@@ -223,20 +312,20 @@ class ModelTable
     $this->setTableTriggers([
       "{$this->getTableName()}_before_insert" => new CREATE_TRIGGER($this->getTableName(), "{$this->getTableName()}_before_insert", 'BEFORE', 'INSERT', <<<SQL
       BEGIN
-        SET NEW.dat_created = NOW();
-        SET NEW.cod_user_created = CURRENT_USER();
-        SET NEW.dat_updated = NULL;
-        SET NEW.cod_user_updated = NULL;
-        SET NEW.dat_expired = NULL;
-        SET NEW.cod_user_expired = NULL;
+        SET NEW.dtm_created = NOW();
+        SET NEW.var_user_created = CURRENT_USER();
+        SET NEW.dtm_updated = NULL;
+        SET NEW.var_user_updated = NULL;
+        SET NEW.dtm_expired = NULL;
+        SET NEW.var_user_expired = NULL;
       END
       SQL),
       "{$this->getTableName()}_before_update" => new CREATE_TRIGGER($this->getTableName(), "{$this->getTableName()}_before_update", 'BEFORE', 'UPDATE', <<<SQL
       BEGIN
-        SET NEW.dat_created = OLD.dat_created;
-        SET NEW.cod_user_created = OLD.cod_user_created;
-        SET NEW.dat_updated = NOW();
-        SET NEW.cod_user_updated = CURRENT_USER();
+        SET NEW.dtm_created = OLD.dtm_created;
+        SET NEW.var_user_created = OLD.var_user_created;
+        SET NEW.dtm_updated = NOW();
+        SET NEW.var_user_updated = CURRENT_USER();
       END
       SQL)
     ]);
@@ -246,13 +335,14 @@ class ModelTable
 
   public function createTriggers(): self
   {
-    foreach ($this->tableTriggers as $triggerName => $trigger) {
-      $stm = $this->getConn()->prepare($trigger);
+    if (empty($this->tableTriggers)) {
+      $this->prepareDefaultTriggers();
+    }
 
+    foreach ($this->tableTriggers as $triggerName => $trigger) {
       try {
-        $stm->execute();
-        echo $trigger;
-      } catch (\Exception $e) {
+        DB::exec($trigger);
+      } catch (PDOException $e) {
         Logger::regException($e);
         throw new Exception("[{$e->getCode()}] Error on create trigger \"$triggerName\" | " . $e->getMessage());
       }

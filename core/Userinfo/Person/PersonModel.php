@@ -5,13 +5,13 @@ namespace Core\Userinfo\Person;
 use QB\CONDITION as COND;
 use Core\Model\ModelCRUD;
 use Boot\Constants\Constant as CNT;
-use Core\Userinfo\Dim\ModelSexo;
+use Core\Userinfo\Dim\ModelGender;
 
 class ModelPerson extends ModelCRUD
 {
   protected string $version = '0.0.1';
 
-  private ModelSexo $modelSexo;
+  private ModelGender $modelGender;
 
   public function __construct()
   {

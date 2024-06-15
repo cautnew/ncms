@@ -7,6 +7,7 @@ const inputHostName = document.getElementById('host');
 const inputPort = document.getElementById('port');
 const inputUsername = document.getElementById('us');
 const inputPassword = document.getElementById('pw');
+const elmntTxtStatus = document.getElementById('status-txt');
 
 const updateConfigDataValues = function() {
   const connName = selectConnName.value || 'local';
@@ -50,6 +51,8 @@ form.addEventListener('submit', function(evt) {
 
 btnTestConnection.addEventListener('click', function() {
   createToastShortMessage('Testing connection...', 'primary');
+  $(elmntTxtStatus).text('Testing connection...').addClass('text-danger');
+  $(btnTestConnection).prop('disabled', true);
 
   $.ajax({
     url: '/ncms/admin/config/db/testconnection',
@@ -58,6 +61,8 @@ btnTestConnection.addEventListener('click', function() {
     success: function(response) {
       $('.toast').remove();
       createToastShortMessage(response.message, response.status);
+      $(elmntTxtStatus).text('Connection tested').removeClass('text-danger').addClass('text-success');
+      $(btnTestConnection).prop('disabled', false);
     },
   });
 });

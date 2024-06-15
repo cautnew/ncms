@@ -35,9 +35,4 @@ class Person extends ModelObj
   {
     return $this->model;
   }
-
-  public function getObjSexo(): Sexo
-  {
-    return $this->sexo;
-  }
 }

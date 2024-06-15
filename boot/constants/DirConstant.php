@@ -22,7 +22,7 @@ class DirConstant
   /**
    * @var PIMGS Full Path for Images
    */
-  public const PIMGS = self::PSHARED . '/images';
+  public const PIMGS = self::PROOT . '/imgs';
 
   /**
    * @var PCSS Full Path for CSS Files
@@ -37,15 +37,15 @@ class DirConstant
   /**
    * @var PRIMGS Path Reference for Images
    */
-  public const PRIMGS = '/shared/images';
+  public const PRIMGS = '/imgs';
 
   /**
    * @var PRCSS Path Reference CSS Files
    */
-  public const PRCSS = '/shared/styles';
+  public const PRCSS = '/styles';
 
   /**
    * @var PRJS Path Reference JS Files
    */
-  public const PRJS = '/shared/scripts';
+  public const PRJS = '/scripts';
 }

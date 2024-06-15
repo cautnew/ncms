@@ -5,17 +5,14 @@ namespace Core\Model;
 use QB\CONDITION as COND;
 use Core\Model\ModelCRUD;
 
-class ModelTableInformation extends ModelCRUD
+class ModelTableInformation
 {
+  protected ModelSelect $modelSelectInformationSchema;
   protected string $version = '0.0.1';
-
-  protected bool $indAllowSelect = true;
-  protected bool $indAllowDelete = false;
-  protected bool $indAllowInsert = false;
-  protected bool $indAllowUpdate = false;
 
   public function __construct()
   {
+    $this->modelSelectInformationSchema = new ModelSelect();
     parent::__construct('information_schema.columns', 't');
     $this->setColumns([
       'TABLE_SCHEMA',
