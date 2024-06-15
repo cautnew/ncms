@@ -1,14 +1,14 @@
 <?php
 
-use Core\Userinfo\User\User;
+use Core\Lang\LanguageModelTable;
+use Core\Userinfo\User\UserModelTable;
 
 require_once __DIR__ . '/../autoload.php';
 
-# Test ModelCRUD
+$lang = new LanguageModelTable();
+$lang->drop();
 
-$user = new User();
-$user->getModel()->insert([
-  'name' => 'Test Name',
-  'description' => 'Test Description'
-]);
-$user->getModel()->commit();
+# Test ModelCRUD
+$user = new UserModelTable();
+$user->create();
+$user->createTriggers();

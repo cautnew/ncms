@@ -5,9 +5,60 @@ use Core\Model\ModelTable;
 require_once __DIR__ . '/../autoload.php';
 
 $tablePessoa = new ModelTable('ncms', 'person');
-$tableSexo = new ModelTable('ncms', 'gender');
+$tableGender = new ModelTable('ncms', 'gender');
+$tableSexo = new ModelTable('ncms', 'sex');
 
 $tableSexo->setColumnsDefinitions([
+  'cid' => [
+    'type' => 'varchar',
+    'length' => 40,
+    'is_null' => false,
+    'is_primary_key' => true
+  ],
+  'sex' => [
+    'type' => 'varchar',
+    'is_null' => false,
+    'length' => 25,
+  ],
+  'abrev' => [
+    'type' => 'varchar',
+    'is_null' => false,
+    'length' => 25,
+  ],
+  'cod' => [
+    'type' => 'char',
+    'is_null' => false,
+  ],
+  'dat_created' => [
+    'type' => 'date',
+    'default' => 'null',
+    'is_null' => true
+  ],
+  'dat_updated' => [
+    'type' => 'date',
+    'default' => 'null',
+    'is_null' => true
+  ],
+  'dat_expired' => [
+    'type' => 'date',
+    'default' => 'null',
+    'is_null' => true
+  ],
+  'cod_user_created' => [
+    'type' => 'varchar',
+    'length' => 40,
+  ],
+  'cod_user_updated' => [
+    'type' => 'varchar',
+    'length' => 40,
+  ],
+  'cod_user_expired' => [
+    'type' => 'varchar',
+    'length' => 40,
+  ]
+]);
+
+$tableGender->setColumnsDefinitions([
   'cid' => [
     'type' => 'varchar',
     'length' => 40,
@@ -43,20 +94,19 @@ $tableSexo->setColumnsDefinitions([
     'default' => 'null',
     'is_null' => true
   ],
-  'cod_usuario_created' => [
+  'cod_user_created' => [
     'type' => 'varchar',
     'length' => 40,
   ],
-  'cod_usuario_updated' => [
+  'cod_user_updated' => [
     'type' => 'varchar',
     'length' => 40,
   ],
-  'cod_usuario_expired' => [
+  'cod_user_expired' => [
     'type' => 'varchar',
     'length' => 40,
   ]
 ]);
-$tableSexo->create();
 
 $tablePessoa->setColumnsDefinitions([
   'cid' => [
@@ -94,6 +144,10 @@ $tablePessoa->setColumnsDefinitions([
     'type' => 'varchar',
     'length' => 40,
   ],
+  'cid_sexo' => [
+    'type' => 'varchar',
+    'length' => 40,
+  ],
   'dat_created' => [
     'type' => 'date',
     'default' => 'null',
@@ -109,20 +163,20 @@ $tablePessoa->setColumnsDefinitions([
     'default' => 'null',
     'is_null' => true
   ],
-  'cod_usuario_created' => [
+  'cod_user_created' => [
     'type' => 'varchar',
     'length' => 40,
   ],
-  'cod_usuario_updated' => [
+  'cod_user_updated' => [
     'type' => 'varchar',
     'length' => 40,
   ],
-  'cod_usuario_expired' => [
+  'cod_user_expired' => [
     'type' => 'varchar',
     'length' => 40,
   ]
 ]);
 
-
-
+$tableSexo->create();
+$tableGender->create();
 $tablePessoa->create();
