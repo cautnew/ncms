@@ -155,12 +155,10 @@ class ModelTable
       throw new TableAlreadyExists("{$this->getSchema()}.{$this->getTableName()}");
     }
 
-    $this->createTableQuery = new CREATE_TABLE($this->getSchema(), $this->getTableName());
-    $this->createTableQuery->setDefinitions($this->columnsDefinitions);
+    $this->getCreateTableQuery()->setDefinitions($this->columnsDefinitions);
 
     try {
-      $stm = $this->getConn()->prepare($this->createTableQuery);
-      $stm->execute();
+      $stm = DB::exec($this->getCreateTableQuery());
     } catch (Exception $e) {
       Logger::regException($e);
       throw new Exception("[{$e->getCode()}] Error on create table | " . $e->getMessage());
@@ -206,8 +204,15 @@ class ModelTable
 
   public function recreate(): self
   {
-    $this->backup();
+    try {
     $this->drop();
+    } catch (TableDoesntExist $e) {
+      Logger::regException($e, "Table doesn't exists. Proceeding to create it.");
+    } catch (Exception $e) {
+      Logger::regException($e);
+      throw new Exception("[{$e->getCode()}] Error on recreate table | " . $e->getMessage());
+    }
+
     $this->create();
 
     return $this;
