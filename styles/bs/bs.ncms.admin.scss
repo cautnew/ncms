@@ -5,7 +5,7 @@
 // Default variables overrides
 $body-bg: #f2f2f2;
 $body-color: #333;
-$border-radius: .5rem;
+$border-radius: 0.5rem;
 $primary: #183c5e;
 $text-bg-primary: white;
 $success: #0a5316;
@@ -42,6 +42,50 @@ $text-bg-success: white;
 @import "../../vendor/twbs/bootstrap/scss/offcanvas";
 
 @import "../../vendor/twbs/bootstrap/scss/utilities/api";
+
+.main-wrapper {
+  align-items: stretch;
+  display: flex;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.main-wrapper::before {
+  background-color: rgb(8, 4, 73);
+  background-color: linear-gradient(
+    180deg,
+    rgba(8, 4, 73, 1) 0%,
+    rgba(3, 58, 128, 1) 100%
+  );
+  content: " ";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 250px;
+  width: 100%;
+  z-index: -1;
+}
+
+.main-breadcrumb {
+  opacity: 0.66;
+}
+
+.main-breadcrumb a {
+  text-decoration-line: none;
+}
+
+.main-breadcrumb a:hover {
+  text-decoration-line: underline;
+}
+
+.main-breadcrumb * {
+  color: white !important;
+}
+
+.main-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+  color: white !important;
+}
 
 .text-bg-primary {
   color: $text-bg-primary;
