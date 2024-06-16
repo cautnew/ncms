@@ -52,8 +52,7 @@ $text-bg-success: white;
 }
 
 .main-wrapper::before {
-  background-color: rgb(8, 4, 73);
-  background-color: linear-gradient(
+  background: linear-gradient(
     180deg,
     rgba(8, 4, 73, 1) 0%,
     rgba(3, 58, 128, 1) 100%
