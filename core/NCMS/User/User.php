@@ -37,15 +37,21 @@ use HTML\TR;
 
 class User extends AdminPage
 {
+  protected const PATH_CACHE = DC::PCACHED . '/ncms/admin/user/user.chtml';
+
   public function __construct()
   {
-    parent::__construct();
     $this->setTitleText('Users');
-    $this->addJSBody(new SCRIPT('/core/NCMS/Admin/DB/configdb.js'));
   }
 
   public function renderList(): string
   {
+    if ($this->isCached(self::PATH_CACHE)) {
+      return $this->getCached(self::PATH_CACHE);
+    }
+
+    $this->setBodyTitleText('NCMS');
+
     $this->getMainBreadCrumbList()->append([
       new BREADCRUMB_ITEM('NCMS', false, '/ncms'),
       new BREADCRUMB_ITEM('User', true)
@@ -60,33 +66,16 @@ class User extends AdminPage
         new TH('text-center', html: 'Active'),
         new TH('text-center', html: 'Actions'),
       ])),
-      new TBODY(appendList: [
-        new TR(appendList: [
-          new TD('text-center', html: 'glksdjfgt23k4jtbn2k34jbtk'),
-          new TD('text-center', html: 'admin.jose'),
-          new TD('text-center', html: 'jose@ncms.com'),
-          new TD('text-center', html: 'Yes'),
-          new TD('text-center', html: 'Edit')
-        ]),
-        new TR(appendList: [
-          new TD('text-center', html: 'k2jb34kjb2k34jjb46k2j34b6'),
-          new TD('text-center', html: 'admin.maria'),
-          new TD('text-center', html: 'maria@ncms.com'),
-          new TD('text-center', html: 'Yes'),
-          new TD('text-center', html: 'Edit')
-        ])
-      ])
+      new TBODY()
     ]);
 
-    $cardPrinc = new CARD('card-principal');
-    $cardPrinc->getBody()->append(new H1('card-title', html: 'Users'));
-    $cardPrinc->getBody()->append(new P(html: 'Here you can check all users registered in the system.'));
-    $cardPrinc->getBody()->append($tableList);
+    $this->getCardPrinc()->getBody()->append(new P(html: 'Here you can check all users registered in the system.'));
+    $this->getCardPrinc()->getBody()->append($tableList);
 
-    $this->getBodyContainer()->append([
-      $cardPrinc
-    ]);
+    parent::__construct();
 
-    return $this->render();
+    $this->addJSBody(new SCRIPT('/core/NCMS/User/loaduserlist.js'));
+
+    return $this->render(self::PATH_CACHE);
   }
 }

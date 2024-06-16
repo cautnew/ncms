@@ -20,6 +20,11 @@ class DirConstant
   public const PTMPFILES = self::PSUPPORT . '/tmp_files';
 
   /**
+   * @var PCACHED Full Path for rendered html cache files
+   */
+  public const PCACHED = self::PROOT . '/.cached';
+
+  /**
    * @var PIMGS Full Path for Images
    */
   public const PIMGS = self::PROOT . '/imgs';

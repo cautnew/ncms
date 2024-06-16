@@ -37,6 +37,16 @@ class DPG
   private array $cssHeader = [];
   private array $cssBody = [];
 
+  /**
+   * If true, the page will be cached and rendered every time it is
+   * requested. If false, the page will be rendered only if the cache
+   * file does not exist.
+   * @var bool $noCache
+   */
+  private bool $noCache = true;
+
+  private string $pathToCache;
+
   public function __construct(?string $lang = null)
   {
     $this->setHtml(new HTML());
@@ -95,13 +105,43 @@ class DPG
     $this->getHtml()->append($this->getBody());
   }
 
-  public function render(): string
+  public function render(string $path = ''): string
   {
     $this->getHtml()->setLang($this->getLang());
     $this->prepareHead();
     $this->prepareBody();
 
-    return $this->getHtml()->getHtml();
+    $html = $this->getHtml()->getHtml();
+
+    if (!empty($path)) {
+      $dir = dirname($path);
+
+      if (!is_dir($dir)) {
+        mkdir($dir, recursive: true);
+      }
+
+      file_put_contents($path, $html);
+    }
+
+    return $html;
+  }
+
+  public function getCached(string $path): ?string
+  {
+    if (!$this->isCached($path)) {
+      return null;
+    }
+
+    return file_get_contents($path);
+  }
+
+  public function isCached(string $path): bool
+  {
+    if ($this->noCache) {
+      return false;
+    }
+
+    return file_exists($path);
   }
 
   public function getHtml(): HTML

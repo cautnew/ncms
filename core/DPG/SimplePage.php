@@ -13,7 +13,7 @@ use HTML\SCRIPT;
 
 class SimplePage extends DPG
 {
-  protected DIV $container;
+  protected DIV $bodyContainer;
   protected FOOTER $footer;
 
   public function __construct()
@@ -28,13 +28,50 @@ class SimplePage extends DPG
     $this->addCSSHeader(new LINK("/styles/bs/bs.simplepage.css", "stylesheet"));
     $this->addCSSHeader(new LINK("/styles/fa/fa.ncms.admin.css", "stylesheet"));
 
-    $this->container = new DIV('container pt-3');
-    $this->getBody()->append($this->container);
+    $this->getBody()->append([$this->getBodyContainer(), $this->getFooter()]);
 
+    $this->prepareFooter();
+  }
+
+  public function getBodyContainer(): DIV
+  {
+    if (!isset($this->bodyContainer)) {
+      $this->setBodyContainer(new DIV('container pt-3'));
+    }
+
+    return $this->bodyContainer;
+  }
+
+  private function setBodyContainer(DIV $bodyContainer): self
+  {
+    $this->bodyContainer = $bodyContainer;
+
+    return $this;
+  }
+
+  public function getFooter(): FOOTER
+  {
+    if (!isset($this->footer)) {
+      $this->setFooter(new FOOTER('fixed-bottom mt-3 p-3'));
+    }
+
+    return $this->footer;
+  }
+
+  private function setFooter(FOOTER $footer): self
+  {
+    $this->footer = $footer;
+
+    return $this;
+  }
+
+  protected function prepareFooter(): self
+  {
     $footerLine = new HR('border border-secondary-subtle');
     $footerText = new P('text-center', html: "Made with " . (new ICON_HEART()) . " by NCMS");
     $footerContainer = new DIV('container text-center', appendList: [$footerLine, $footerText]);
-    $this->footer = new FOOTER('fixed-bottom mt-3 p-3', append: $footerContainer);
-    $this->getBody()->append($this->footer);
+    $this->getFooter()->append($footerContainer);
+
+    return $this;
   }
 }

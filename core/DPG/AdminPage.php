@@ -10,7 +10,6 @@ use HTML\FA\ICON_HEART;
 use HTML\FOOTER;
 use HTML\H1;
 use HTML\HR;
-use HTML\LI;
 use HTML\LINK;
 use HTML\META;
 use HTML\NAV;
@@ -27,6 +26,8 @@ class AdminPage extends DPG
   protected OL $mainBreadCrumbList;
   protected CARD $cardPrinc;
 
+  protected const PATH_CACHE = DC::PCACHED . '/ncms/admin/index.chtml';
+
   public function __construct()
   {
     parent::__construct();
@@ -40,8 +41,7 @@ class AdminPage extends DPG
     $this->addJSHeader(new SCRIPT('/scripts/jq/jquery-3.7.1.min.js'));
     $this->addJSBody([
       new SCRIPT('/scripts/bs/bootstrap-5.3.3.bundle.min.js'),
-      new SCRIPT('/scripts/bs/bs.helper.admin.js'),
-      new SCRIPT('/shared/js/AdminPage.footer.friendtext.js')
+      new SCRIPT('/scripts/bs/bs.helper.admin.js')
     ]);
     $this->addCSSHeader([
       new LINK("/styles/bs/bs.ncms.admin.css", "stylesheet"),
@@ -50,7 +50,8 @@ class AdminPage extends DPG
 
     $this->getBody()->append([
       new DIV('toast-container position-fixed top-0 end-0 p-3'),
-      new DIV('main-wrapper', append: $this->getBodyContainer())
+      new DIV('main-wrapper', append: $this->getBodyContainer()),
+      $this->getFooter()
     ]);
 
     $this->getBodyContainer()->append([
@@ -58,12 +59,7 @@ class AdminPage extends DPG
       $this->getCardPrinc()
     ]);
 
-    $footerLine = new HR('border border-secondary-subtle');
-    $footerText = new P('text-center', append: ["Made with ", new ICON_HEART(), " by ", new A('https://www.ncms.com.br/', 'NCMS')]);
-    $footerFriendText = new P('text-center text-muted', 'ncms-friend-text', html: '...');
-    $footerContainer = new DIV('container text-center', appendList: [$footerLine, $footerText, $footerFriendText]);
-    $this->footer = new FOOTER('fixed-bottom mt-3 p-3', append: $footerContainer);
-    $this->getBody()->append($this->footer);
+    $this->prepareFooter();
   }
 
   public function getBodyContainer(): DIV
@@ -78,6 +74,22 @@ class AdminPage extends DPG
   private function setBodyContainer(DIV $bodyContainer): self
   {
     $this->bodyContainer = $bodyContainer;
+
+    return $this;
+  }
+
+  public function getFooter(): FOOTER
+  {
+    if (!isset($this->footer)) {
+      $this->setFooter(new FOOTER('fixed-bottom mt-3 p-3'));
+    }
+
+    return $this->footer;
+  }
+
+  private function setFooter(FOOTER $footer): self
+  {
+    $this->footer = $footer;
 
     return $this;
   }
@@ -140,6 +152,19 @@ class AdminPage extends DPG
   public function setBodyTitleText(string $title): self
   {
     $this->setBodyTitle(new H1('card-title', html: $title));
+
+    return $this;
+  }
+
+  protected function prepareFooter(): self
+  {
+    $this->addJSBody(new SCRIPT('/shared/js/AdminPage.footer.friendtext.js'));
+
+    $footerLine = new HR('border border-secondary-subtle');
+    $footerText = new P('text-center', append: ["Made with ", new ICON_HEART(), " by ", new A('https://www.ncms.com.br/', 'NCMS')]);
+    $footerFriendText = new P('text-center text-muted', 'ncms-friend-text', html: '...');
+    $footerContainer = new DIV('container text-center', appendList: [$footerLine, $footerText, $footerFriendText]);
+    $this->getFooter()->append($footerContainer);
 
     return $this;
   }

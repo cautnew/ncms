@@ -33,12 +33,11 @@ class ConfigDB extends AdminPage
 {
   private const CONF_FILENAME = 'conf.jdb';
   private const CONF_PATH = DC::PSUPPORT . '/' . self::CONF_FILENAME;
+  protected const PATH_CACHE = DC::PCACHED . '/ncms/admin/config/db/configdb.chtml';
 
   public function __construct()
   {
     $this->setTitleText('Connection settings');
-    $this->setBodyTitleText('Database connection settings');
-    $this->addJSBody(new SCRIPT('/core/NCMS/Admin/Config/DB/configdb.js'));
   }
 
   private function getConfigString(): string
@@ -54,6 +53,13 @@ class ConfigDB extends AdminPage
 
   public function renderGet(): string
   {
+    if ($this->isCached(self::PATH_CACHE)) {
+      return $this->getCached(self::PATH_CACHE);
+    }
+
+    $this->setBodyTitleText('Database connection settings');
+    $this->addJSBody(new SCRIPT('/core/NCMS/Admin/Config/DB/configdb.js'));
+
     $this->getMainBreadCrumbList()->append([
       new BREADCRUMB_ITEM('NCMS', false, '/ncms'),
       new BREADCRUMB_ITEM('Admin', false, '/ncms/admin'),
@@ -112,7 +118,7 @@ class ConfigDB extends AdminPage
 
     parent::__construct();
 
-    return $this->render();
+    return $this->render(self::PATH_CACHE);
   }
 
   public function renderPost(): string
