@@ -3,7 +3,7 @@
 namespace Core\Route;
 
 use Boot\Constants\Constant as C;
-use Core\Route\Exceptions\InvalidHttpStatusException;
+use Core\Route\Exception\InvalidHttpStatusException;
 
 class Response
 {
@@ -26,15 +26,16 @@ class Response
 
   public static function getStatus(): int
   {
-		if (!isset(self::$status)) {
-			self::setStatus(200);
-		}
+    if (!isset(self::$status)) {
+      self::setStatus(200);
+    }
 
-		return self::$status;
+    return self::$status;
   }
 
   public function content()
-  {}
+  {
+  }
 
   public static function setTimeLimit(int $time): void
   {
@@ -133,7 +134,7 @@ class Response
     self::setToAttachmentResponse($filename);
   }
 
-  public static function redirectTo(string $location, array $args=[]): void
+  public static function redirectTo(string $location, array $args = []): void
   {
     if (!empty($args)) {
       $indArgs = strpos($location, '?');

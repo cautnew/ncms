@@ -12,47 +12,73 @@ class Router
   protected $route_collection;
   protected $dispacher;
 
-  public function __construct()
+  public function getRouteCollection(): RouteCollection
   {
-    $this->route_collection = new RouteCollection;
-    $this->dispacher = new Dispacher;
+    if (!isset($this->route_collection)) {
+      $this->setRouteCollection(new RouteCollection);
+    }
+
+    return $this->route_collection;
+  }
+
+  public function setRouteCollection(RouteCollection $route_collection): self
+  {
+    $this->route_collection = $route_collection;
+
+    return $this;
+  }
+
+  public function getDispacher(): Dispacher
+  {
+    if (!isset($this->dispacher)) {
+      $this->setDispacher(new Dispacher);
+    }
+
+    return $this->dispacher;
+  }
+
+  public function setDispacher(Dispacher $dispacher): self
+  {
+    $this->dispacher = $dispacher;
+
+    return $this;
   }
 
   public function get($pattern, $callback)
   {
-    $this->route_collection->addGet($pattern, $callback);
+    $this->getRouteCollection()->addGet($pattern, $callback);
     return $this;
   }
 
   public function post($pattern, $callback)
   {
-    $this->route_collection->addPost($pattern, $callback);
-    return $this;  
+    $this->getRouteCollection()->addPost($pattern, $callback);
+    return $this;
   }
 
   public function put($pattern, $callback)
   {
-    $this->route_collection->addPut($pattern, $callback);
-    return $this;  
+    $this->getRouteCollection()->addPut($pattern, $callback);
+    return $this;
   }
 
   public function delete($pattern, $callback)
   {
-    $this->route_collection->addDelete($pattern, $callback);
-    return $this;  
+    $this->getRouteCollection()->addDelete($pattern, $callback);
+    return $this;
   }
 
   public function find($request_type, $pattern)
   {
-    return $this->route_collection->where($request_type, $pattern);
+    return $this->getRouteCollection()->where($request_type, $pattern);
   }
-  
+
   protected function dispach($route, $params, $namespace = "")
   {
-    return $this->dispacher->dispach($route->callback, $params, $namespace);
+    return $this->getDispacher()->dispach($route->callback, $params, $namespace);
   }
-  
-  public function notFound(bool $isAPI=false): void
+
+  public function notFound(bool $isAPI = false): void
   {
     header("HTTP/1.0 404 Not Found", true, 404);
     if ($isAPI) {
@@ -66,11 +92,11 @@ class Router
 
       return;
     }
-    
+
     echo require_once DC::PSOURCE . '/defresponse/cod-404.php';
   }
-  
-  public function notAllowed(bool $isAPI=false): void
+
+  public function notAllowed(bool $isAPI = false): void
   {
     header("HTTP/1.0 403 Forbidden", true, 403);
     if ($isAPI) {
@@ -87,8 +113,8 @@ class Router
 
     echo require_once DC::PSOURCE . '/defresponse/cod-401.php';
   }
-  
-  public function notAutenticated(bool $isAPI=false): void
+
+  public function notAutenticated(bool $isAPI = false): void
   {
     header("HTTP/1.0 401 Unauthorized", true, 401);
     if ($isAPI) {
@@ -135,15 +161,15 @@ class Router
 
   public function translate($name, $params)
   {
-    $pattern = $this->route_collection->isThereAnyHow($name);
-    
+    $pattern = $this->getRouteCollection()->isThereAnyHow($name);
+
     if ($pattern) {
       $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
       $server = $_SERVER['SERVER_NAME'] . '/';
       $uri = [];
-      
+
       foreach (array_filter(explode('/', $_SERVER['REQUEST_URI'])) as $key => $value) {
-        if($value == 'public') {
+        if ($value == 'public') {
           $uri[] = $value;
           break;
         }
@@ -151,7 +177,7 @@ class Router
       }
       $uri = implode('/', array_filter($uri)) . '/';
 
-      return $protocol . $server . $uri . $this->route_collection->convert($pattern, $params);
+      return $protocol . $server . $uri . $this->getRouteCollection()->convert($pattern, $params);
     }
 
     return false;
