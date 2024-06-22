@@ -334,9 +334,14 @@ class ModelSelect
     return $this;
   }
 
-  public function getData(): stdClass
+  public function getSelectedData(): array
   {
-    return $this->getCurrentData();
+    return $this->selectedData;
+  }
+
+  public function getData(): array
+  {
+    return $this->getSelectedData();
   }
 
   public function selectById(string $id): self

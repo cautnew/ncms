@@ -6,7 +6,7 @@ use Core\Model\ModelTableInformation;
 use \Exception;
 use \PDO;
 use Core\Conn\DB;
-use Core\Model\Exception\TableAlreadyExists;
+use Core\Conn\Exception\TableAlreadyExists;
 use Core\Model\Exception\TableDoesntExist;
 use Core\Support\Logger;
 use PDOException;
@@ -205,19 +205,32 @@ class ModelTable
 
   public function tableExists(): bool
   {
-    try {
+    /*try {
       $tableInformation = new ModelTableInformation();
       return $tableInformation->tableExists($this->getSchema(), $this->getTableName());
     } catch (Exception $e) {
       Logger::regException($e);
       throw new Exception("[{$e->getCode()}] Error on checking if table exists | " . $e->getMessage());
-    }
+    }*/
+    return false;
+  }
+
+  public function addColumn(string $columnName, array $definition): self
+  {
+
+    return $this;
+  }
+
+  public function removeColumn(string $columnName): self
+  {
+    DB::exec("ALTER TABLE {$this->getSchema()}.{$this->getTableName()} DROP COLUMN {$columnName}");
+    return $this;
   }
 
   public function drop(bool $force = false): self
   {
     if (!$this->tableExists() && !$force) {
-      throw new TableDoesntExist("{$this->getSchema()}.{$this->getTableName()}");
+      throw new TableDoesntExist();
     }
 
     $this->dropTableQuery = new DROP_TABLE($this->getSchema(), $this->getTableName());
@@ -241,7 +254,7 @@ class ModelTable
   public function create(bool $force = false): self
   {
     if ($this->tableExists() && !$force) {
-      throw new TableAlreadyExists("{$this->getSchema()}.{$this->getTableName()}");
+      throw new TableAlreadyExists();
     }
 
     $this->getCreateTableQuery()->setDefinitions($this->columnsDefinitions);
@@ -294,7 +307,7 @@ class ModelTable
   public function recreate(): self
   {
     try {
-      $this->drop();
+      $this->drop(true);
     } catch (TableDoesntExist $e) {
       Logger::regException($e, "Table doesn't exists. Proceeding to create it.");
     } catch (Exception $e) {
@@ -302,7 +315,7 @@ class ModelTable
       throw new Exception("[{$e->getCode()}] Error on recreate table | " . $e->getMessage());
     }
 
-    $this->create();
+    $this->create(true);
 
     return $this;
   }

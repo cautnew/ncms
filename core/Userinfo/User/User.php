@@ -2,26 +2,21 @@
 
 namespace Core\Userinfo\User;
 
-use Core\Userinfo\User\UserModelCRUD;
+use Core\Userinfo\User\UserModelTable;
 
 class User
 {
-  private UserModelCRUD $model;
+  private UserModelTable $modelTable;
 
-  public function __construct()
+  public function getModelTable(): UserModelTable
   {
-    $this->model = new UserModelCRUD();
+    return $this->modelTable;
   }
 
-  public function getModel(): UserModelCRUD
+  public function setModelTable(UserModelTable $modelTable): self
   {
-    return $this->model;
-  }
+    $this->modelTable = $modelTable;
 
-  public function startTable(): void
-  {
-    $this->model->dropTable();
-    $this->model->createTable();
-    $this->model->createTriggers();
+    return $this;
   }
 }

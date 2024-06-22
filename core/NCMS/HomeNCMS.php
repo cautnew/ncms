@@ -9,11 +9,12 @@ use HTML\A;
 use HTML\DIV;
 use HTML\FA\ICON_USERS;
 use HTML\FA\ICON_NEWSPAPER;
+use HTML\FA\ICON_TABLE;
 use HTML\P;
 
 class HomeNCMS extends AdminPage
 {
-  protected const PATH_CACHE = DC::PCACHED . '/ncms/admin/home.chtml';
+  protected const PATH_CACHE = DC::PCACHED . '/ncms/home.chtml';
 
   public function __construct()
   {
@@ -37,6 +38,7 @@ class HomeNCMS extends AdminPage
     $this->getCardPrinc()->getBody()->append(new DIV('nav justify-content-center', append: [
       new A("/ncms/user", class: 'btn btn-primary me-2', append: [new ICON_USERS(), new P('fs-5 mb-0', html: 'User')]),
       new A("/ncms/content", class: 'btn btn-primary me-2', append: [new ICON_NEWSPAPER(), new P('fs-5 mb-0', html: 'Content')]),
+      new A("/ncms/dataset", class: 'btn btn-primary me-2', append: [new ICON_TABLE(), new P('fs-5 mb-0', html: 'Dataset')]),
       new A('/ncms/admin/config/db', class: 'btn btn-success', append: [new ICON_NEWSPAPER(), new P('fs-5 mb-0', html: 'DB Connection Settings')])
     ]));
 

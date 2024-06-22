@@ -13,7 +13,7 @@ class ModelTableInformation
   public function __construct()
   {
     $this->modelSelectInformationSchema = new ModelSelect();
-    parent::__construct('information_schema.columns', 't');
+    // parent::__construct('information_schema.columns', 't');
     $this->setColumns([
       'TABLE_SCHEMA',
       'TABLE_NAME',
