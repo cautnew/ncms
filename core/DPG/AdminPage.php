@@ -4,6 +4,7 @@ namespace Core\DPG;
 
 use Boot\Constants\DirConstant as DC;
 use HTML\A;
+use HTML\BS\BREADCRUMB_ITEM;
 use HTML\BS\CARD;
 use HTML\DIV;
 use HTML\FA\ICON_HEART;
@@ -20,6 +21,9 @@ use HTML\TAG;
 
 class AdminPage extends DPG
 {
+  private string $route;
+  private string $bodyTitleText;
+  private AdminPage $parent;
   protected DIV $bodyContainer;
   protected FOOTER $footer;
   protected NAV $mainBreadCrumb;
@@ -41,7 +45,8 @@ class AdminPage extends DPG
     $this->addJSHeader(new SCRIPT('/scripts/jq/jquery-3.7.1.min.js'));
     $this->addJSBody([
       new SCRIPT('/scripts/bs/bootstrap-5.3.3.bundle.min.js'),
-      new SCRIPT('/scripts/bs/bs.helper.admin.js')
+      new SCRIPT('/scripts/bs/bs.helper.admin.js'),
+      new SCRIPT('/scripts/bs/bs.modalloading.admin.js')
     ]);
     $this->addCSSHeader([
       new LINK("/styles/bs/bs.ncms.admin.css", "stylesheet"),
@@ -53,6 +58,8 @@ class AdminPage extends DPG
       new DIV('main-wrapper', append: $this->getBodyContainer()),
       $this->getFooter()
     ]);
+
+    $this->prepareBreadCrumb();
 
     $this->getBodyContainer()->append([
       $this->getMainBreadCrumb(),
@@ -151,9 +158,27 @@ class AdminPage extends DPG
 
   public function setBodyTitleText(string $title): self
   {
-    $this->setBodyTitle(new H1('card-title', html: $title));
+    $this->bodyTitleText = $title;
+    $this->setBodyTitle(new H1('card-title', html: $this->bodyTitleText));
 
     return $this;
+  }
+
+  public function getBodyTitleText(): string
+  {
+    return $this->bodyTitleText;
+  }
+
+  public function setRoute(string $route): self
+  {
+    $this->route = $route;
+
+    return $this;
+  }
+
+  public function getRoute(): ?string
+  {
+    return $this->route ?? null;
   }
 
   protected function prepareFooter(): self
@@ -165,6 +190,33 @@ class AdminPage extends DPG
     $footerFriendText = new P('text-center text-muted', 'ncms-friend-text', html: '...');
     $footerContainer = new DIV('container text-center', appendList: [$footerLine, $footerText, $footerFriendText]);
     $this->getFooter()->append($footerContainer);
+
+    return $this;
+  }
+
+  public function setParent(AdminPage $parent): self
+  {
+    $this->parent = $parent;
+
+    return $this;
+  }
+
+  public function getParent(): ?AdminPage
+  {
+    return $this->parent ?? null;
+  }
+
+  public function prepareBreadCrumb(): self
+  {
+    $pageList = [];
+    array_unshift($pageList, new BREADCRUMB_ITEM($this->getTitleText(), true));
+    $currentPage = $this->getParent();
+    while ($currentPage !== null) {
+      array_unshift($pageList, new BREADCRUMB_ITEM($currentPage->getTitleText(), false, $currentPage->getRoute() ?? '#'));
+      $currentPage = $currentPage->getParent();
+    }
+
+    $this->getMainBreadCrumbList()->append($pageList);
 
     return $this;
   }

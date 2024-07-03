@@ -6,6 +6,7 @@ use \Exception;
 use \PDO;
 use Boot\Constants\DirConstant as DC;
 use Core\DPG\AdminPage;
+use Core\NCMS\Admin\Config\Config;
 use Core\Route\Request;
 use Core\Route\Response;
 use HTML\BS\BREADCRUMB_ITEM;
@@ -38,6 +39,8 @@ class ConfigDB extends AdminPage
   public function __construct()
   {
     $this->setTitleText('Connection settings');
+    $this->setRoute('/ncms/admin/config/db');
+    $this->setParent(new Config);
   }
 
   private function getConfigString(): string
@@ -59,13 +62,6 @@ class ConfigDB extends AdminPage
 
     $this->setBodyTitleText('Database connection settings');
     $this->addJSBody(new SCRIPT('/core/NCMS/Admin/Config/DB/configdb.js'));
-
-    $this->getMainBreadCrumbList()->append([
-      new BREADCRUMB_ITEM('NCMS', false, '/ncms'),
-      new BREADCRUMB_ITEM('Admin', false, '/ncms/admin'),
-      new BREADCRUMB_ITEM('Config', false, '/ncms/admin/config'),
-      new BREADCRUMB_ITEM('DB', true)
-    ]);
 
     $form = new FORM('form', 'form-config-db', method: 'post');
     $row1 = new ROW([

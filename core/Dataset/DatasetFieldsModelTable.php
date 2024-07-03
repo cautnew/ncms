@@ -1,6 +1,10 @@
 <?php
 
+namespace Core\Dataset;
+
 use Boot\Constants\Constant as CNT;
+use Core\Dataset\DatasetModelTable;
+use Core\Dataset\DatasetFieldTypesModelTable;
 use Core\Model\ModelTable;
 
 class DatasetFieldsModelTable extends ModelTable

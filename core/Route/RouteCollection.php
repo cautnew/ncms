@@ -4,7 +4,7 @@ namespace Core\Route;
 
 use Exception;
 
-class RouteCollection 
+class RouteCollection
 {
   protected $routes_post = [];
   protected $routes_get = [];
@@ -76,6 +76,11 @@ class RouteCollection
     return $result;
   }
 
+  public function getRouteNames()
+  {
+    return $this->route_names;
+  }
+
   public function addGet($pattern, $callback): self
   {
     if (is_array($pattern)) {
@@ -86,7 +91,7 @@ class RouteCollection
     }
 
     $values = $this->toMap($pattern);
-    
+
     $this->routes_get[$this->definePattern($pattern)] = [
       'callback' => $callback,
       'values' => $values,
@@ -116,7 +121,7 @@ class RouteCollection
       'values' => $values,
       'namespace' => $settings['namespace'] ?? null
     ];
-    
+
     if (isset($settings['as'])) {
       $this->route_names[$settings['as']] = $pattern;
     }
@@ -134,13 +139,13 @@ class RouteCollection
     }
 
     $values = $this->toMap($pattern);
-    
+
     $this->routes_put[$this->definePattern($pattern)] = [
       'callback' => $callback,
       'values' => $values,
       'namespace' => $settings['namespace'] ?? null
     ];
-    
+
     if (isset($settings['as'])) {
       $this->route_names[$settings['as']] = $pattern;
     }

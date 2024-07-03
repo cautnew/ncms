@@ -4,6 +4,7 @@ namespace Core\NCMS\Admin;
 
 use Boot\Constants\DirConstant as DC;
 use Core\DPG\AdminPage;
+use Core\NCMS\HomeNCMS;
 use HTML\BS\BREADCRUMB_ITEM;
 use HTML\A;
 use HTML\DIV;
@@ -18,7 +19,9 @@ class Admin extends AdminPage
 
   public function __construct()
   {
-    $this->setTitleText('NCMS');
+    $this->setTitleText('Admin');
+    $this->setRoute('/ncms/admin');
+    $this->setParent(new HomeNCMS);
   }
 
   public function renderGet(): string
@@ -28,12 +31,6 @@ class Admin extends AdminPage
     }
 
     $this->setBodyTitleText('Admin');
-
-    $this->getMainBreadCrumbList()->append([
-      new BREADCRUMB_ITEM('Site', false, '/'),
-      new BREADCRUMB_ITEM('NCMS', false, '/ncms'),
-      new BREADCRUMB_ITEM('Admin', true),
-    ]);
 
     parent::__construct();
 

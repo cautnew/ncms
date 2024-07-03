@@ -6,13 +6,21 @@ Route::get('/ncms', 'renderGet@Core\NCMS\HomeNCMS');
 Route::get('/ncms/login', 'renderGet@Core\NCMS\LoginPage');
 Route::get('/ncms/user', 'renderList@Core\NCMS\User\User');
 
-Route::get('/ncms/dataset', 'renderPageList@Core\NCMS\Dataset\Dataset');
-Route::get('/ncms/dataset/exists/{name}', 'existsByName@Core\NCMS\Dataset\Dataset');
-Route::get('/ncms/dataset/add', 'renderPageAdd@Core\NCMS\Dataset\Dataset');
-Route::get('/ncms/dataset/edit/{id}', 'renderPageEdit@Core\NCMS\Dataset\Dataset');
-Route::get('/ncms/dataset/view/{id}', 'renderPageView@Core\NCMS\Dataset\Dataset');
-Route::get('/ncms/dataset/delete/{id}', 'renderPageDelete@Core\NCMS\Dataset\Dataset');
-Route::get('/ncms/dataset/list', 'renderList@Core\NCMS\Dataset\Dataset');
+Route::get('/ncms/datasets', 'renderPage@Core\NCMS\Dataset\DatasetPage');
+Route::get('/ncms/datasets/add', 'renderPageAdd@Core\NCMS\Dataset\DatasetAddPage');
+Route::get('/ncms/datasets/list', 'renderList@Core\NCMS\Dataset\DatasetListPage');
+Route::get('/ncms/datasets/list/{limit}', 'renderList@Core\NCMS\Dataset\DatasetListPage');
+Route::get('/ncms/datasets/list/{limit}/{page}', 'renderList@Core\NCMS\Dataset\DatasetListPage');
+
+Route::get('/ncms/datasets/{id}/exists', 'existsById@Core\NCMS\Dataset\DatasetController');
+Route::get('/ncms/datasets/{name}/exists-by-name', 'existsByName@Core\NCMS\Dataset\Dataset');
+Route::get('/ncms/datasets/{id}/edit', 'renderPageEdit@Core\NCMS\Dataset\DatasetEditPage');
+Route::post('/ncms/datasets/{id}/edit', 'postEdit@Core\NCMS\Dataset\DatasetEditPage');
+Route::get('/ncms/datasets/{id}/view', 'renderPageView@Core\NCMS\Dataset\DatasetViewPage');
+Route::get('/ncms/datasets/{id}/delete', 'renderPageDelete@Core\NCMS\Dataset\DatasetDeletePage');
+Route::get('/ncms/datasets/{id}/info', 'datasetInfo@Core\NCMS\Dataset\DatasetController');
+
+Route::get('/ncms/datasets/controller/{controller}/check', 'checkController@Core\NCMS\Dataset\Dataset');
 
 Route::get('/ncms/admin', 'renderGet@Core\NCMS\Admin\Admin');
 

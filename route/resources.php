@@ -3,6 +3,7 @@
 /**
  * Resources
  * Configurations for routes and their corresponding resources
+ * @return array [METHOD => [ROUTE/PATTERN => [pattern => string, callback => string]]]
  * @file resources.php
  */
 

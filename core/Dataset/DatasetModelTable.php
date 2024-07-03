@@ -24,6 +24,11 @@ class DatasetModelTable extends ModelTable
         'length' => 40,
         'is_unique' => true
       ],
+      'var_controller' => [
+        'type' => 'varchar',
+        'length' => 40,
+        'is_null' => true
+      ],
       'bol_enabled' => [
         'type' => 'boolean',
         'is_null' => false,
@@ -71,7 +76,5 @@ class DatasetModelTable extends ModelTable
         'length' => 40,
       ]
     ]);
-
-    $this->prepareDefaultTriggers();
   }
 }

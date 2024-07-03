@@ -97,7 +97,7 @@ class ModelTable
     return DB::getConn();
   }
 
-  public function getPrimaryKey(): ?string
+  public function getPrimaryKey(): string
   {
     foreach ($this->columnsDefinitions as $columnName => $columnDefinition) {
       if (isset($columnDefinition['is_primary_key']) && $columnDefinition['is_primary_key']) {
@@ -105,7 +105,7 @@ class ModelTable
       }
     }
 
-    return null;
+    return 'var_cid';
   }
 
   public function getColumnTableReference(string $columnName): ?ModelTable
@@ -217,7 +217,7 @@ class ModelTable
 
   public function addColumn(string $columnName, array $definition): self
   {
-
+    $this->columnsDefinitions[$columnName] = $definition;
     return $this;
   }
 

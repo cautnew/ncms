@@ -28,7 +28,7 @@ class ModelUpdate
 
   public function __set(string $key, $value)
   {
-    if (array_search($key, array_values($this->columnsAllowedUpdate)) === false) {
+    if (array_search($key, $this->columnsAllowedUpdate) === false && $key != $this->getModelTable()->getPrimaryKey()) {
       throw new NotAllowedColumnToUpdateException($key);
     }
 
@@ -92,6 +92,13 @@ class ModelUpdate
     return $this->preparedDataToUpdate;
   }
 
+  public function setColumnsAllowedUpdate(array $columnsAllowedUpdate): self
+  {
+    $this->columnsAllowedUpdate = $columnsAllowedUpdate;
+
+    return $this;
+  }
+
   public function preparePendingData(): self
   {
     $this->preparedDataToUpdate[] = $this->updatingData;
@@ -102,7 +109,7 @@ class ModelUpdate
 
   public function update(): self
   {
-    $this->preparedDataToUpdate[] = $this->getCurrentData();
+    $this->preparedDataToUpdate[] = $this->updatingData;
 
     return $this;
   }
@@ -116,7 +123,7 @@ class ModelUpdate
     }
 
     $setList = [];
-    foreach ($this->getColumnsAllowedUpdate() as $column => $type) {
+    foreach ($this->getColumnsAllowedUpdate() as $column) {
       $setList[$column] = ":{$column}";
     }
 
@@ -146,6 +153,7 @@ class ModelUpdate
     }
 
     $this->preparedDataToUpdate = [];
+    $this->updatingData = [];
 
     return $this;
   }

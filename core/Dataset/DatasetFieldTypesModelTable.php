@@ -1,5 +1,7 @@
 <?php
 
+namespace Core\Dataset;
+
 use Boot\Constants\Constant as CNT;
 use Core\Model\ModelTable;
 

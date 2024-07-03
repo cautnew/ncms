@@ -1,29 +1,30 @@
 const tableDatasetsList = document.getElementById("table-dataset-list");
 const tbodyTableDatasetsList = tableDatasetsList.querySelector("tbody");
-const startRoute = "/ncms/dataset";
+const startRoute = "/ncms/datasets";
 
 const createDropdownActions = (dataset) => {
   const dropdown = createDropdownSplit("primary", [
     {
       text: "Edit",
       default: true,
-      action: `${startRoute}/edit/${dataset.var_cid}`,
+      action: `${startRoute}/${dataset.var_cid}/edit`,
     },
     {
       text: "View",
       default: false,
-      action: `${startRoute}/view/${dataset.var_cid}`,
+      action: `${startRoute}/${dataset.var_cid}/view`,
     },
     {
       text: "Delete",
       default: false,
-      action: `${startRoute}/delete/${dataset.var_cid}`,
+      action: `${startRoute}/${dataset.var_cid}/delete`,
     },
   ]);
   return dropdown;
 };
 
 const createRowTableDatasetsList = (dataset) => {
+  console.log(dataset);
   const row = $("<tr></tr>");
   const tdId = $('<td class="text-center align-middle"></td>').text(
     dataset.var_cid
@@ -31,23 +32,48 @@ const createRowTableDatasetsList = (dataset) => {
   const tdDatasetName = $('<td class="text-center align-middle"></td>').text(
     dataset.var_name
   );
-  const tdFields = $('<td class="text-center align-middle"></td>').text("...");
-  const tdActive = $('<td class="text-center align-middle"></td>');
+  const tdEnable = $('<td class="text-center align-middle"></td>');
+  const tdAdmin = $('<td class="text-center align-middle"></td>');
+  const tdSystem = $('<td class="text-center align-middle"></td>');
   const tdDescription = $('<td class="align-middle"></td>').text(
     dataset.txt_description
   );
   const tdActions = $('<td class="text-center align-middle"></td>');
   tdActions.append(createDropdownActions(dataset));
 
-  if (dataset.bol_active) {
-    tdActive.addClass("text-success fw-bold");
-    tdActive.append('<i class="fa-solid fa-circle-check me-2"></i>Yes');
+  if (dataset.bol_enabled) {
+    tdEnable.addClass("text-success fw-bold");
+    tdEnable.append('<i class="fa-solid fa-circle-check me-2"></i>Yes');
   } else {
-    tdActive.addClass("text-danger fw-bold");
-    tdActive.append('<i class="fa-solid fa-circle-xmark me-2"></i>No');
+    tdEnable.addClass("text-danger fw-bold");
+    tdEnable.append('<i class="fa-solid fa-circle-xmark me-2"></i>No');
   }
 
-  row.append(tdId, tdDatasetName, tdFields, tdActive, tdDescription, tdActions);
+  if (dataset.bol_admin) {
+    tdAdmin.addClass("text-success fw-bold");
+    tdAdmin.append('<i class="fa-solid fa-circle-check me-2"></i>Yes');
+  } else {
+    tdAdmin.addClass("text-danger fw-bold");
+    tdAdmin.append('<i class="fa-solid fa-circle-xmark me-2"></i>No');
+  }
+
+  if (dataset.bol_system) {
+    tdSystem.addClass("text-success fw-bold");
+    tdSystem.append('<i class="fa-solid fa-circle-check me-2"></i>Yes');
+  } else {
+    tdSystem.addClass("text-danger fw-bold");
+    tdSystem.append('<i class="fa-solid fa-circle-xmark me-2"></i>No');
+  }
+
+  row.append(
+    tdId,
+    tdDatasetName,
+    tdEnable,
+    tdAdmin,
+    tdSystem,
+    tdDescription,
+    tdActions
+  );
 
   return row;
 };
@@ -70,7 +96,7 @@ const updateDatasetList = () => {
   $(tbodyTableDatasetsList).append(rowWaitingTableDatasetsList());
 
   $.ajax({
-    url: "/ncms/dataset/list",
+    url: `${startRoute}/list/10/1`,
     method: "GET",
     success: (response) => {
       $(tbodyTableDatasetsList).empty();
@@ -79,6 +105,19 @@ const updateDatasetList = () => {
       });
     },
     error: (error) => {
+      $(tbodyTableDatasetsList).empty();
+      const row = $("<tr></tr>");
+      const td = $('<td colspan="6"></td>');
+      td.addClass("bg-danger text-warning text-center");
+      td.text("Datasets list could not be loaded.");
+      row.append(td);
+      $(tbodyTableDatasetsList).append(row);
+
+      createToastShortMessage(
+        "It was not possible to load this list. Check the console for more details.",
+        "danger"
+      );
+
       console.error(error);
     },
   });
