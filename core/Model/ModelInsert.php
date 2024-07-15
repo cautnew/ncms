@@ -21,6 +21,9 @@ class ModelInsert
 
   private array $columnsAllowedInsert = [];
 
+  private string $lastCreatedId;
+  private string $lastInsertedId;
+
   public const PDO_TABLE_DOESNT_EXISTS = '42S02';
   public const PDO_DUPLICATE_ENTRY = '23000';
 
@@ -50,6 +53,16 @@ class ModelInsert
   public function getConn(): PDO
   {
     return DB::getConn();
+  }
+
+  public function getLastInsertedId(): string
+  {
+    return $this->lastInsertedId;
+  }
+
+  public function setLastInsertedId(string $lastInsertedId): void
+  {
+    $this->lastInsertedId = $lastInsertedId;
   }
 
   public function getModelTable(): ModelTable
@@ -101,6 +114,18 @@ class ModelInsert
     return $this;
   }
 
+  public function getColumnsAllowedInsert(): array
+  {
+    return $this->columnsAllowedInsert;
+  }
+
+  public function setColumnsAllowedInsert(array $columnsAllowedInsert): self
+  {
+    $this->columnsAllowedInsert = $columnsAllowedInsert;
+
+    return $this;
+  }
+
   public function isPendingData(): bool
   {
     return !empty($this->insertingData);
@@ -130,7 +155,8 @@ class ModelInsert
 
   protected function adjustRowFields(array $row): array
   {
-    $row[$this->getModelTable()->getPrimaryKey()] = $this->generateId(40);
+    $this->lastCreatedId = $this->generateId(40);
+    $row[$this->getModelTable()->getPrimaryKey()] = $this->lastCreatedId;
     return $row;
   }
 
@@ -226,6 +252,7 @@ class ModelInsert
       throw new Exception("{$e->getCode()} Error on insert data | " . $e->getMessage());
     }
 
+    $this->setLastInsertedId($this->lastCreatedId);
     $this->preparedDataToInsert = [];
     return $this;
   }

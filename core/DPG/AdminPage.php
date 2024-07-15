@@ -43,6 +43,7 @@ class AdminPage extends DPG
       new LINK(DC::PRIMGS . '/sys/logo.jpeg', 'icon')
     ]);
     $this->addJSHeader(new SCRIPT('/scripts/jq/jquery-3.7.1.min.js'));
+    $this->addJSHeader(new SCRIPT('/shared/js/init.js'));
     $this->addJSBody([
       new SCRIPT('/scripts/bs/bootstrap-5.3.3.bundle.min.js'),
       new SCRIPT('/scripts/bs/bs.helper.admin.js'),

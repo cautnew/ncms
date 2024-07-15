@@ -24,6 +24,7 @@ class SimplePage extends DPG
     $this->getHead()->append(new META('charset', 'utf-8'));
     $this->getHead()->append(new META('viewport', 'width=device-width, initial-scale=1.0'));
     $this->addJSHeader(new SCRIPT('/scripts/jq/jquery-3.7.1.min.js'));
+    $this->addJSHeader(new SCRIPT('/shared/js/init.js'));
     $this->addJSBody(new SCRIPT('/scripts/bs/bootstrap-5.3.3.bundle.min.js'));
     $this->addCSSHeader(new LINK("/styles/bs/bs.simplepage.css", "stylesheet"));
     $this->addCSSHeader(new LINK("/styles/fa/fa.ncms.admin.css", "stylesheet"));

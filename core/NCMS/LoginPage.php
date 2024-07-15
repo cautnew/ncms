@@ -20,12 +20,6 @@ class LoginPage extends AdminPage
 
   public function renderGet(): string
   {
-    $this->getMainBreadCrumbList()->append([
-      new BREADCRUMB_ITEM('Site', false, '/'),
-      new BREADCRUMB_ITEM('NCMS', false, '/ncms'),
-      new BREADCRUMB_ITEM('Login', true),
-    ]);
-
     $cardPrinc = new CARD('card-principal');
     $cardPrinc->getBody()->append(new H1('card-title', html: 'Login'));
     $cardPrinc->getBody()->append(new P(html: 'Welcome to the NCMS. Login below to access the admin panel.'));
