@@ -7,43 +7,29 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-  public string $table = 'users';
+  public string $table = 'people';
+
   /**
    * Run the migrations.
    */
   public function up(): void
   {
-    Schema::create('users', function (Blueprint $table) {
+    Schema::create($this->table, function (Blueprint $table) {
       $table->uuid('id')->index();
-      $table->string('email')->unique();
-      $table->timestamp('email_verified_at')->nullable();
-      $table->string('password');
-      $table->rememberToken();
+      $table->foreignUuid('user_id')->index();
+      $table->string('name');
+      $table->string('lastname')->nullable();
+      $table->date('birthdate')->nullable();
       $table->timestamps();
     });
 
     Schema::create($this->table . '_his', function (Blueprint $table) {
       $table->uuid('id')->nullable();
-      $table->string('email')->nullable();
-      $table->timestamp('email_verified_at')->nullable();
-      $table->string('password')->nullable();
-      $table->rememberToken();
+      $table->uuid('user_id')->nullable();
+      $table->string('name')->nullable();
+      $table->string('lastname')->nullable();
+      $table->date('birthdate')->nullable();
       $table->timestamps();
-    });
-
-    Schema::create('password_reset_tokens', function (Blueprint $table) {
-      $table->string('email')->primary();
-      $table->string('token');
-      $table->timestamp('created_at')->nullable();
-    });
-
-    Schema::create('sessions', function (Blueprint $table) {
-      $table->string('id')->primary();
-      $table->foreignUuid('user_id')->nullable()->index();
-      $table->string('ip_address', 45)->nullable();
-      $table->text('user_agent')->nullable();
-      $table->longText('payload');
-      $table->integer('last_activity')->index();
     });
 
     DB::unprepared(implode("\n", [
@@ -84,8 +70,5 @@ return new class extends Migration
   public function down(): void
   {
     Schema::dropIfExists($this->table);
-    Schema::dropIfExists($this->table . '_his');
-    Schema::dropIfExists('password_reset_tokens');
-    Schema::dropIfExists('sessions');
   }
 };
