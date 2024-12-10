@@ -5,27 +5,27 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::middleware('guest')->group(function () {
-    Volt::route('register', 'pages.auth.register')
-        ->name('register');
+    Volt::route('ncms/register', 'pages.auth.register')
+        ->name('ncms.register');
 
-    Volt::route('login', 'pages.auth.login')
-        ->name('login');
+    Volt::route('ncms/login', 'pages.auth.login')
+        ->name('ncms.login');
 
-    Volt::route('forgot-password', 'pages.auth.forgot-password')
-        ->name('password.request');
+    Volt::route('ncms/forgot-password', 'pages.auth.forgot-password')
+        ->name('ncms.password.request');
 
-    Volt::route('reset-password/{token}', 'pages.auth.reset-password')
-        ->name('password.reset');
+    Volt::route('ncms/reset-password/{token}', 'pages.auth.reset-password')
+        ->name('ncms.password.reset');
 });
 
 Route::middleware('auth')->group(function () {
-    Volt::route('verify-email', 'pages.auth.verify-email')
-        ->name('verification.notice');
+    Volt::route('ncms/verify-email', 'pages.auth.verify-email')
+        ->name('ncms.verification.notice');
 
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+    Route::get('ncms/verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
+        ->name('ncms.verification.verify');
 
-    Volt::route('confirm-password', 'pages.auth.confirm-password')
-        ->name('password.confirm');
+    Volt::route('ncms/confirm-password', 'pages.auth.confirm-password')
+        ->name('ncms.password.confirm');
 });
