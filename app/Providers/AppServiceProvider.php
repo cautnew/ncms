@@ -19,6 +19,29 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $pathsList = $this->allPathsFrom(database_path('migrations'));
+        $this->loadMigrationsFrom($pathsList);
+    }
+
+    private function allPathsFrom(string $path): array
+    {
+        if (!is_dir($path)) {
+            return [];
+        }
+
+        $paths = [$path];
+
+        $directories = glob($path . '/*', GLOB_ONLYDIR);
+
+        foreach ($directories as $directory) {
+            if (in_array($directory, $paths)) {
+                continue;
+            }
+
+            $paths[] = $directory;
+            $paths = array_merge($paths, $this->allPathsFrom($directory));
+        }
+
+        return $paths;
     }
 }
