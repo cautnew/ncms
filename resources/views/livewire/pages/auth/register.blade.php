@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Users\Person;
 use App\Models\Users\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
@@ -27,8 +28,13 @@ new #[Layout('layouts.guest')] class extends Component
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        $user = User::create($validated);
+        Person::create([
+            'name' => $validated['name'],
+            'user_id' => $user->id
+        ]);
 
-        event(new Registered($user = User::create($validated)));
+        event(new Registered($user));
 
         Auth::login($user);
 

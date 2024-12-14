@@ -18,7 +18,7 @@ new class extends Component
   public function mount(): void
   {
     $person = Person::findByUserId(Auth::user()->id)->first();
-    $this->name = $person->name;
+    $this->name = $person->name ?? '';
     $this->email = Auth::user()->email;
   }
 
@@ -66,7 +66,7 @@ new class extends Component
     $user = Auth::user();
 
     if ($user->hasVerifiedEmail()) {
-      $this->redirectIntended(default: route('dashboard', absolute: false));
+      $this->redirectIntended(default: route('ncms.dashboard', absolute: false));
 
       return;
     }

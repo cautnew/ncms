@@ -11,6 +11,9 @@ Route::middleware('guest')->group(function () {
     Volt::route('ncms/login', 'pages.auth.login')
         ->name('ncms.login');
 
+    Volt::route('login', 'pages.auth.login')
+        ->name('login');
+
     Volt::route('ncms/forgot-password', 'pages.auth.forgot-password')
         ->name('ncms.password.request');
 

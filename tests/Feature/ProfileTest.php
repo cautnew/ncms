@@ -17,7 +17,7 @@ class ProfileTest extends TestCase
         $person = Person::factory()->create();
         $user = User::find($person->user_id)->first();
 
-        $response = $this->actingAs($user)->get('/profile');
+        $response = $this->actingAs($user)->get('/ncms/profile');
 
         $response
             ->assertOk()

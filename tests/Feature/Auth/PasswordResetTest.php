@@ -15,7 +15,7 @@ class PasswordResetTest extends TestCase
 
     public function test_reset_password_link_screen_can_be_rendered(): void
     {
-        $response = $this->get('/forgot-password');
+        $response = $this->get('/ncms/forgot-password');
 
         $response
             ->assertSeeVolt('pages.auth.forgot-password')
@@ -46,7 +46,7 @@ class PasswordResetTest extends TestCase
             ->call('sendPasswordResetLink');
 
         Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
-            $response = $this->get('/reset-password/'.$notification->token);
+            $response = $this->get('/ncms/reset-password/'.$notification->token);
 
             $response
                 ->assertSeeVolt('pages.auth.reset-password')
@@ -75,7 +75,7 @@ class PasswordResetTest extends TestCase
             $component->call('resetPassword');
 
             $component
-                ->assertRedirect('/login')
+                ->assertRedirect('/ncms/login')
                 ->assertHasNoErrors();
 
             return true;

@@ -12,7 +12,7 @@ class RegistrationTest extends TestCase
 
     public function test_registration_screen_can_be_rendered(): void
     {
-        $response = $this->get('/register');
+        $response = $this->get('/ncms/register');
 
         $response
             ->assertOk()
@@ -29,7 +29,7 @@ class RegistrationTest extends TestCase
 
         $component->call('register');
 
-        $component->assertRedirect(route('dashboard', absolute: false));
+        $component->assertRedirect(route('ncms.dashboard', absolute: false));
 
         $this->assertAuthenticated();
     }
