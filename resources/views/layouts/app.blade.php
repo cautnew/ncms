@@ -33,6 +33,17 @@
     <main>
       {{ $slot }}
     </main>
+
+    <footer class="bg-white border-t border-gray-100 shadow dark:bg-gray-800 dark:border-gray-700">
+      <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-500 text-center w-full">
+            <p class="mb-2">Feito com <i class="fa-solid fa-heart text-red-600 mx-1" title="Amor"></i> por CautNew</p>
+            <p title="Todos os direitos reservados a CautNew"><i class="fa-solid fa-copyright" title="Copyright"></i> 2024</p>
+          </div>
+        </div>
+      </div>
+    </footer>
   </div>
 </body>
 

@@ -10,6 +10,8 @@ use Livewire\Volt\Component;
 new class extends Component
 {
   public string $name = '';
+  public string $lastname = '';
+  public string $birthdate = '';
   public string $email = '';
 
   /**
@@ -19,6 +21,8 @@ new class extends Component
   {
     $person = Person::findByUserId(Auth::user()->id)->first();
     $this->name = $person->name ?? '';
+    $this->lastname = $person->lastname ?? '';
+    $this->birthdate = $person->birthdate ?? '';
     $this->email = Auth::user()->email;
   }
 
@@ -39,6 +43,8 @@ new class extends Component
 
     $validated = $this->validate([
       'name' => ['required', 'string', 'max:255'],
+      'lastname' => ['string', 'max:255'],
+      'birthdate' => ['date'],
       'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
     ]);
 
@@ -93,6 +99,18 @@ new class extends Component
       <x-input-label for="name" :value="__('Name')" />
       <x-text-input wire:model="name" id="name" name="name" type="text" class="mt-1 block w-full" required autofocus autocomplete="name" />
       <x-input-error class="mt-2" :messages="$errors->get('name')" />
+    </div>
+
+    <div>
+      <x-input-label for="lastname" :value="__('Last name')" />
+      <x-text-input wire:model="lastname" id="lastname" name="lastname" type="text" class="mt-1 block w-full" autofocus autocomplete="lastname" />
+      <x-input-error class="mt-2" :messages="$errors->get('lastname')" />
+    </div>
+
+    <div>
+      <x-input-label for="birthdate" :value="__('Birthdate')" />
+      <x-inputs.date-input wire:model="birthdate" id="birthdate" name="birthdate" class="mt-1 block w-full" autofocus autocomplete="birthdate" />
+      <x-input-error class="mt-2" :messages="$errors->get('birthdate')" />
     </div>
 
     <div>
