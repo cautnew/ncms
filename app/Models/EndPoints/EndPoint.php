@@ -35,6 +35,12 @@ class EndPoint extends Model
     ];
   }
 
+  /**
+   * The "booted" method of the model to set the ID for the
+   * default UUID.
+   *
+   * @return void
+   */
   protected static function booted(): void
   {
     static::creating(function (EndPoint $endPoint) {
