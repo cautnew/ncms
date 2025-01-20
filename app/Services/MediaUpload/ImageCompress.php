@@ -11,9 +11,9 @@ class ImageCompress
   private string $to;
   private string $extTo;
 
-  private static const ALLOWED_FORMATS = ["jpeg", "jpg", "gif", "png", "bmp", "webp"];
-  private static const ALLOWED_FORMATS_FROM = ["jpeg", "jpg", "gif", "png", "bmp", "webp"];
-  private static const ALLOWED_FORMATS_TO = ["jpeg", "jpg", "gif", "png", "webp"];
+  private const ALLOWED_FORMATS = ["jpeg", "jpg", "gif", "png", "bmp", "webp"];
+  private const ALLOWED_FORMATS_FROM = ["jpeg", "jpg", "gif", "png", "bmp", "webp"];
+  private const ALLOWED_FORMATS_TO = ["jpeg", "jpg", "gif", "png", "webp"];
 
   public function __construct (string $from, string $to) {
     $this->setFrom($from);
@@ -103,13 +103,13 @@ class ImageCompress
       imagegif($img, $to);
     } else {
       $testQualityValue = ($quality==null || !is_numeric($quality));
-      $testQuality = function (int $qualityLow, int $qualityHigh) use ($testQualityValue, $quality):bool  {
+      $testQuality = function (int $qualityLow, int $qualityHigh) use ($testQualityValue, $quality): bool {
         return $testQualityValue || $quality<$qualityLow || $quality>$qualityHigh;
       };
 
       if ($extTo=="jpg" && $testQuality(0, 100)) $quality = 30;
-      if ($extTo=="webp" && $testQuality(-1, 100)) $quality = -1;
-      if ($extTo=="png" && $testQuality(-1, 9)) $quality = -1;
+      elseif ($extTo=="webp" && $testQuality(-1, 100)) $quality = -1;
+      elseif ($extTo=="png" && $testQuality(-1, 9)) $quality = -1;
       $fn = "image" . ($extTo=="jpg" ? "jpeg" : $extTo);
       $fn($img, $to, $quality);
     }
@@ -120,6 +120,7 @@ class ImageCompress
   public function execute (?string $from=null, ?string $to=null, ?int $max_width=null, ?int $max_height=null, ?int $quality=null): bool {
     $this->setFrom($from);
     $this->setTo($to);
+
     return self::compress($from, $to, $max_width, $max_height, $quality);
   }
 }
