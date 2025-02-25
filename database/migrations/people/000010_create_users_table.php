@@ -1,5 +1,6 @@
 <?php
 
+use Database\Support\TableConfig;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -46,13 +47,7 @@ return new class extends Migration
       $table->integer('last_activity')->index();
     });
 
-    DB::unprepared(implode("\n", [
-      "CREATE TRIGGER tg_{$this->table}_before_insert BEFORE INSERT on `{$this->table}` FOR EACH ROW",
-      "BEGIN",
-      "SET new.created_at = now();",
-      "SET new.updated_at = null;",
-      "END;"
-    ]));
+    DB::unprepared(TableConfig::getFunctionConfigBeforeInsert($this->table));
 
     DB::unprepared(implode("\n", [
       "CREATE TRIGGER tg_{$this->table}_after_insert AFTER INSERT on `{$this->table}` FOR EACH ROW",
@@ -61,14 +56,7 @@ return new class extends Migration
       "END;"
     ]));
 
-    DB::unprepared(implode("\n", [
-      "CREATE TRIGGER tg_{$this->table}_before_update BEFORE UPDATE on `{$this->table}` FOR EACH ROW",
-      "BEGIN",
-      "SET new.id = old.id;",
-      "SET new.created_at = old.created_at;",
-      "SET new.updated_at = now();",
-      "END;"
-    ]));
+    DB::unprepared(TableConfig::getFunctionConfigBeforeUpdate($this->table));
 
     DB::unprepared(implode("\n", [
       "CREATE TRIGGER tg_{$this->table}_after_update AFTER UPDATE on `{$this->table}` FOR EACH ROW",
