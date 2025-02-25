@@ -23,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
     $this->loadMigrationsFrom($pathsList);
   }
 
+  /**
+   * Return all paths from a given path.
+   */
   private function allPathsFrom(string $path): array
   {
     if (!is_dir($path)) {
