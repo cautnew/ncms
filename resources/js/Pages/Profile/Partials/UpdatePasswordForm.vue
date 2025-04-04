@@ -1,31 +1,31 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import InputError from "@/components/ncms/InputError.vue";
+import InputLabel from "@/components/ncms/InputLabel.vue";
+import { Button } from "@/components/ui/button";
+import TextInput from "@/components/ncms/TextInput.vue";
+import { useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
 
 const passwordInput = ref(null);
 const currentPasswordInput = ref(null);
 
 const form = useForm({
-    current_password: '',
-    password: '',
-    password_confirmation: '',
+    current_password: "",
+    password: "",
+    password_confirmation: "",
 });
 
 const updatePassword = () => {
-    form.put(route('password.update'), {
+    form.put(route("ncms.password.update"), {
         preserveScroll: true,
         onSuccess: () => form.reset(),
         onError: () => {
             if (form.errors.password) {
-                form.reset('password', 'password_confirmation');
+                form.reset("password", "password_confirmation");
                 passwordInput.value.focus();
             }
             if (form.errors.current_password) {
-                form.reset('current_password');
+                form.reset("current_password");
                 currentPasswordInput.value.focus();
             }
         },
@@ -36,9 +36,7 @@ const updatePassword = () => {
 <template>
     <section>
         <header>
-            <h2 class="text-lg font-medium text-gray-900">
-                Update Password
-            </h2>
+            <h2 class="text-lg font-medium text-gray-900">Update Password</h2>
 
             <p class="mt-1 text-sm text-gray-600">
                 Ensure your account is using a long, random password to stay
@@ -101,7 +99,7 @@ const updatePassword = () => {
             </div>
 
             <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                <Button :disabled="form.processing">Save</Button>
 
                 <Transition
                     enter-active-class="transition ease-in-out"

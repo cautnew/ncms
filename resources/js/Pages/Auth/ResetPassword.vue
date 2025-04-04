@@ -1,10 +1,10 @@
 <script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import GuestLayout from "@/Layouts/GuestLayout.vue";
+import InputError from "@/components/ncms/InputError.vue";
+import InputLabel from "@/components/ncms/InputLabel.vue";
+import PrimaryButton from "@/components/ncms/PrimaryButton.vue";
+import TextInput from "@/components/ncms/TextInput.vue";
+import { Head, useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
     email: {
@@ -20,13 +20,13 @@ const props = defineProps({
 const form = useForm({
     token: props.token,
     email: props.email,
-    password: '',
-    password_confirmation: '',
+    password: "",
+    password_confirmation: "",
 });
 
 const submit = () => {
-    form.post(route('password.store'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
+    form.post(route("ncms.password.store"), {
+        onFinish: () => form.reset("password", "password_confirmation"),
     });
 };
 </script>

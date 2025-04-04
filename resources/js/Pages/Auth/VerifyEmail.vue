@@ -1,8 +1,8 @@
 <script setup>
-import { computed } from 'vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { computed } from "vue";
+import GuestLayout from "@/Layouts/GuestLayout.vue";
+import PrimaryButton from "@/components/ncms/PrimaryButton.vue";
+import { Head, Link, useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
     status: {
@@ -13,11 +13,11 @@ const props = defineProps({
 const form = useForm({});
 
 const submit = () => {
-    form.post(route('verification.send'));
+    form.post(route("ncms.verification.send"));
 };
 
 const verificationLinkSent = computed(
-    () => props.status === 'verification-link-sent',
+    () => props.status === "verification-link-sent"
 );
 </script>
 
@@ -49,7 +49,7 @@ const verificationLinkSent = computed(
                 </PrimaryButton>
 
                 <Link
-                    :href="route('logout')"
+                    :href="route('ncms.logout')"
                     method="post"
                     as="button"
                     class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"

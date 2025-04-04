@@ -1,18 +1,19 @@
 <script setup>
-import DangerButton from '@/Components/DangerButton.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { useForm } from '@inertiajs/vue3';
-import { nextTick, ref } from 'vue';
+import DangerButton from "@/components/ncms/DangerButton.vue";
+import InputError from "@/components/ncms/InputError.vue";
+import InputLabel from "@/components/ncms/InputLabel.vue";
+import Modal from "@/components/ncms/Modal.vue";
+import SecondaryButton from "@/components/ncms/SecondaryButton.vue";
+import TextInput from "@/components/ncms/TextInput.vue";
+import { Button } from "@/components/ui/button";
+import { useForm } from "@inertiajs/vue3";
+import { nextTick, ref } from "vue";
 
 const confirmingUserDeletion = ref(false);
 const passwordInput = ref(null);
 
 const form = useForm({
-    password: '',
+    password: "",
 });
 
 const confirmUserDeletion = () => {
@@ -22,7 +23,7 @@ const confirmUserDeletion = () => {
 };
 
 const deleteUser = () => {
-    form.delete(route('profile.destroy'), {
+    form.delete(route("ncms.profile.destroy"), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => passwordInput.value.focus(),
@@ -41,9 +42,7 @@ const closeModal = () => {
 <template>
     <section class="space-y-6">
         <header>
-            <h2 class="text-lg font-medium text-gray-900">
-                Delete Account
-            </h2>
+            <h2 class="text-lg font-medium text-gray-900">Delete Account</h2>
 
             <p class="mt-1 text-sm text-gray-600">
                 Once your account is deleted, all of its resources and data will
@@ -52,13 +51,13 @@ const closeModal = () => {
             </p>
         </header>
 
-        <DangerButton @click="confirmUserDeletion">Delete Account</DangerButton>
+        <Button variant="destructive" @click="confirmUserDeletion">
+            Delete Account
+        </Button>
 
         <Modal :show="confirmingUserDeletion" @close="closeModal">
             <div class="p-6">
-                <h2
-                    class="text-lg font-medium text-gray-900"
-                >
+                <h2 class="text-lg font-medium text-gray-900">
                     Are you sure you want to delete your account?
                 </h2>
 
