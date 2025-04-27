@@ -15,7 +15,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Ponto',
-        href: '/ncms/ponto',
+        href: '/ponto',
         icon: Clock,
     },
 ];
