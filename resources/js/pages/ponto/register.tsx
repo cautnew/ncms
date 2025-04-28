@@ -7,6 +7,7 @@ import AppLayout from '@/layouts/app-layout';
 import PontoLayout from '@/layouts/ponto/layout';
 
 import { Button } from '@/components/ui/button';
+import axios from 'axios';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -25,6 +26,8 @@ export default function Ponto() {
     const [photo, setPhoto] = useState<string | null>(null);
     const [latitude, setLatitude] = useState<string | null>(null);
     const [longitude, setLongitude] = useState<string | null>(null);
+    const [message, setMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
         const startWebcam = async () => {
@@ -85,30 +88,52 @@ export default function Ponto() {
         }
     };
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!photo || !latitude || !longitude) {
+            setMessage('Por favor, capture a foto e permita o acesso à localização.');
+            return;
+        }
+
+        try {
+            const response = await axios.post('/ponto/registrar', {
+                photo,
+                latitude,
+            });
+
+            const data = await response.data;
+            console.log('data', response.data);
+            console.log('response', response);
+
+            if (response.status == 200) {
+                setMessage('Marcação de ponto realizada com sucesso!');
+            } else {
+                setErrorMessage(data.error.message || 'Erro ao realizar a marcação de ponto.');
+            }
+        } catch (error) {
+            console.error('Erro ao enviar os dados:', error);
+            const errorMessage = (error as any)?.response?.data?.message || '';
+            setErrorMessage('Erro ao realizar a marcação de ponto.' + errorMessage);
+        }
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Ponto" />
 
             <PontoLayout>
-                <div className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                     <HeadingSmall title="Registrar" description="Fazer o registro do seu ponto." />
 
                     <div className="webcam-container">
-                        <video ref={videoRef} autoPlay playsInline className="w-full rounded-lg border border-gray-300" />
+                        <video ref={videoRef} autoPlay playsInline className="w-full rounded-lg border-2 border-gray-400 dark:border-gray-300" />
                     </div>
 
                     {/* Botão para capturar a foto */}
-                    <Button className="w-full bg-green-800" onClick={capturePhoto}>
+                    <Button className="w-full bg-green-800" type="button" onClick={capturePhoto}>
                         Capturar foto
                     </Button>
-
-                    {/* Exibe a foto capturada */}
-                    {photo && (
-                        <div className="mt-4">
-                            <p>Foto capturada:</p>
-                            <img src={photo} alt="Foto capturada" className="rounded border border-gray-300" />
-                        </div>
-                    )}
 
                     {/* Exibe a localização geográfica */}
                     <div className="mt-4">
@@ -121,9 +146,34 @@ export default function Ponto() {
                         </p>
                     </div>
 
+                    {/* Exibe a foto capturada */}
+                    {photo && (
+                        <div className="mt-4">
+                            <p>Foto capturada:</p>
+                            <img src={photo} alt="Foto capturada" className="rounded border border-gray-300" />
+                        </div>
+                    )}
+
+                    {/* Mensagem de status */}
+                    {errorMessage && (
+                        <div className="mt-4">
+                            <p className="text-center text-sm font-medium text-red-600">{errorMessage}</p>
+                        </div>
+                    )}
+                    {message && (
+                        <div className="mt-4">
+                            <p className="text-center text-sm font-medium text-blue-400">{message}</p>
+                        </div>
+                    )}
+
+                    {/* Botão para enviar o formulário */}
+                    <Button className="w-full bg-blue-800" type="submit">
+                        Enviar
+                    </Button>
+
                     {/* Canvas oculto para armazenar a imagem capturada */}
                     <canvas ref={canvasRef} style={{ display: 'none' }} />
-                </div>
+                </form>
             </PontoLayout>
         </AppLayout>
     );
