@@ -16,6 +16,8 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/ncms/register', [RegisteredUserController::class, 'store']);
 
+    Route::redirect('login', '/ncms/login')->name('login');
+
     Route::get('/ncms/login', [AuthenticatedSessionController::class, 'create'])
         ->name('ncms.login');
 

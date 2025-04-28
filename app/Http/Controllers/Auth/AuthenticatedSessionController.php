@@ -18,7 +18,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(Request $request): Response
     {
-        return Inertia::render('/ncms/auth/login', [
+        return Inertia::render('ncms/auth/login', [
             'canResetPassword' => Route::has('ncms.password.request'),
             'status' => $request->session()->get('status'),
         ]);
@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('/ncms/dashboard', absolute: false));
+        return redirect()->intended(route('ncms.dashboard', absolute: false));
     }
 
     /**

@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\HR;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\PontoStoreRequest;
+use App\Models\HR\Ponto;
+use Exception;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -18,8 +22,24 @@ class PontoController extends Controller
         return Inertia::render('ponto/register');
     }
 
-    public function store()
+    public function store(PontoStoreRequest $request)
     {
-        return Inertia::render('ponto/register');
+        try {
+            $request->validated();
+            $data = [
+                'photo_code' => $request->photo,
+                'coord_latitude' => $request->latitude,
+                'coord_longitude' => $request->longitude
+            ];
+            Ponto::create($data);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => ['message' => $e->getMessage()]
+            ]);
+        }
+
+        return response()->json([
+            'foi' => 'foim'
+        ]);
     }
 }
