@@ -8,7 +8,7 @@ import PontoLayout from '@/layouts/ponto/layout';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Meu ponto',
-        href: '/ponto',
+        href: '/ncms/ponto',
     },
 ];
 

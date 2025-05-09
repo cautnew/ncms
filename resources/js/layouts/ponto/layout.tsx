@@ -1,16 +1,17 @@
 import VerticalTabsLayout from '@/layouts/verttabs-layout';
 import { type NavItem } from '@/types';
+import { Clock } from 'lucide-react';
 import { type PropsWithChildren, ReactNode } from 'react';
 
 const sidebarNavItems: NavItem[] = [
     {
         title: 'Meu ponto',
-        href: '/ponto',
-        icon: null,
+        href: '/ncms/ponto',
+        icon: Clock,
     },
     {
         title: 'Registrar',
-        href: '/ponto/registrar',
+        href: '/ncms/ponto/registrar',
         icon: null,
     },
 ];

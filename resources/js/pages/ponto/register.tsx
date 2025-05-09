@@ -12,11 +12,11 @@ import axios from 'axios';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Meu ponto',
-        href: '/ponto',
+        href: '/ncms/ponto',
     },
     {
         title: 'Registrar',
-        href: '/ponto/registrar',
+        href: '/ncms/ponto/registrar',
     },
 ];
 
@@ -29,34 +29,34 @@ export default function Ponto() {
     const [message, setMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+    const startWebcam = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+            }
+        } catch (error) {
+            console.error('Erro ao acessar a webcam:', error);
+        }
+    };
+
+    const getLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(
+                (position) => {
+                    setLatitude(position.coords.latitude.toFixed(6));
+                    setLongitude(position.coords.longitude.toFixed(6));
+                },
+                (error) => {
+                    console.error('Erro ao obter localização:', error);
+                },
+            );
+        } else {
+            console.error('Geolocalização não é suportada pelo navegador.');
+        }
+    };
+
     useEffect(() => {
-        const startWebcam = async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                }
-            } catch (error) {
-                console.error('Erro ao acessar a webcam:', error);
-            }
-        };
-
-        const getLocation = () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.watchPosition(
-                    (position) => {
-                        setLatitude(position.coords.latitude.toFixed(6));
-                        setLongitude(position.coords.longitude.toFixed(6));
-                    },
-                    (error) => {
-                        console.error('Erro ao obter localização:', error);
-                    },
-                );
-            } else {
-                console.error('Geolocalização não é suportada pelo navegador.');
-            }
-        };
-
         startWebcam();
         getLocation();
 

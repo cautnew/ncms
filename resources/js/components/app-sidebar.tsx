@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Clock, Folder, LayoutGrid } from 'lucide-react';
+import { BookOpen, Clock, Folder, LayoutGrid, LucideListTree, Newspaper } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -14,9 +14,19 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
+        title: 'Pages',
+        href: '/ncms/pages',
+        icon: Newspaper,
+    },
+    {
         title: 'Ponto',
-        href: '/ponto',
+        href: '/ncms/ponto',
         icon: Clock,
+    },
+    {
+        title: 'Meu Curriculo',
+        href: '/ncms/meucurriculo',
+        icon: LucideListTree,
     },
 ];
 
