@@ -25,7 +25,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Meu Curriculo',
-        href: '/ncms/meucurriculo',
+        href: '/ncms/curriculos',
         icon: LucideListTree,
     },
 ];
