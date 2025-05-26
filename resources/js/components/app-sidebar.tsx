@@ -4,30 +4,35 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Clock, Folder, LayoutGrid, LucideListTree, Newspaper } from 'lucide-react';
+import { BookOpen, Clock, Terminal, Folder, LayoutGrid, LucideListTree, Newspaper } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/ncms/dashboard',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Pages',
-        href: '/ncms/pages',
-        icon: Newspaper,
-    },
-    {
-        title: 'Ponto',
-        href: '/ncms/ponto',
-        icon: Clock,
-    },
-    {
-        title: 'Meu Curriculo',
-        href: '/ncms/curriculos',
-        icon: LucideListTree,
-    },
+  {
+    title: 'Dashboard',
+    href: '/ncms/dashboard',
+    icon: LayoutGrid,
+  },
+  {
+    title: 'Commands',
+    href: '/ncms/commands',
+    icon: Terminal,
+  },
+  {
+    title: 'Pages',
+    href: '/ncms/pages',
+    icon: Newspaper,
+  },
+  {
+    title: 'Ponto',
+    href: '/ncms/ponto',
+    icon: Clock,
+  },
+  {
+    title: 'Meu Curriculo',
+    href: '/ncms/curriculos',
+    icon: LucideListTree,
+  },
 ];
 
 const footerNavItems: NavItem[] = [

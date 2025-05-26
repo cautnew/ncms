@@ -89,6 +89,11 @@ foreach ($courses as $course) {
   $listPCourses[] = TAG::p('mb-1', html: "{$course['name']} ({$course['institution']})");
 }
 
+$footer = [
+  TAG::hr('w-100 mb-2'),
+  TAG::p('text-center', html: 'SET/2022'),
+];
+
 $bodyContainer->append([
   TAG::div('row', append: [
     TAG::div('col-8', append: [
@@ -99,7 +104,7 @@ $bodyContainer->append([
     ]),
     TAG::div('col-4', append: [
       TAG::ul('list-group', append: [
-        TAG::li('list-group-item py-1', html: '<i class="fas fa-home mr-2"></i>Salvador, BA, Brasil'),
+        TAG::li('list-group-item py-1', html: '<i class="fas fa-home mr-2"></i>Salvador, Bahia, Brasil'),
         TAG::li('list-group-item py-1', html: '<i class="fas fa-phone mr-2"></i><a href="tel:+5571991640905" alt="Meu telefone é +55 71 99164-0905">+55 71 99164-0905</a>'),
         TAG::li('list-group-item py-1', html: '<i class="fas fa-envelope mr-2"></i><a href="mailto:felipedesmartins@gmail.com" alt="Meu e-mail é felipedesmartins@gmail.com">felipedesmartins@gmail.com</a>'),
       ])
@@ -208,8 +213,7 @@ $bodyContainer->append([
       ...$listPCourses,
     ])
   ]),
-  TAG::hr('w-100 mb-2'),
-  TAG::p('text-center', html: 'SET/2022'),
+  ...$footer,
 ]);
 
 echo $html;

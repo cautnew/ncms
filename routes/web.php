@@ -26,6 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__ . '/settings.php';
+require __DIR__ . '/command.php';
 require __DIR__ . '/curriculo.php';
 require __DIR__ . '/ponto.php';
 require __DIR__ . '/auth.php';
