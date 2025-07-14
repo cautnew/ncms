@@ -6,13 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    private string $table = 'personal_access_tokens';
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create($this->table, function (Blueprint $table) {
+        Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->id();
             $table->morphs('tokenable');
             $table->text('name');
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists($this->table);
+        Schema::dropIfExists('personal_access_tokens');
     }
 };
