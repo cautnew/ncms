@@ -4,12 +4,15 @@
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
     "keywords": [
+        "cms",
+        "ncms",
         "laravel",
         "framework"
     ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "cautnew/phtml": "dev-main",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
@@ -81,6 +84,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

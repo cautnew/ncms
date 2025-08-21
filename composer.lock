@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a23a0d3906890020f57f0bc0966b62fc",
+    "content-hash": "cc1d7e89e625fcd677e65c09b6dcebae",
     "packages": [
         {
             "name": "brick/math",
@@ -134,6 +134,46 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "cautnew/phtml",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cautnew/phtml.git",
+                "reference": "c4237f551edb0af288e0b8d64dcf6f4a767fd125"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cautnew/phtml/zipball/c4237f551edb0af288e0b8d64dcf6f4a767fd125",
+                "reference": "c4237f551edb0af288e0b8d64dcf6f4a767fd125",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PHTML\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Felipe Martins",
+                    "email": "felipedesmartins@gmail.com",
+                    "homepage": "http://www.cautnew.com.br",
+                    "role": "Back-End Developer"
+                }
+            ],
+            "description": "An easy way to create and manipulate HTML tags",
+            "support": {
+                "issues": "https://github.com/cautnew/phtml/issues",
+                "source": "https://github.com/cautnew/phtml/tree/main"
+            },
+            "time": "2025-05-07T01:53:36+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -8343,8 +8383,10 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": {},
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "cautnew/phtml": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
