@@ -10,6 +10,32 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_authenticate_in_api()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/api/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticated();
+        $this->assertNotEmpty($response->json('token'), 'Check if the token is defined.');
+    }
+
+    public function test_authenticate_in_api_with_invalid_password()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/api/login', [
+            'email' => $user->email,
+            'password' => 'passwords',
+        ]);
+
+        $this->assertGuest();
+        $this->assertEmpty($response->json('token'), 'Check if the token is not defined.');
+    }
+
     public function test_login_screen_can_be_rendered()
     {
         $response = $this->get('/login');
