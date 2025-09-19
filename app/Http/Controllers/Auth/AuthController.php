@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use App\Services\Auth\RegisterUserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -14,11 +15,7 @@ class AuthController extends Controller
   public function register(RegisterRequest $request)
   {
     try {
-      $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-      ]);
+      $user = RegisterUserService::register($request);
     } catch (Exception $e) {
       return response()->json([
         'message' => 'User could not be created.',
@@ -67,5 +64,7 @@ class AuthController extends Controller
     return response()->json(['token' => $token]);
   }
 
-  public function logout (Request $request) {}
+  public function logout(Request $request)
+  {
+  }
 }
