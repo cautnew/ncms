@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Models\Users\Person;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,9 +19,12 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $person = (new Person())->findByUserId($request->user());
+
         return Inertia::render('settings/profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'birthdate' => $person->birthdate->format('Y-m-d') ?? null,
         ]);
     }
 
@@ -35,7 +39,11 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
+        $person = (new Person())->findByUserId($request->user());
+        $person->birthdate = $request->birthdate;
+
         $request->user()->save();
+        $person->save();
 
         return to_route('profile.edit');
     }

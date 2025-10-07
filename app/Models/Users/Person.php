@@ -2,6 +2,7 @@
 
 namespace App\Models\Users;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
@@ -71,5 +72,14 @@ class Person extends Model
                 $model->created_by = $model->user_id;
             }
         });
+    }
+
+    public function findByUserId(User|string $user_id): ?self
+    {
+        if ($user_id instanceof User) {
+            $user_id = $user_id->id;
+        }
+
+        return self::where('user_id', '=', $user_id)->first();
     }
 }

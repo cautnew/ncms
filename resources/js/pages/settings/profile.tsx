@@ -22,16 +22,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 type ProfileForm = {
     name: string;
     email: string;
-    birthday: string;
+    birthdate: string;
 };
 
-export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
+export default function Profile({ mustVerifyEmail, status, birthdate }: { mustVerifyEmail: boolean; status?: string; birthdate?: string }) {
     const { auth } = usePage<SharedData>().props;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
         name: auth.user.name,
         email: auth.user.email,
-        birthday: String(auth.user.birthday ?? ''),
+        birthdate: String(birthdate ?? ''),
     });
 
     const submit: FormEventHandler = (e) => {
@@ -107,20 +107,20 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         )}
 
                         <div className="grid gap-2">
-                            <Label htmlFor="birthday">Birthday</Label>
+                            <Label htmlFor="birthdate">Birthdate</Label>
 
                             <Input
-                                id="birthday"
+                                id="birthdate"
                                 type="date"
                                 className="mt-1 block w-full"
-                                value={data.birthday}
-                                onChange={(e) => setData('birthday', e.target.value)}
+                                value={data.birthdate}
+                                onChange={(e) => setData('birthdate', e.target.value)}
                                 required
-                                autoComplete="birthday"
-                                placeholder="Birthday"
+                                autoComplete="birthdate"
+                                placeholder="Birthdate"
                             />
 
-                            <InputError className="mt-2" message={errors.birthday} />
+                            <InputError className="mt-2" message={errors.birthdate} />
                         </div>
 
                         <div className="flex items-center gap-4">
