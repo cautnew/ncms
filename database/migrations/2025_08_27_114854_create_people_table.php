@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Users\Gender;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,6 +20,7 @@ return new class extends Migration {
             $table->string('middle_name')->nullable();
             $table->string('lastname')->nullable();
             $table->date('birthdate')->nullable();
+            $table->foreignIdFor(Gender::class, 'gender_id')->constrained();
             $table->foreignIdFor(User::class, 'created_by')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

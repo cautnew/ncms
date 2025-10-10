@@ -52,7 +52,7 @@ return new class extends Migration {
     `cff`.`vacancia_media` AS `vacancia_media`,
     `cff`.`endereco` AS `endereco`,
     `cff`.`created_at` AS `created_at`,
-    `cff`.`updated_at` AS `updated_at` from `{ $this->table }` `cff`
+    `cff`.`updated_at` AS `updated_at` from `$this->table` `cff`
 where
     `cff`.`p_vp` between 0.8 and 0.99
     and `cff`.`liquidez` > 100000

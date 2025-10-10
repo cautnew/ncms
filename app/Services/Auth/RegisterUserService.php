@@ -25,7 +25,7 @@ class RegisterUserService
     $user = User::create([
       'name' => $request->name,
       'email' => $request->email,
-      'password' => Hash::make($request->password),
+      'password' => Hash::make($request->password)
     ]);
 
     if (!$user) {
@@ -35,6 +35,8 @@ class RegisterUserService
     $person = Person::create([
       'name' => $request->name,
       'user_id' => $user->id,
+      'birthdate' => $request->birthdate,
+      'gender_id' => $request->gender_id,
       //'created_by' => Auth::id() ?? $user->id
     ]);
 

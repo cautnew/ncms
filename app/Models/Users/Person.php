@@ -24,6 +24,7 @@ class Person extends Model
         'middle_name',
         'lastname',
         'birthdate',
+        'gender_id',
         //'created_by'
     ];
 

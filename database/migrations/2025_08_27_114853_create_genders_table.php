@@ -15,7 +15,7 @@ return new class extends Migration {
         Schema::create($this->table, function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->char('simbol');
+            $table->char('symbol')->index()->unique();
             $table->timestamps();
         });
     }
