@@ -6,6 +6,8 @@ import { columns, Gender } from './columns';
 import { DataTable } from './data-table';
 
 import HeadingSmall from '@/components/heading-small';
+import { Button } from '@/components/ui/button';
+import { Link } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,6 +24,13 @@ export default function GenderTaxonomy({ gender_list }: { gender_list: Array<Gen
             <TaxonomyLayout>
                 <div className="space-y-6">
                     <HeadingSmall title="Gender Taxonomy" description="Genders available for the system." />
+                    <div>
+                        <Button variant="ghost">
+                            <Link href={route('taxonomy.gender.create')} prefetch>
+                                Add new
+                            </Link>
+                        </Button>
+                    </div>
                     <DataTable columns={columns} data={gender_list} />
                 </div>
             </TaxonomyLayout>

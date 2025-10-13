@@ -27,7 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/taxonomy/gender/create', function () {
         return Inertia::render('taxonomy/gender/create');
-    });
+    })->name('taxonomy.gender.create');
 });
 
 Route::get('/session-test', function () {
