@@ -8,6 +8,7 @@ import { DataTable } from './data-table';
 import HeadingSmall from '@/components/heading-small';
 import { Button } from '@/components/ui/button';
 import { Link } from '@inertiajs/react';
+import { Play } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -27,7 +28,7 @@ export default function GenderTaxonomy({ gender_list }: { gender_list: Array<Gen
                     <div>
                         <Button variant="ghost">
                             <Link href={route('taxonomy.gender.create')} prefetch>
-                                Add new
+                                Add new <Play></Play>
                             </Link>
                         </Button>
                     </div>

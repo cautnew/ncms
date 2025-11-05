@@ -2,51 +2,10 @@ import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookCopy, BookOpen, CassetteTape, Folder, Layers, LayoutGrid, RouteIcon } from 'lucide-react';
 import AppLogo from './app-logo';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Pages',
-        href: '/pages',
-        icon: Layers,
-    },
-    {
-        title: 'Routes',
-        href: '/routes',
-        icon: RouteIcon,
-    },
-    {
-        title: 'Taxonomy',
-        href: '/taxonomy',
-        icon: BookCopy,
-    },
-    {
-        title: 'Media',
-        href: '/media',
-        icon: CassetteTape,
-    },
-];
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
+import { footerNavItems } from './app-navitems-footer';
+import { mainNavItems } from './app-navitems-main';
 
 export function AppSidebar() {
     return (

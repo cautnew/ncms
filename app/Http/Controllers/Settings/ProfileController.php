@@ -22,7 +22,7 @@ class ProfileController extends Controller
     {
         $person = (new Person())->findByUserId($request->user());
 
-        return Inertia::render('settings/profile', [
+        return Inertia::render('settings/profile/profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
             'gender_list' => Gender::all()->only(['id', 'name', 'symbol']),

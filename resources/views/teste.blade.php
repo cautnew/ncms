@@ -1,6 +1,6 @@
 <?php
 
-use PHTML\P;
+use PHTML\Core\P;
 use PHTML\Templates\HTML5;
 
 $page = new HTML5();

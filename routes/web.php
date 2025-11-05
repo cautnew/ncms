@@ -3,6 +3,8 @@
 use App\Models\Users\Gender;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Tests\Test02;
+use App\Http\Controllers\Tests\ChegadaTaise;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -11,6 +13,9 @@ Route::get('/', function () {
 Route::get('/teste1', function () {
     return view('teste', ['pageTitle' => 'Olha isso!']);
 })->name('teste1');
+
+Route::get('/teste2', [Test02::class, 'index']);
+Route::get('/chegada-taise', [ChegadaTaise::class, 'index']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {

@@ -2,23 +2,21 @@ import AppLayout from '@/layouts/app-layout';
 import TaxonomyLayout from '@/layouts/taxonomy/layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { columns, Gender } from './columns';
-import { DataTable } from './data-table';
 
 import HeadingSmall from '@/components/heading-small';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Gender Taxonomy',
-        href: '/taxonomy/gender'
+        href: '/taxonomy/gender',
     },
     {
         title: 'Create',
-        href: '/taxonomy/gender/create'
+        href: '/taxonomy/gender/create',
     },
 ];
 
-export default function GenderTaxonomy({ gender_list }: { gender_list: Array<Gender> }) {
+export default function GenderTaxonomy() {
     // const { errors, put, reset, processing, recentlySuccessful } = useForm({
     //     current_password: '',
     //     password: '',
@@ -32,7 +30,6 @@ export default function GenderTaxonomy({ gender_list }: { gender_list: Array<Gen
             <TaxonomyLayout>
                 <div className="space-y-6">
                     <HeadingSmall title="Gender Taxonomy" description="Genders available for the system." />
-                    <DataTable columns={columns} data={gender_list} />
                 </div>
             </TaxonomyLayout>
         </AppLayout>
