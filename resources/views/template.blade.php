@@ -49,8 +49,6 @@ $myPage->addRenderHead(function () use ($appearance) {
   CSS));
 });
 
-var_dump($page);
-
 $myPage->addRenderBody(function () {
   //$content = eval (Directive::compile());
   $this->append('\$content');

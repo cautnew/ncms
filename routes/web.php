@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Tests\MeuCurriculo;
+use App\Http\Controllers\Tests\MyHome;
 use App\Models\Users\Gender;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -16,6 +18,9 @@ Route::get('/teste1', function () {
 
 Route::get('/teste2', [Test02::class, 'index']);
 Route::get('/chegada-taise', [ChegadaTaise::class, 'index']);
+Route::get('/meu-curriculo', [MeuCurriculo::class, 'index']);
+
+Route::get('/my-home', [MyHome::class, 'index']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {

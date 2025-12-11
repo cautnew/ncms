@@ -8,7 +8,7 @@ use Illuminate\Support\Env;
 use PHTML\Core\TAG;
 use PHTML\Templates\HTML5;
 
-class ChegadaTaise extends Controller
+class MyHome extends Controller
 {
     /**
      * Display a listing of the resource.

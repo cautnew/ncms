@@ -1,19 +1,15 @@
 import { type NavItem } from '@/types';
 
 export const sidebarNavItems: NavItem[] = [
+    { title: 'Website', href: '/settings/website' },
+    { title: 'Profile', href: '/settings/profile' },
     {
-        title: 'Website',
-        href: '/settings/website',
-        icon: null,
+        title: 'Template',
+        href: '/settings/template',
+        subitems: [
+            { title: 'Adjustments', href: '/settings/template/adjustments' },
+            { title: 'List', href: '/settings/template/list' },
+        ],
     },
-    {
-        title: 'Profile',
-        href: '/settings/profile',
-        icon: null,
-    },
-    {
-        title: 'Appearance',
-        href: '/settings/appearance',
-        icon: null,
-    },
+    { title: 'Appearance', href: '/settings/appearance' },
 ];

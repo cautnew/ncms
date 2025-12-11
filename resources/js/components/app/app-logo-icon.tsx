@@ -1,7 +1,8 @@
 import { SVGAttributes } from 'react';
+import NCMSAppLogo from '../../../img/logo.png';
 
 export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
-    return (
+    const logoLaravel = (
         <svg {...props} viewBox="0 0 40 42" xmlns="http://www.w3.org/2000/svg">
             <path
                 fillRule="evenodd"
@@ -10,4 +11,8 @@ export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
             />
         </svg>
     );
+
+    const logoNcms = <img src={NCMSAppLogo} />;
+
+    return logoNcms;
 }
