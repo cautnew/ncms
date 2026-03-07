@@ -22,7 +22,7 @@
       {{ $slot }}
     </main>
     <article></article>
-    <layouts:layout.second_footer />
+    <layouts:second.second_footer />
   </div>
 </body>
 

@@ -17,6 +17,7 @@ $fBody->append($header = new HEADER(append: [
     new P(html: 'Opa')
   ])
 ]));
+
 $fBody->append($main = new MAIN(html: $slot));
 $fBody->append($article = new ARTICLE(html: ''));
 $fBody->append($footer = require_once(resource_path('/views/layouts/first/first.footer.blade.php')));
