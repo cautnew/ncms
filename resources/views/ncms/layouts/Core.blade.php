@@ -17,6 +17,7 @@
 <body>
   <section class="content-container">
     @yield('content-section')
+    @html('eita')
   </section>
   @stack('body-styles')
   @stack('body-scripts')

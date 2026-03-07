@@ -9,13 +9,27 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class RouteFactory extends Factory
 {
+    private array $availableMethods = [
+        'GET',
+        'POST',
+        'PUT',
+        'DELETE',
+        'PATCH',
+        'OPTIONS',
+    ];
+
+    private array $availableRedirectTypes = [
+        '301',
+        '302',
+    ];
+
     private function definitionForMethodAny(): array
     {
         return [
             'name' => fake()->unique()->word(),
             'description' => fake()->sentence(),
-            'method' => fake()->randomElement(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']),
-            'route' => '/' . fake()->url(),
+            'method' => fake()->randomElement($this->availableMethods),
+            'route' => fake()->filePath(),
             'is_active' => fake()->boolean(),
             'user_id' => fake()->numberBetween(1, 2),
         ];
@@ -27,7 +41,7 @@ class RouteFactory extends Factory
             'name' => fake()->unique()->word(),
             'description' => fake()->sentence(),
             'method' => 'GET',
-            'route' => '/' . fake()->url(),
+            'route' => fake()->filePath(),
             'content_id' => fake()->numberBetween(1, 100),
             'controller_class' => fake()->word(),
             'is_active' => fake()->boolean(),
@@ -41,11 +55,11 @@ class RouteFactory extends Factory
             'name' => fake()->unique()->word(),
             'description' => fake()->sentence(),
             'method' => 'GET',
-            'route' => '/' . fake()->url(),
+            'route' => fake()->filePath(),
             'content_id' => fake()->numberBetween(1, 100),
             'is_redirect' => true,
-            'redirect_to' => fake()->url(),
-            'redirect_type' => fake()->randomElement(['301', '302']),
+            'redirect_to' => fake()->filePath(),
+            'redirect_type' => fake()->randomElement($this->availableRedirectTypes),
             'is_active' => fake()->boolean(),
             'user_id' => fake()->numberBetween(1, 2),
         ];

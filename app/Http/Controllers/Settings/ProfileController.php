@@ -16,6 +16,17 @@ class ProfileController extends Controller
     /**
      * Show the user's profile settings page.
      */
+    public function teste(Request $request): Response
+    {
+        return Inertia::render('settings/SettingsLayout', [
+            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'status' => $request->session()->get('status'),
+        ]);
+    }
+
+    /**
+     * Show the user's profile settings page.
+     */
     public function edit(Request $request): Response
     {
         return Inertia::render('settings/Profile', [
