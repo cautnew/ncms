@@ -17,8 +17,8 @@ return new class extends Migration
     {
         Schema::create($this->table, function (Blueprint $table) {
             $table->uuid('id');
-            $table->foreignIdFor(Page::class, 'page_id')->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(User::class, 'created_by')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Page::class, 'page_id')->cascadeOnDelete();
+            $table->foreignIdFor(User::class, 'created_by')->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Users\Gender;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\Request;
 use App\Services\Auth\RegisterUserService;
@@ -18,20 +19,28 @@ class UserSeeder extends Seeder
         // User::factory(10)->create();
         static::$password = 'password';
 
+        $genderM = new Gender()->findBySymbol('M');
+        $genderF = new Gender()->findBySymbol('F');
+
         $users = [
             [
                 'name' => 'Felipe Martins',
                 'email' => 'felipe@email.com',
                 'password' => static::$password,
                 'birthdate' => '1991-08-19',
-                'gender_id' => '2',
+                'gender_id' => $genderM->id,
+            ],
+            [
+                'name' => 'Taíse Marques',
+                'email' => 'taise@email.com',
+                'password' => static::$password,
+                'birthdate' => '1992-11-18',
+                'gender_id' => $genderF->id,
             ]
         ];
 
         foreach ($users as $user) {
             $request = new Request();
-            if (!isset($user['password']))
-                $user['password'] = 'password';
             $request->merge($user);
 
             RegisterUserService::register($request);

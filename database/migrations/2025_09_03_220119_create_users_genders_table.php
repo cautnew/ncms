@@ -6,12 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    private string $table = 'users_genders';
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('users_genders', function (Blueprint $table) {
+        Schema::create($this->table, function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users_genders');
+        Schema::dropIfExists($this->table);
     }
 };

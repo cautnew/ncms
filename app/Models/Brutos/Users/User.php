@@ -16,6 +16,8 @@ class User extends Authenticatable
 
     public $incrementing = false;
 
+    protected $connection = 'users.brutosdb';
+
     protected $keyType = 'string';
 
     /**
@@ -27,7 +29,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'service_name'
+        'is_admin',
+        'is_central_stock_admin',
+        'access_code',
+        'parent_id',
     ];
 
     /**
@@ -58,7 +63,6 @@ class User extends Authenticatable
             'id' => 'string',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'service_name' => 'string'
         ];
     }
 }

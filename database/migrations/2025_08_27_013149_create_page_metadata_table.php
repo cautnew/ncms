@@ -19,8 +19,8 @@ return new class extends Migration
             $table->uuid('id')->index();
             $table->string('name')->unique();
             $table->string('description')->nullable();
-            $table->foreignIdFor(Type::class, 'type_id')->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(User::class, 'created_by')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Type::class, 'type_id')->cascadeOnDelete();
+            $table->foreignIdFor(User::class, 'created_by')->cascadeOnDelete();
             $table->timestamps();
         });
     }

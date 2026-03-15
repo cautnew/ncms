@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->string('description')->nullable();
             $table->enum('method', ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD', 'TRACE'])->default('GET')->comment('The HTTP method for the route');
             $table->string('route')->unique()->index();
-            $table->foreignIdFor(Page::class, 'page_id')->index()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Page::class, 'page_id')->index()->cascadeOnDelete();
             $table->string('controller_class')->nullable();
             $table->string('method_get')->nullable();
             $table->string('method_post')->nullable();
@@ -34,7 +34,7 @@ return new class extends Migration {
             $table->string('redirect_type')->nullable()->comment('The type of redirect (e.g., 301, 302)');
             $table->boolean('is_active')->default(false);
             $table->boolean('is_authenticated_only')->default(false);
-            $table->foreignIdFor(User::class, 'created_by')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class, 'created_by')->cascadeOnDelete();
             $table->timestamps();
         });
     }

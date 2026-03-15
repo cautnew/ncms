@@ -29,9 +29,4 @@ class Gender extends Model
             'symbol' => 'string'
         ];
     }
-
-    public function findBySymbol(string $symbol): ?self
-    {
-        return self::where('symbol', '=', $symbol)->first();
-    }
 }

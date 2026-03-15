@@ -15,13 +15,13 @@ return new class extends Migration {
     {
         Schema::create($this->table, function (Blueprint $table) {
             $table->uuid('id');
-            $table->foreignUuid('user_id')->constrained('users', 'id')->onDelete('cascade');
+            $table->foreignIdFor(User::class, 'user_id')->onDelete('cascade');
             $table->string('name');
             $table->string('middle_name')->nullable();
             $table->string('lastname')->nullable();
             $table->date('birthdate')->nullable();
-            $table->foreignIdFor(Gender::class, 'gender_id')->constrained();
-            $table->foreignIdFor(User::class, 'created_by')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Gender::class, 'gender_id');
+            $table->foreignIdFor(User::class, 'created_by')->cascadeOnDelete();
             $table->timestamps();
         });
     }
