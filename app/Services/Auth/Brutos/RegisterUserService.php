@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Services\Auth;
+namespace App\Services\Auth\Brutos;
 
 use App\Models\Users\Person;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -27,14 +26,13 @@ class RegisterUserService
       'email' => 'required|email|unique:users,email',
       'password' => 'required|string|min:8',
       'birthdate' => 'required|date',
-      'gender_id' => 'required|int',
     ]);
 
     $user = User::create([
       'name' => $requestData['name'],
       'email' => $requestData['email'],
       'password' => Hash::make($requestData['password']),
-      'service_name' => 'kautchcms'
+      'sevice_name' => 'brutosapp'
     ]);
 
     if (!$user) {
