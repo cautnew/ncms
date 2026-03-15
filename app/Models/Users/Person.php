@@ -42,7 +42,8 @@ class Person extends Model
             'name' => 'string',
             'middle_name' => 'string',
             'lastname' => 'string',
-            'birthdate' => 'date'
+            'birthdate' => 'date',
+            'gender_id' => 'int',
         ];
     }
 
