@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Pages;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Pages\StorePageRequest;
 use App\Http\Requests\Pages\UpdatePageRequest;
 use App\Models\Pages\Page;
