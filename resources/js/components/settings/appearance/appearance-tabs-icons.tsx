@@ -26,7 +26,6 @@ export default function AppearanceToggleTab({ className = '', ...props }: HTMLAt
                     )}
                 >
                     <Icon className="-ml-1 h-4 w-4" />
-                    <span className="ml-1.5 text-sm">{label}</span>
                 </button>
             ))}
         </div>
