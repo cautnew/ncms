@@ -16,7 +16,13 @@ class TemplateAdjustmentsController extends Controller
      */
     public function index(): Response
     {
-        return Inertia::render('settings/template/adjustments', TemplatesManager::getJsonObject());
+        return Inertia::render('settings/template/adjustments', [
+            'template_params' => TemplatesManager::getJsonObject(),
+            'other_params' => [
+                'template_class' => 'dd',
+                'name_class' => 'ddw'
+            ]
+        ]);
     }
 
     public function update(Request $request): RedirectResponse

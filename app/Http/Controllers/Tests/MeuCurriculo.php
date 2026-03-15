@@ -17,7 +17,7 @@ class MeuCurriculo extends Controller
 
     public function __construct()
     {
-        $this->datRef = Date::create(2025, 11, 20);
+        $this->datRef = Date::create(2026, 02, 05);
         $this->datBirth = Date::create(1991, 8, 19);
         $this->ageYears = (int) $this->datBirth->diff(Date::now())->totalYears;
     }
@@ -91,7 +91,7 @@ class MeuCurriculo extends Controller
                                     TAG::p('card-text', html: 'Usando GIT para versionamento e Jira para DevOps. Usamos o Kanban como a metodologia ágil de desenvolvimento.'),
                                     TAG::p('card-text', html: 'Criação de rotinas em Python para otimizar tarefas em diversas áreas.'),
                                 ]),
-                                TAG::div('card-footer', html: 'desde 11/2022 (3 anos)'),
+                                TAG::div('card-footer', html: 'desde 11/2022 (há 3 anos e 3 meses)'),
                             ]),
                             TAG::div('card mb-2', append: [
                                 TAG::div('card-body', append: [

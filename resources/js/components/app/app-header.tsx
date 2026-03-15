@@ -15,7 +15,7 @@ import { Menu, Search } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 import { footerNavItems } from './app-navitems-footer';
-import { mainNavItems } from './app-navitems-main';
+import { useMainNavItems } from './app-navitems-main';
 
 const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
 
@@ -27,6 +27,8 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     const page = usePage<SharedData>();
     const { auth } = page.props;
     const getInitials = useInitials();
+    const mainNavItems = useMainNavItems();
+
     return (
         <>
             <div className="border-b border-sidebar-border/80">

@@ -8,8 +8,8 @@ import TaxonomyLayout from '@/layouts/taxonomy/layout';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Appearance settings',
-        href: '/settings/appearance',
+        title: 'Taxonomy',
+        href: '/taxonomy',
     },
 ];
 

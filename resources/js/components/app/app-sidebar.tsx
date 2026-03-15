@@ -5,9 +5,11 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { Link } from '@inertiajs/react';
 import AppLogo from './app-logo';
 import { footerNavItems } from './app-navitems-footer';
-import { mainNavItems } from './app-navitems-main';
+import { useMainNavItems } from './app-navitems-main';
 
 export function AppSidebar() {
+    const mainNavItems = useMainNavItems();
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
