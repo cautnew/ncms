@@ -1,0 +1,98 @@
+#ddev-generated
+# If you remove the ddev-generated line above you
+# are responsible for maintaining this file. DDEV will not then
+# update it, for example if you add `additional_hostnames`, etc.
+
+http:
+  routers:
+    ncms-site-13-web-80-http:
+      entrypoints:
+        - http-33000
+      rule: HostRegexp(`^ncms-site-13\.ddev\.site$`)
+      
+      service: "ncms-site-13-web-80"
+      tls: false
+      # middlewares:
+      #   - "ncms-site-13-redirectHttps"
+    ncms-site-13-web-8025-http:
+      entrypoints:
+        - http-8025
+      rule: HostRegexp(`^ncms-site-13\.ddev\.site$`)
+      
+      service: "ncms-site-13-web-8025"
+      tls: false
+      # middlewares:
+      #   - "ncms-site-13-redirectHttps"
+    ncms-site-13-xhgui-80-http:
+      entrypoints:
+        - http-8143
+      rule: HostRegexp(`^ncms-site-13\.ddev\.site$`)
+      
+      service: "ncms-site-13-xhgui-80"
+      tls: false
+      # middlewares:
+      #   - "ncms-site-13-redirectHttps"
+    
+    
+    
+    ncms-site-13-web-80-https:
+      entrypoints:
+        - http-443
+      rule: HostRegexp(`^ncms-site-13\.ddev\.site$`)
+      
+      service: "ncms-site-13-web-80"
+      
+      tls: true
+      
+    ncms-site-13-web-8025-https:
+      entrypoints:
+        - http-8026
+      rule: HostRegexp(`^ncms-site-13\.ddev\.site$`)
+      
+      service: "ncms-site-13-web-8025"
+      
+      tls: true
+      
+    
+    ncms-site-13-xhgui-80-https:
+      entrypoints:
+        - http-8142
+      rule: HostRegexp(`^ncms-site-13\.ddev\.site$`)
+      
+      service: "ncms-site-13-xhgui-80"
+      
+      tls: true
+      
+    
+
+  middlewares:
+    ncms-site-13-redirectHttps:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+  services:
+    ncms-site-13-web-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-ncms-site-13-web:80
+        
+    ncms-site-13-web-8025:
+      loadbalancer:
+        servers:
+          - url: http://ddev-ncms-site-13-web:8025
+        
+    
+    
+    ncms-site-13-xhgui-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-ncms-site-13-xhgui:80
+        
+    
+    
+
+tls:
+  certificates:
+    - certFile: /mnt/ddev-global-cache/traefik/certs/ncms-site-13.crt
+      keyFile: /mnt/ddev-global-cache/traefik/certs/ncms-site-13.key
