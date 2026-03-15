@@ -4,7 +4,7 @@ namespace App\Services\Templates;
 
 class TemplatesManager
 {
-  private static $pathJsonConfig = 'Templates/ncms/.config';
+  private static $pathJsonConfig = 'Templates/extension/NCMS/.config';
 
   public static function getPathJsonConfig(): string
   {

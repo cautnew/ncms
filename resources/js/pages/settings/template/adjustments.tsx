@@ -18,32 +18,46 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-type ProfileForm = {
+type AdjustmentForm = {
     alias: string;
-    name: string;
+    template_name: string;
     description: string;
     version: string;
+    teste?: string;
 };
 
-export default function Profile({ alias, name, description, version }: { alias: string; name: string; description: string; version: string }) {
-    const { auth } = usePage<SharedData>().props;
+type AdjustmentType = {
+    alias: string;
+    template_name: string;
+    description: string;
+    version: string;
+    teste?: string;
+};
 
-    const { data, setData, post, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
-        alias: alias,
-        name: name,
-        description: description,
-        version: version,
+const AdjustmentPage = ({ alias, template_name, description, version, teste }: AdjustmentForm) => {
+    const { auth, other_params } = usePage<SharedData>().props;
+    const template_params = usePage().props.template_params as AdjustmentType;
+
+    const { data, setData, post, errors, processing, recentlySuccessful } = useForm<Required<AdjustmentForm>>({
+        alias: alias || template_params.alias || '',
+        template_name: template_name || template_params.template_name || '',
+        description: description || template_params.description || '',
+        version: version || template_params.version || '',
+        teste: teste || template_params.teste || '',
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+
+        console.log('e', e);
+        console.log('e.target', e.target);
 
         post(route('settings.template.adjustments.update'), {
             preserveScroll: true,
         });
     };
 
-    return (
+    const component = (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Template settings" />
 
@@ -53,19 +67,19 @@ export default function Profile({ alias, name, description, version }: { alias: 
 
                     <form onSubmit={submit} className="space-y-3">
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Name</Label>
+                            <Label htmlFor="template_name">Name</Label>
 
                             <Input
-                                id="name"
+                                id="template_name"
                                 className="mt-1 block w-full"
-                                value={data.name}
-                                onChange={(e) => setData('name', e.target.value)}
+                                value={data.template_name}
+                                onChange={(e) => setData('template_name', e.target.value)}
                                 required
-                                autoComplete="name"
+                                autoComplete="template_name"
                                 placeholder="Template name"
                             />
 
-                            <InputError className="mt-2" message={errors.name} />
+                            <InputError className="mt-2" message={errors.template_name} />
                         </div>
 
                         <div className="grid gap-2">
@@ -102,6 +116,23 @@ export default function Profile({ alias, name, description, version }: { alias: 
                             <InputError className="mt-2" message={errors.version} />
                         </div>
 
+                        <div className="grid gap-2">
+                            <Label htmlFor="test">Teste</Label>
+
+                            <Input
+                                id="test"
+                                className="mt-1 block w-full"
+                                onChange={(e) => {
+                                    e.target.value;
+                                }}
+                                required
+                                autoComplete="test"
+                                placeholder="Test"
+                            />
+
+                            <InputError className="mt-2" message={errors.teste} />
+                        </div>
+
                         <div className="flex items-center gap-4">
                             <Button disabled={processing}>Save</Button>
 
@@ -120,4 +151,8 @@ export default function Profile({ alias, name, description, version }: { alias: 
             </SettingsLayout>
         </AppLayout>
     );
-}
+
+    return component;
+};
+
+export default AdjustmentPage;
