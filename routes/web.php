@@ -21,6 +21,7 @@ Route::get('/chegada-taise', [ChegadaTaise::class, 'index']);
 Route::get('/meu-curriculo', [MeuCurriculo::class, 'index']);
 
 Route::get('/my-home', [MyHome::class, 'index']);
+Route::get('/my-home-blog', function () { return view('myhomeblog.my-home'); });
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
@@ -29,15 +30,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/taxonomy', function () {
         return Inertia::render('taxonomy/all');
-    });
+    })->name('taxonomy');
 
     Route::get('/taxonomy/gender', function () {
         return Inertia::render('taxonomy/gender/page', ['gender_list' => Gender::all(['id', 'name', 'symbol'])]);
-    });
+    })->name('taxonomy.gender');
 
     Route::get('/taxonomy/gender/create', function () {
         return Inertia::render('taxonomy/gender/create');
     })->name('taxonomy.gender.create');
+
+    Route::get('/media', function () {
+        return Inertia::render('media/index');
+    })->name('media');
 });
 
 Route::get('/session-test', function () {

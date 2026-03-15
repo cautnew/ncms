@@ -25,12 +25,10 @@ export default function GenderTaxonomy({ gender_list }: { gender_list: Array<Gen
             <TaxonomyLayout>
                 <div className="space-y-6">
                     <HeadingSmall title="Gender Taxonomy" description="Genders available for the system." />
-                    <div>
-                        <Button variant="ghost">
-                            <Link href={route('taxonomy.gender.create')} prefetch>
-                                Add new <Play></Play>
-                            </Link>
-                        </Button>
+                    <div className="w-full">
+                        <Link href={route('taxonomy.gender.create')} prefetch>
+                            <Button variant="ghost"><span className="mr-2">Add new</span><Play /></Button>
+                        </Link>
                     </div>
                     <DataTable columns={columns} data={gender_list} />
                 </div>
