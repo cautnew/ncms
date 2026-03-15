@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use App\Services\Auth\RegisterUserService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,7 +17,7 @@ class AuthController extends Controller
   {
     try {
       $user = RegisterUserService::register($request);
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       return response()->json([
         'message' => 'User could not be created.',
         'error' => $e->getMessage(),
@@ -39,9 +40,16 @@ class AuthController extends Controller
 
   public function login(LoginRequest $request)
   {
+    $credentials = $request->validate([
+      'email' => 'required|email',
+      'password' => 'required'
+    ]);
+
+    dd($credentials);
+
     try {
-      $login = Auth::attempt($request->only(['email', 'password']), $request->remember);
-    } catch (Exception $e) {
+      $login = Auth::attempt($credentials, $request->remember);
+    } catch (\Exception $e) {
       return response()->json([
         'message' => 'User could not login.',
         'error' => $e->getMessage(),
@@ -66,5 +74,11 @@ class AuthController extends Controller
 
   public function logout(Request $request)
   {
+    Auth::logout();
+ 
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/')->with('success', 'You have been logged out.');
   }
 }
