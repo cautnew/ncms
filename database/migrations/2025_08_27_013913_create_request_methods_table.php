@@ -3,10 +3,12 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\User;
+use App\Models\Pages\Page;
 
-return new class extends Migration
-{
-    private string $table = 'users_genders';
+return new class extends Migration {
+
+    private string $table = 'request_methods';
 
     /**
      * Run the migrations.
@@ -14,7 +16,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create($this->table, function (Blueprint $table) {
-            $table->id();
+            $table->id('id')->index();
+            $table->string('name')->unique();
+            $table->string('description')->nullable();
+            $table->string('code')->unique()->index();
             $table->timestamps();
         });
     }

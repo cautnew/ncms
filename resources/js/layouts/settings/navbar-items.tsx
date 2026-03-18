@@ -12,4 +12,11 @@ export const sidebarNavItems: NavItem[] = [
         ],
     },
     { title: 'Appearance', href: '/settings/appearance' },
+    {
+        title: 'Core',
+        subitems: [
+            { title: 'Request methods', href: '/settings/core/request-methods' },
+            { title: 'Response types', href: '/settings/core/response-types' },
+        ],
+    },
 ];
