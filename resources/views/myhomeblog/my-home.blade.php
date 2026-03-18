@@ -16,7 +16,7 @@
                     <!-- LOGO -->
                     <div class="flex-shrink-0">
                         <a href="/" class="text-2xl font-bold text-blue-600">
-                            📝 Blog
+                            Kautch CMS
                         </a>
                     </div>
 
@@ -106,11 +106,6 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- USUÁRIO NÃO LOGADO -->
-                        <a data-user-not-logged-in class="hidden px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors font-medium" href="/login">
-                            Login
-                        </a>
                     </div>
                 </div>
 
@@ -164,11 +159,6 @@
                             </button>
                         </div>
                     </div>
-
-                    <!-- LOGIN MOBILE (NÃO LOGADO) -->
-                    <a data-user-not-logged-in-mobile class="hidden block px-4 py-3 text-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium" href="/login">
-                        Fazer Login
-                    </a>
                 </div>
             </div>
 
@@ -349,7 +339,7 @@
                     </div>
                 </div>
                 <div class="border-t border-gray-800 pt-8 text-center text-sm">
-                    <p>&copy; 2026 Meu Blog. Todos os direitos reservados.</p>
+                    <p>&copy; 2026 Kautch CMS. Feito com ❤️ por <a href="https://www.github.com/cautnew" target="_blank" alt="Confira o GitHub de CautNew" title="Confira o GitHub de CautNew">CautNew</a>.</p>
                 </div>
             </div>
         </footer>
@@ -375,9 +365,7 @@
         const userMenuBtn = document.querySelector('[data-toggle-user-menu]');
         const userDropdown = document.querySelector('[data-user-dropdown]');
         const userLoggedInDesktop = document.querySelector('[data-user-logged-in]');
-        const userNotLoggedInDesktop = document.querySelector('[data-user-not-logged-in]');
         const userLoggedInMobile = document.querySelector('[data-user-logged-in-mobile]');
-        const userNotLoggedInMobile = document.querySelector('[data-user-not-logged-in-mobile]');
 
         // Toggle mobile menu
         mobileMenuBtn?.addEventListener('click', () => {
@@ -443,14 +431,10 @@
         function updateUserDisplay() {
             if (state.isLoggedIn) {
                 userLoggedInDesktop?.classList.remove('hidden');
-                userNotLoggedInDesktop?.classList.add('hidden');
                 userLoggedInMobile?.classList.remove('hidden');
-                userNotLoggedInMobile?.classList.add('hidden');
             } else {
                 userLoggedInDesktop?.classList.add('hidden');
-                userNotLoggedInDesktop?.classList.remove('hidden');
                 userLoggedInMobile?.classList.add('hidden');
-                userNotLoggedInMobile?.classList.remove('hidden');
             }
         }
 
