@@ -1,5 +1,6 @@
 import { SVGAttributes } from 'react';
 import NCMSAppLogo from '../../../img/logo.png';
+import kautchLogo from '../../../img/logo-kautch-small.png';
 
 export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
     const logoLaravel = (
@@ -12,7 +13,7 @@ export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
         </svg>
     );
 
-    const logoNcms = <img src={NCMSAppLogo} />;
+    const logoNcms = <img src={kautchLogo} alt="Logo da Kautch CMS; Três pessoas sobre um sofá de três lugares" />;
 
     return logoNcms;
 }
