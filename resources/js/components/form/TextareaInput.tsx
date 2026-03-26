@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
  * @param {string} name - The name of the textarea field.
  * @param {string} label - The label displayed above the textarea field.
  * @param {string} value - The current value of the textarea field.
+ * @param {number} rows - The number of rows to display (default is 4).
  * @param {number} maxLength - The maximum number of characters allowed (default is 270).
  * @param {function} onChange - Callback function triggered when the textarea value changes.
  */
@@ -16,7 +17,9 @@ interface TextareaInputProps {
     name: string;
     label: string;
     value: string;
+    rows?: number;
     maxLength?: number;
+    label_description?: string;
     onChange: (value: string) => void;
 }
 
@@ -24,7 +27,9 @@ export function TextareaInput({
     name,
     label,
     value,
+    rows = 4,
     maxLength = 270,
+    label_description = '',
     onChange,
 }: TextareaInputProps) {
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -37,12 +42,15 @@ export function TextareaInput({
     return (
         <div className="flex flex-col gap-2">
             <Label htmlFor={name}>{label}</Label>
+            <div className="flex justify-end text-xs text-muted-foreground">
+                <span>{label_description}</span>
+            </div>
             <textarea
                 id={name}
                 name={name}
                 value={value}
                 onChange={handleInputChange}
-                rows={4}
+                rows={rows}
                 className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:border-ring disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Enter page description..."
             />

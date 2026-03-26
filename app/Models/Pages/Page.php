@@ -15,10 +15,24 @@ class Page extends Model
 
     protected $keyType = 'string';
 
+    protected $fillable = [
+        'name',
+        'slug',
+        'description',
+        'active',
+        'type_id',
+    ];
+
     protected static function booted(): void
     {
-        static::creating(function (User $user) {
-            $user->id = (string) Str::uuid();
+        static::creating(function (Page $page) {
+            $page->id = (string) Str::uuid();
+            $page->created_by = auth()->user()->id ?? null;
+            $page->updated_by = null;
+        });
+
+        static::updating(function (Page $page) {
+            $page->updated_by = auth()->user()->id ?? null;
         });
     }
 

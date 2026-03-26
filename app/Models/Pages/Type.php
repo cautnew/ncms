@@ -13,12 +13,28 @@ class Type extends Model
 
     public $incrementing = false;
 
+    protected $table = 'page_types';
+
     protected $keyType = 'string';
+
+    protected $fillable = [
+        'name',
+        'slug',
+        'description',
+        'version',
+        'active',
+    ];
 
     protected static function booted(): void
     {
-        static::creating(function (User $user) {
-            $user->id = (string) Str::uuid();
+        static::creating(function (Type $type) {
+            $type->id = (string) Str::uuid();
+            $type->created_by = auth()->user()->id ?? null;
+            $type->updated_by = null;
+        });
+
+        static::updating(function (Type $type) {
+            $type->updated_by = auth()->user()->id;
         });
     }
 

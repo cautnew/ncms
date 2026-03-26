@@ -1,0 +1,36 @@
+{
+    "change_id": "0001",
+    "version": "v0.1.0",
+    "created": [
+        "app/Models/Page.php",
+        "app/Models/ContentRevision.php",
+        "app/Observers/PageObserver.php",
+        "resources/templates/landing.phtml"
+    ],
+    "modified": [
+        "routes/api.php",
+        "app/Providers/AppServiceProvider.php"
+    ],
+    "migrations": [
+        "2026_03_26_000001_create_pages_table.php",
+        "2026_03_26_000003_create_content_revisions_table.php",
+        "2026_03_26_000004_create_admin_activity_logs_table.php"
+    ],
+    "tables_added": [
+        "pages",
+        "posts",
+        "content_revisions",
+        "admin_activity_logs"
+    ],
+    "tables_modified": [],
+    "endpoints_added": [
+        "GET /api/public/pages/{slug}",
+        "GET /api/admin/templates/validate-class",
+        "GET /api/admin/pages/{id}/revisions"
+    ],
+    "notes": [
+        "Estrutura base do CMS criada",
+        "SEO e templates PHTML habilitados",
+        "Sistema de histórico e auditoria inicial"
+    ]
+}

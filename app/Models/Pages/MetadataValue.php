@@ -5,25 +5,24 @@ namespace App\Models\Pages;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Metadata extends Model
+class MetadataValue extends Model
 {
     /** @use HasFactory<\Database\Factories\Pages\MetadataFactory> */
     use HasFactory;
 
-    protected $table = 'page_metadata';
+    protected $table = 'page_metadata_values';
 
     protected $fillable = [
-        'page_id',
+        'metadata_id',
+        'metadata_key_id',
+        'value',
+        'is_null',
+        'is_active',
     ];
 
     public function values(): HasMany
     {
         return $this->hasMany(MetadataValue::class);
-    }
-
-    public function keys(): HasMany
-    {
-        return $this->hasMany(MetadataKey::class);
     }
 
     protected static function booted(): void

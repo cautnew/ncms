@@ -21,5 +21,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::automaticallyEagerLoadRelationships();
+        $pathMigrations = database_path() . '/migrations';
+        $this->loadMigrationsFrom([
+            $pathMigrations . '/admin',
+            $pathMigrations . '/users',
+            $pathMigrations . '/routes',
+            $pathMigrations . '/pages',
+            $pathMigrations . '/cotacao',
+        ]);
     }
 }

@@ -16,7 +16,11 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->char('symbol')->index()->unique();
+            $table->foreignUuid('created_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('updated_by')->nullable()->constrained('users', 'id');
+            $table->foreignUuid('deleted_by')->nullable()->constrained('users', 'id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

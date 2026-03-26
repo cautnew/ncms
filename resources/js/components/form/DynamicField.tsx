@@ -2,14 +2,18 @@ import React from 'react';
 import { TextInput } from '@/components/form/TextInput';
 import { TextareaInput } from '@/components/form/TextareaInput';
 import { ImageInput } from '@/components/form/ImageInput';
+import { SelectInput } from '@/components/form/SelectInput';
 
 // Define the shape of our field configuration
 export type FieldConfig = {
-    type: 'text' | 'textarea' | 'image';
+    type: 'text' | 'textarea' | 'image' | 'select';
     name: string;
     label: string;
+    rows?: number;
     maxLength?: number;
     alertAt?: number;
+    label_description?: string;
+    options?: { value: string; label: string }[];
 };
 
 interface DynamicFieldProps {
@@ -48,7 +52,9 @@ export function DynamicField({ field, formData, onChange }: DynamicFieldProps) {
                     key={field.name}
                     name={field.name}
                     label={field.label}
+                    label_description={field.label_description}
                     value={formData[field.name] || ''}
+                    rows={field.rows}
                     maxLength={field.maxLength}
                     onChange={(val) => onChange(field.name, val)}
                 />
@@ -63,6 +69,17 @@ export function DynamicField({ field, formData, onChange }: DynamicFieldProps) {
                     description={formData[`${field.name}_desc`] || ''}
                     onImageChange={(file) => onChange(`${field.name}_file`, file)}
                     onDescriptionChange={(desc) => onChange(`${field.name}_desc`, desc)}
+                />
+            );
+        case 'select':
+            return (
+                <SelectInput
+                    key={field.name}
+                    name={field.name}
+                    label={field.label}
+                    value={formData[field.name] || ''}
+                    options={field.options || []}
+                    onChange={(val) => onChange(field.name, val)}
                 />
             );
         default:

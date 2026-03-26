@@ -4,9 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Models\User;
+use App\Models\Pages\Page;
 
-return new class extends Migration {
-    private string $table = 'types';
+
+return new class extends Migration
+{
+    private string $table = 'page_metadata';
 
     /**
      * Run the migrations.
@@ -14,9 +17,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create($this->table, function (Blueprint $table) {
-            $table->uuid('id')->index();
-            $table->string('name')->unique();
-            $table->foreignIdFor(User::class, 'created_by')->cascadeOnDelete();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('page_id')->constrained('pages', 'id')->cascadeOnDelete();
+            $table->foreignUuid('created_by')->constrained('users', 'id')->cascadeOnDelete();
+            $table->foreignUuid('updated_by')->nullable()->constrained('users', 'id')->cascadeOnDelete();
             $table->timestamps();
         });
     }

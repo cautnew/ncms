@@ -8,7 +8,7 @@ use App\Models\Pages\Page;
 
 return new class extends Migration {
 
-    private string $table = 'request_methods';
+    private string $table = 'response_types';
 
     /**
      * Run the migrations.
@@ -16,11 +16,21 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create($this->table, function (Blueprint $table) {
-            $table->id('id')->index();
+            $table->id('id');
             $table->string('name')->unique();
             $table->string('description')->nullable();
             $table->string('code')->unique()->index();
+            $table->foreignUuid('created_by')
+              ->nullable()
+              ->constrained('users', 'id');
+            $table->foreignUuid('updated_by')
+              ->nullable()
+              ->constrained('users', 'id');
+            $table->foreignUuid('deleted_by')
+              ->nullable()
+              ->constrained('users', 'id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

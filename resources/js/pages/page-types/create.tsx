@@ -7,12 +7,12 @@ import { DynamicField, type FieldConfig } from '@/components/form/DynamicField';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Pages',
-        href: '/pages',
+        title: 'Page Types',
+        href: '/page-types',
     },
     {
         title: 'Create',
-        href: '/pages/create',
+        href: '/page-types/create',
     },
 ];
 
@@ -20,12 +20,7 @@ export default function Create() {
     const { fields } = usePage().props as unknown as { fields: FieldConfig[] };
 
     const initialFormState = fields ? fields.reduce((acc, field) => {
-        if (field.type === 'image') {
-            acc[`${field.name}_file`] = null;
-            acc[`${field.name}_desc`] = '';
-        } else {
-            acc[field.name] = '';
-        }
+        acc[field.name] = '';
         return acc;
     }, {} as Record<string, any>) : {};
 
@@ -37,19 +32,18 @@ export default function Create() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/pages', {
-            forceFormData: true,
-            onSuccess: () => alert('O processo foi bem sucedido.'),
+        post('/page-types', {
+            onSuccess: () => alert('Page Type created successfully.'),
         });
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Create a new page" />
+            <Head title="Create a new page type" />
             <div className="flex w-full max-w-3xl flex-1 flex-col gap-6 p-4">
                 <div>
-                    <h2 className="text-xl font-semibold">Create a new page</h2>
-                    <p className="text-sm text-muted-foreground">Fill in the details below to create a new page.</p>
+                    <h2 className="text-xl font-semibold">Create a new page type</h2>
+                    <p className="text-sm text-muted-foreground">Define a structure for your pages.</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6">
@@ -63,7 +57,7 @@ export default function Create() {
                     ))}
 
                     <div className="flex justify-end">
-                        <Button type="submit" disabled={processing}>Create Page</Button>
+                        <Button type="submit" disabled={processing}>Create Page Type</Button>
                     </div>
                 </form>
             </div>

@@ -16,6 +16,18 @@ class ResponseType extends Model
         'code',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (ResponseType $responseType) {
+            $responseType->created_by = auth()->user()->id ?? null;
+            $responseType->updated_by = null;
+        });
+
+        static::updating(function (ResponseType $responseType) {
+            $responseType->updated_by = auth()->user()->id ?? null;
+        });
+    }
+
     public function findByCode(string $code): ?self
     {
         return $this->where('code', '=', strtoupper($code))->first();

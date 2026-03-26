@@ -17,7 +17,11 @@ class TypeFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->name,
+            'slug' => $this->faker->slug,
+            'description' => $this->faker->sentence,
+            'version' => $this->faker->word,
+            'active' => $this->faker->boolean
         ];
     }
 }
