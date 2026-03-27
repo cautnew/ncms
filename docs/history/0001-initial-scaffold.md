@@ -1,142 +1,39 @@
-# Kautch CMS — Histórico de Mudança
-## Change ID: 0001
-## Versão: v0.1.0
-## Tipo: Initial Scaffold / MVP Base
-## Data: YYYY-MM-DD
+# 0001-initial-scaffold
 
----
+## Objetivo
+Criar o MVP do Kautch CMS focado em performance, API First, regras avançadas de SEO e Templates PHTML, além do controle obrigatório de auditoria e revisão de conteúdo.
 
-## 🎯 Objetivo da Mudança
-Criação do scaffold inicial do **Kautch CMS**, incluindo backend Laravel 12 (API-first),
-Admin em React + Tailwind, estrutura de SEO avançado, sistema de templates PHTML,
-versionamento de conteúdo e auditoria administrativa.
+## Arquivos criados
+- `database/migrations/2026_03_26_000001_create_kautch_cms_tables.php`
+- `app/Models/Page.php`
+- `app/Models/ContentRevision.php`
+- `app/Models/AdminActivityLog.php`
+- `app/Observers/PageObserver.php`
+- `app/Templates/Contracts/TemplateRendererInterface.php`
+- `app/Http/Controllers/Api/Admin/TemplateValidationController.php`
+- `tests/Feature/Admin/Templates/TemplateValidationTest.php`
+- `docs/api/admin/templates.md`
+- `routes/api.php`
 
----
+## Arquivos alterados
+- `N/A`
 
-## 🧱 Arquivos Criados
-### Backend (Laravel)
-- app/Models/Page.php
-- app/Models/Post.php
-- app/Models/ContentRevision.php
-- app/Models/AdminActivityLog.php
-- app/Observers/PageObserver.php
-- app/Observers/PostObserver.php
-- app/Templates/Contracts/TemplateRendererInterface.php
-- app/Templates/LandingTemplate.php
-- app/Http/Controllers/Api/Admin/PageController.php
-- app/Http/Controllers/Api/Admin/TemplateValidationController.php
-- app/Http/Controllers/Api/Public/PagePublicController.php
-- app/Services/Seo/SeoBuilder.php
-- routes/api.php
+## Migrations criadas
+- `2026_03_26_000001_create_kautch_cms_tables.php`
 
-### Templates
-- resources/templates/landing.phtml
+## Tabelas novas
+1. **pages**: id, title, slug (index), status, published_at, content (json), head_tags (json), body_start_tags (json), body_end_tags (json), schema_jsonld (json), template_class, template_payload (json)
+2. **content_revisions**: id, content_type, content_id (index), user_id (index), action, title, slug, status, payload (json), created_at (index)
+3. **admin_activity_logs**: id, user_id (index), action, entity_type, entity_id (index), meta (json), created_at (index)
 
-### Frontend (Admin React)
-- admin/src/pages/pages/PageEdit.tsx
-- admin/src/components/TemplateClassValidator.tsx
-- admin/src/components/RevisionsPanel.tsx
+## Campos novos em tabelas existentes
+- `N/A`
 
-### Documentação
-- docs/history/0001-initial-scaffold.md
-- docs/history/manifest-0001.json
+## Endpoints adicionados/alterados
+- `GET /api/admin/templates/validate-class`
 
----
-
-## ✏️ Arquivos Alterados
-- config/sanctum.php
-- app/Providers/AppServiceProvider.php
-- database/seeders/DatabaseSeeder.php
-
----
-
-## 🗄️ Migrations Criadas
-- 2026_03_26_000001_create_pages_table.php
-- 2026_03_26_000002_create_posts_table.php
-- 2026_03_26_000003_create_content_revisions_table.php
-- 2026_03_26_000004_create_admin_activity_logs_table.php
-
----
-
-## 📊 Tabelas Criadas
-### pages
-- id
-- title
-- slug (unique, index)
-- status (index)
-- published_at (index)
-- content (json)
-- meta_title
-- meta_description
-- canonical_url
-- robots
-- head_tags (json)
-- body_start_tags (json)
-- body_end_tags (json)
-- schema_jsonld (json)
-- template_class
-- template_payload (json)
-- created_at / updated_at
-
-### posts
-- Estrutura similar à pages + excerpt
-
-### content_revisions
-- id
-- content_type (page|post)
-- content_id (index)
-- user_id (index, nullable)
-- action
-- status
-- payload (json)
-- created_at
-
-### admin_activity_logs
-- id
-- user_id (index)
-- action
-- entity_type
-- entity_id (index, nullable)
-- meta (json)
-- created_at
-
----
-
-## 🌐 Endpoints Adicionados
-### Públicos
-- GET /api/public/pages/{slug}
-- GET /api/public/posts
-- GET /api/public/posts/{slug}
-- GET /api/public/seo/{type}/{slug}
-
-### Admin
-- POST /api/admin/auth/login
-- GET /api/admin/pages
-- POST /api/admin/pages
-- PUT /api/admin/pages/{id}
-- GET /api/admin/pages/{id}/revisions
-- GET /api/admin/templates/validate-class
-- GET /api/admin/activity-logs
-
----
-
-## 🔍 Observações de Performance
-- Índices criados em slug, status e published_at
-- Revisions e logs só são gerados em eventos de persistência
-- Conteúdo público preparado para cache por slug
-
----
-
-## 🔐 Observações de Segurança
-- Sanitização obrigatória para head_tags e body injections
-- Endpoints admin protegidos por Sanctum
-- Validação de classe de template via Reflection
-
----
-
-## ✅ Checklist de Testes Manuais
-- [ ] Criar página e salvar
-- [ ] Editar página e verificar revision criada
-- [ ] Validar template_class existente e inexistente
-- [ ] Consumir página via endpoint público
-- [ ] Conferir activity log após ações no admin
+## Observações de performance/segurança
+- A tabela `pages` contém os campos cruciais (slug, status, published_at) sob índices para garantir queries rápidas via API pública (where status=published and published_at<=now).
+- As tags injáveis de SEO (head_tags, body_start_tags, body_end_tags) devem ter seu HTML sanitizado caso permitam customizações perigosas. Seu output será renderizado no app frontend/PHTML.
+- O Observer envia as queries de `admin_activity_logs` e `content_revisions` apenas no saved/deleted events.
+- Todos os endpoints protegidos pelo middleware `auth:sanctum`.

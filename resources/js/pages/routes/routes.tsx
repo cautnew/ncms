@@ -10,7 +10,7 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, usePage, useForm, Link } from '@inertiajs/react';
 import {
     ColumnDef,
     flexRender,
@@ -21,7 +21,7 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, Eye, EyeOff } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, Eye, EyeOff, X } from 'lucide-react';
 import * as React from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -109,6 +109,10 @@ export const columns: ColumnDef<Payment>[] = [
 ];
 
 export default function DataTablePagination() {
+    const { lastCachedAt } = usePage().props as any;
+    const { post, processing } = useForm();
+    const [showAlert, setShowAlert] = React.useState(true);
+    
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({
         id: false, // Hide ID column by default
     });
@@ -140,8 +144,45 @@ export default function DataTablePagination() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Pages" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <p className="text-sm">Check the list of all of your routes.</p>
-                <hr />
+                {showAlert && (
+                    <div className="relative rounded-lg border bg-card text-card-foreground shadow-sm p-6 mb-4">
+                        <button 
+                            onClick={() => setShowAlert(false)} 
+                            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+                            aria-label="Dispensar aviso"
+                        >
+                            <X className="h-5 w-5" />
+                        </button>
+                        <h3 className="text-lg font-semibold mb-2">Cache de Rotas (Routes Cache)</h3>
+                        <p className="text-sm text-muted-foreground mb-4 pr-6">
+                            O cache de rotas é essencial para otimizar a performance da sua aplicação Laravel. 
+                            Sempre que criar ou editar rotas, recrie esse cache para que as alterações surtam efeito.
+                        </p>
+                        
+                        <div className="flex items-center md:justify-between flex-col md:flex-row mt-4">
+                            <div className="text-sm border-l-4 border-indigo-500 pl-3 py-3 md:py-0">
+                                <span className="font-medium text-gray-500 block">Última atualização do cache:</span>
+                                <span className="text-gray-900 dark:text-gray-100 font-semibold">
+                                    {lastCachedAt ? lastCachedAt : 'Cache não gerado (Rodando em runtime puro)'}
+                                </span>
+                            </div>
+                            
+                            <div className="flex gap-2 mt-4 md:mt-0">
+                                <Button variant="outline" asChild>
+                                    <Link href={route('routes.cache.details')}>Mais detalhes</Link>
+                                </Button>
+                                <Button 
+                                    onClick={() => post(route('routes.cache'), { preserveScroll: true })} 
+                                    disabled={processing}
+                                    variant="default"
+                                >
+                                    {processing ? 'Gerando...' : 'Preparar Cache de Rotas'}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <div className="flex w-full flex-col gap-y-2 py-2 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-center justify-between space-x-2">
                         <DropdownMenu>

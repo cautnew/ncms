@@ -1,36 +1,36 @@
 {
-    "change_id": "0001",
-    "version": "v0.1.0",
-    "created": [
-        "app/Models/Page.php",
-        "app/Models/ContentRevision.php",
-        "app/Observers/PageObserver.php",
-        "resources/templates/landing.phtml"
-    ],
-    "modified": [
-        "routes/api.php",
-        "app/Providers/AppServiceProvider.php"
-    ],
-    "migrations": [
-        "2026_03_26_000001_create_pages_table.php",
-        "2026_03_26_000003_create_content_revisions_table.php",
-        "2026_03_26_000004_create_admin_activity_logs_table.php"
-    ],
-    "tables_added": [
-        "pages",
-        "posts",
-        "content_revisions",
-        "admin_activity_logs"
-    ],
-    "tables_modified": [],
-    "endpoints_added": [
-        "GET /api/public/pages/{slug}",
-        "GET /api/admin/templates/validate-class",
-        "GET /api/admin/pages/{id}/revisions"
-    ],
-    "notes": [
-        "Estrutura base do CMS criada",
-        "SEO e templates PHTML habilitados",
-        "Sistema de histórico e auditoria inicial"
-    ]
+  "change_id": "0001",
+  "created": [
+    "database/migrations/2026_03_26_000001_create_kautch_cms_tables.php",
+    "app/Models/Page.php",
+    "app/Models/ContentRevision.php",
+    "app/Models/AdminActivityLog.php",
+    "app/Observers/PageObserver.php",
+    "app/Templates/Contracts/TemplateRendererInterface.php",
+    "app/Http/Controllers/Api/Admin/TemplateValidationController.php",
+    "routes/api.php"
+  ],
+  "modified": [],
+  "migrations": [
+    "database/migrations/2026_03_26_000001_create_kautch_cms_tables.php"
+  ],
+  "tables_added": [
+    "pages",
+    "content_revisions",
+    "admin_activity_logs"
+  ],
+  "tables_modified": [],
+  "endpoints_added": [
+    "GET /api/admin/templates/validate-class"
+  ],
+  "tests_added": [
+    "tests/Feature/Admin/Templates/TemplateValidationTest.php"
+  ],
+  "docs_added": [
+    "docs/api/admin/templates.md"
+  ],
+  "notes": [
+    "Scaffold inicial com MVP do CMS focando na estrutura do banco com json types para metadata de SEO e campos de templates.",
+    "Observer criado para popular revisões e auditoria automaticamente."
+  ]
 }

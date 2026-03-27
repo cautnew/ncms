@@ -7,4 +7,7 @@ use App\Http\Controllers\Auth\AuthController;
 
 Route::middleware('auth')->group(function () {
     Route::get('/routes', [RoutesController::class, 'index'])->name('routes');
+    Route::get('/routes/cache', [RoutesController::class, 'details'])->name('routes.cache.details');
+    Route::post('/routes/cache', [RoutesController::class, 'cache'])->name('routes.cache');
+    Route::delete('/routes/cache', [RoutesController::class, 'clear'])->name('routes.cache.clear');
 });

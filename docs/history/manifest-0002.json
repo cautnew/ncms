@@ -1,0 +1,30 @@
+{
+  "change_id": "0002",
+  "created": [
+    "app/Http/Requests/Admin/StorePageRequest.php",
+    "app/Http/Requests/Admin/UpdatePageRequest.php",
+    "app/Http/Controllers/Api/Admin/PageController.php"
+  ],
+  "modified": [
+    "routes/api.php"
+  ],
+  "migrations": [],
+  "tables_added": [],
+  "tables_modified": [],
+  "endpoints_added": [
+    "GET /api/admin/pages",
+    "POST /api/admin/pages",
+    "GET /api/admin/pages/{id}",
+    "PUT /api/admin/pages/{id}",
+    "DELETE /api/admin/pages/{id}"
+  ],
+  "tests_added": [
+    "tests/Feature/Admin/Pages/PageCrudTest.php"
+  ],
+  "docs_added": [
+    "docs/api/admin/pages.md"
+  ],
+  "notes": [
+    "CRUD completo desenvolvido para Pages no Admin API, com FormRequests rigorosos para validar integridade do DB e SEO injections."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "change_id": "0004",
+  "created": [
+    "resources/js/pages/routes/cache.tsx"
+  ],
+  "modified": [
+    "resources/js/pages/routes/routes.tsx",
+    "app/Http/Controllers/Routes/RoutesController.php",
+    "routes/routes.php"
+  ],
+  "endpoints_added": [
+    "GET /routes/cache",
+    "DELETE /routes/cache"
+  ],
+  "notes": [
+    "Implementação concluída do component React de visualização isolada do routes cache e alteração na interface master de rotas com state para dispensa de block informativo."
+  ]
+}

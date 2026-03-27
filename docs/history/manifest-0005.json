@@ -1,0 +1,13 @@
+{
+  "change_id": "0005",
+  "created": [
+    "app/Services/Routes/RouteCacheService.php"
+  ],
+  "modified": [
+    "app/Http/Controllers/Routes/RoutesController.php"
+  ],
+  "endpoints_added": [],
+  "notes": [
+    "Refatoração completa da gestão de cache de rotas para utilizar Service Pattern. O controller agora injeta o RouteCacheService via construtor."
+  ]
+}

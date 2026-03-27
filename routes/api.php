@@ -3,6 +3,19 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Api\Admin\TemplateValidationController;
+use App\Http\Controllers\Api\Admin\PageController;
+use App\Http\Controllers\Api\Admin\RouteCacheController;
+
+Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
+    Route::get('/templates/validate-class', [TemplateValidationController::class, 'validateClass']);
+    Route::apiResource('pages', PageController::class);
+    
+    // Route Cache API
+    Route::get('/routes/cache', [RouteCacheController::class, 'status']);
+    Route::post('/routes/cache', [RouteCacheController::class, 'store']);
+    Route::delete('/routes/cache', [RouteCacheController::class, 'destroy']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {

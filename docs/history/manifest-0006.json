@@ -1,0 +1,18 @@
+{
+  "change_id": "0006",
+  "created": [
+    "app/Http/Controllers/Api/Admin/RouteCacheController.php",
+    "docs/api/admin/route-cache.md"
+  ],
+  "modified": [
+    "routes/api.php"
+  ],
+  "endpoints_added": [
+    "GET /api/admin/routes/cache",
+    "POST /api/admin/routes/cache",
+    "DELETE /api/admin/routes/cache"
+  ],
+  "notes": [
+    "Exposição de funcionalidades de cache via API REST JSON para administração remota ou via scripts autenticados."
+  ]
+}

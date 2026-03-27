@@ -1,0 +1,15 @@
+{
+  "change_id": "0003",
+  "created": [],
+  "modified": [
+    "resources/js/pages/routes/routes.tsx",
+    "app/Http/Controllers/Routes/RoutesController.php",
+    "routes/routes.php"
+  ],
+  "endpoints_added": [
+    "POST /routes/cache"
+  ],
+  "notes": [
+    "Interface React atualizada com o texto explicativo sobre o funcionamento e otimização das rotas, data do último cache, e botão que chama método post nativo do backend"
+  ]
+}
