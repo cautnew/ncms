@@ -22,12 +22,13 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::automaticallyEagerLoadRelationships();
         $pathMigrations = database_path() . '/migrations';
-        $this->loadMigrationsFrom([
+        $pathsForMigrations = [
             $pathMigrations . '/admin',
             $pathMigrations . '/users',
             $pathMigrations . '/routes',
             $pathMigrations . '/pages',
             $pathMigrations . '/cotacao',
-        ]);
+        ];
+        $this->loadMigrationsFrom($pathsForMigrations);
     }
 }

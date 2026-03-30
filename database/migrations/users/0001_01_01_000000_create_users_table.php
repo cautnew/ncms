@@ -21,6 +21,8 @@ return new class extends Migration {
             $table->string('password');
             $table->string('service_name')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_admin')->default(true);
+            $table->boolean('is_test')->default(false);
             $table->foreignUuid('created_by')->nullable()->constrained('users', 'id');
             $table->foreignUuid('updated_by')->nullable()->constrained('users', 'id');
             $table->foreignUuid('deleted_by')->nullable()->constrained('users', 'id');

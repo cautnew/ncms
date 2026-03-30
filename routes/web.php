@@ -51,6 +51,12 @@ Route::get('/session-test', function () {
     return session('test');
 });
 
+for($i = 1; $i <= 10; $i++) {
+    Route::get('/teste-' . $i, function () use ($i) {
+        return view('teste', ['pageTitle' => 'Olha isso!']);
+    })->name('teste_' . $i);
+}
+
 require __DIR__ . '/pages.php';
 require __DIR__ . '/routes.php';
 require __DIR__ . '/settings.php';

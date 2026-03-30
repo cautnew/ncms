@@ -45,8 +45,6 @@ class AuthController extends Controller
       'password' => 'required'
     ]);
 
-    dd($credentials);
-
     try {
       $login = Auth::attempt($credentials, $request->remember);
     } catch (\Exception $e) {

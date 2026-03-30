@@ -1,0 +1,14 @@
+{
+  "change_id": "0007",
+  "created": [
+    "tests/Feature/Admin/Routes/RouteCacheApiTest.php"
+  ],
+  "modified": [],
+  "endpoints_added": [],
+  "tests_added": [
+    "tests/Feature/Admin/Routes/RouteCacheApiTest.php"
+  ],
+  "notes": [
+    "Testes de feature implementados para os novos endpoints de API do cache de rotas."
+  ]
+}

@@ -17,10 +17,11 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-        static::$password = 'password';
+        self::$password = 'password';
 
-        $genderM = new Gender()->findBySymbol('M');
-        $genderF = new Gender()->findBySymbol('F');
+        $gender = new Gender();
+        $genderM = $gender->findBySymbol('M');
+        $genderF = $gender->findBySymbol('F');
 
         $users = [
             [

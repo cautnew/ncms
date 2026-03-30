@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('lastname')->nullable();
             $table->date('birthdate')->nullable();
             $table->foreignId('gender_id')->constrained('genders', 'id');
+            $table->boolean('is_test')->default(false);
             $table->foreignUuid('created_by')->constrained('users', 'id');
             $table->foreignUuid('updated_by')->nullable()->constrained('users', 'id');
             $table->foreignUuid('deleted_by')->nullable()->constrained('users', 'id');
