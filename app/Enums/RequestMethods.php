@@ -13,7 +13,7 @@ enum RequestMethods: int
   case HEAD = 7;
   case TRACE = 8;
 
-  public static function getByCode(int $code): self
+  public static function getByCode(int $code): string
   {
     return match ($code) {
       self::GET => 'GET',

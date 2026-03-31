@@ -66,7 +66,7 @@ enum ResponseTypes: int
   case NOT_EXTENDED = 510;
   case NETWORK_AUTHENTICATION_REQUIRED = 511;
 
-  public static function getByCode(int $code): self
+  public static function getByCode(int $code): string
   {
     return match ($code) {
       self::CONTINUE => 'Continue',

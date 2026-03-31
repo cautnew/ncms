@@ -41,4 +41,4 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/login/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-require_once __DIR__.'/api_brutos.php';
+require_once __DIR__ . '/api_brutos.php';

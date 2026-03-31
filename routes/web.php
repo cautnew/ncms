@@ -21,7 +21,9 @@ Route::get('/chegada-taise', [ChegadaTaise::class, 'index']);
 Route::get('/meu-curriculo', [MeuCurriculo::class, 'index']);
 
 Route::get('/my-home', [MyHome::class, 'index']);
-Route::get('/my-home-blog', function () { return view('myhomeblog.my-home'); });
+Route::get('/my-home-blog', function () {
+return view('myhomeblog.my-home');
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
@@ -51,7 +53,7 @@ Route::get('/session-test', function () {
     return session('test');
 });
 
-for($i = 1; $i <= 10; $i++) {
+for ($i = 1; $i <= 10; $i++) {
     Route::get('/teste-' . $i, function () use ($i) {
         return view('teste', ['pageTitle' => 'Olha isso!']);
     })->name('teste_' . $i);

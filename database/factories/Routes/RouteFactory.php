@@ -24,7 +24,7 @@ class RouteFactory extends Factory
             'name' => $this->faker->name,
             'description' => $this->faker->sentence,
             'request_method_id' => $this->faker->randomElement(RequestMethods::cases()),
-            'route' => $this->faker->slug,
+            'route' => '/' . $this->faker->slug,
             'page_id' => Page::factory()->create()->id,
             'controller_class' => $this->faker->word,
             'is_redirect' => $this->faker->boolean,
