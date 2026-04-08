@@ -149,34 +149,34 @@ export default function DataTablePagination() {
                         <button 
                             onClick={() => setShowAlert(false)} 
                             className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
-                            aria-label="Dispensar aviso"
+                            aria-label="Dismiss notice"
                         >
                             <X className="h-5 w-5" />
                         </button>
-                        <h3 className="text-lg font-semibold mb-2">Cache de Rotas (Routes Cache)</h3>
+                        <h3 className="text-lg font-semibold mb-2">Route cache</h3>
                         <p className="text-sm text-muted-foreground mb-4 pr-6">
-                            O cache de rotas é essencial para otimizar a performance da sua aplicação Laravel. 
-                            Sempre que criar ou editar rotas, recrie esse cache para que as alterações surtam efeito.
+                            Route caching improves Laravel performance. Whenever you add or change routes, rebuild this cache so
+                            updates take effect.
                         </p>
                         
                         <div className="flex items-center md:justify-between flex-col md:flex-row mt-4">
                             <div className="text-sm border-l-4 border-indigo-500 pl-3 py-3 md:py-0">
-                                <span className="font-medium text-gray-500 block">Última atualização do cache:</span>
+                                <span className="font-medium text-gray-500 block">Last cache update:</span>
                                 <span className="text-gray-900 dark:text-gray-100 font-semibold">
-                                    {lastCachedAt ? lastCachedAt : 'Cache não gerado (Rodando em runtime puro)'}
+                                    {lastCachedAt ? lastCachedAt : 'No cache (pure runtime)'}
                                 </span>
                             </div>
                             
                             <div className="flex gap-2 mt-4 md:mt-0">
                                 <Button variant="outline" asChild>
-                                    <Link href={route('routes.cache.details')}>Mais detalhes</Link>
+                                    <Link href={route('routes.cache.details')}>More details</Link>
                                 </Button>
                                 <Button 
                                     onClick={() => post(route('routes.cache'), { preserveScroll: true })} 
                                     disabled={processing}
                                     variant="default"
                                 >
-                                    {processing ? 'Gerando...' : 'Preparar Cache de Rotas'}
+                                    {processing ? 'Building…' : 'Build route cache'}
                                 </Button>
                             </div>
                         </div>

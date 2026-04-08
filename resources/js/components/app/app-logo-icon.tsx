@@ -13,7 +13,7 @@ export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
         </svg>
     );
 
-    const logoNcms = <img src={kautchLogo} alt="Logo da Kautch CMS; Três pessoas sobre um sofá de três lugares" />;
+    const logoNcms = <img src={kautchLogo} alt="Kautch CMS logo; three people on a three-seat sofa" />;
 
     return logoNcms;
 }

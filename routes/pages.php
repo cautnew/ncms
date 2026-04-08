@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pages', [PagesController::class, 'index'])->name('pages');
     Route::get('/pages/create', [PagesController::class, 'create'])->name('pages.create');
     // Route::post('/pages', [PagesController::class, 'store'])->name('pages.store');

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Tests\Test02;
 use App\Http\Controllers\Tests\ChegadaTaise;
+use App\Http\Controllers\Taxonomy\TaxonomyWebController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -22,25 +23,29 @@ Route::get('/meu-curriculo', [MeuCurriculo::class, 'index']);
 
 Route::get('/my-home', [MyHome::class, 'index']);
 Route::get('/my-home-blog', function () {
-return view('myhomeblog.my-home');
+    return view('myhomeblog.my-home');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    Route::get('/taxonomy', function () {
-        return Inertia::render('taxonomy/all');
-    })->name('taxonomy');
+    // ── Taxonomy Web Routes ──────────────────────────────────────
+    Route::prefix('taxonomy')->name('taxonomy.')->group(function () {
+        Route::get('/', [TaxonomyWebController::class, 'index'])->name('index');
+        Route::get('/create', [TaxonomyWebController::class, 'create'])->name('create');
+        Route::get('/{slug}', [TaxonomyWebController::class, 'show'])->name('show');
+        Route::get('/{slug}/edit', [TaxonomyWebController::class, 'edit'])->name('edit');
+        Route::get('/{slug}/delete', [TaxonomyWebController::class, 'confirmDelete'])->name('delete');
+        Route::get('/{slug}/history', [TaxonomyWebController::class, 'taxonomyHistory'])->name('history');
 
-    Route::get('/taxonomy/gender', function () {
-        return Inertia::render('taxonomy/gender/page', ['gender_list' => Gender::all(['id', 'name', 'symbol'])]);
-    })->name('taxonomy.gender');
-
-    Route::get('/taxonomy/gender/create', function () {
-        return Inertia::render('taxonomy/gender/create');
-    })->name('taxonomy.gender.create');
+        // Terms
+        Route::get('/{slug}/terms/create', [TaxonomyWebController::class, 'createTerm'])->name('terms.create');
+        Route::get('/{slug}/terms/{termSlug}/edit', [TaxonomyWebController::class, 'editTerm'])->name('terms.edit');
+        Route::get('/{slug}/terms/{termSlug}/delete', [TaxonomyWebController::class, 'confirmDeleteTerm'])->name('terms.delete');
+        Route::get('/{slug}/terms/{termSlug}/history', [TaxonomyWebController::class, 'termHistory'])->name('terms.history');
+    });
 
     Route::get('/media', function () {
         return Inertia::render('media/index');

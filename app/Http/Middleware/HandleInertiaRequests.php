@@ -5,10 +5,13 @@ namespace App\Http\Middleware;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Services\Settings\SettingsService;
 use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
+    public function __construct(protected SettingsService $settings) {}
+
     /**
      * The root template that's loaded on the first page visit.
      *
@@ -45,6 +48,10 @@ class HandleInertiaRequests extends Middleware
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
                 'user' => $request->user(),
+            ],
+            'locales' => [
+                'available' => $this->settings->availableLocales(),
+                'default' => $this->settings->defaultLocale(),
             ],
             'ziggy' => fn(): array => [
                 ...(new Ziggy)->toArray(),

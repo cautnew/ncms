@@ -22,7 +22,7 @@ class HandleInterfaceProperties extends Middleware
                     ['name' => 'Dashboard', 'href' => route('dashboard', absolute: false), 'iconName' => 'LayoutGrid'],
                     ['name' => 'Pages', 'href' => route('pages', absolute: false), 'iconName' => 'Layers'],
                     ['name' => 'Media', 'href' => route('media', absolute: false), 'iconName' => 'CassetteTape'],
-                    ['name' => 'Taxonomy', 'href' => route('taxonomy', absolute: false), 'iconName' => 'BookCopy'],
+                    ['name' => 'Taxonomy', 'href' => route('taxonomy.index', absolute: false), 'iconName' => 'BookCopy'],
                     ['name' => 'Routes', 'href' => route('routes', absolute: false), 'iconName' => 'RouteIcon'],
                 ],
             ],

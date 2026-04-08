@@ -2,8 +2,14 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Models\Taxonomy\Taxonomy;
+use App\Models\Taxonomy\TaxonomyTerm;
+use App\Observers\TaxonomyObserver;
+use App\Observers\TaxonomyTermObserver;
+use App\Services\Taxonomy\TaxonomyService;
+use App\Services\Taxonomy\TaxonomyTermService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,7 +18,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(TaxonomyService::class);
+        $this->app->singleton(TaxonomyTermService::class);
     }
 
     /**
@@ -21,14 +28,21 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::automaticallyEagerLoadRelationships();
-        $pathMigrations = database_path() . '/migrations';
-        $pathsForMigrations = [
-            $pathMigrations . '/admin',
-            $pathMigrations . '/users',
-            $pathMigrations . '/routes',
-            $pathMigrations . '/pages',
-            $pathMigrations . '/cotacao',
-        ];
-        $this->loadMigrationsFrom($pathsForMigrations);
+
+        // ── Migration paths ──────────────────────────────────────
+        $base = database_path('migrations');
+        $this->loadMigrationsFrom([
+            $base . '/admin',
+            $base . '/settings',
+            $base . '/users',
+            $base . '/routes',
+            $base . '/pages',
+            $base . '/cotacao',
+            $base . '/taxonomies',
+        ]);
+
+        // ── Observers ────────────────────────────────────────────
+        Taxonomy::observe(TaxonomyObserver::class);
+        TaxonomyTerm::observe(TaxonomyTermObserver::class);
     }
 }

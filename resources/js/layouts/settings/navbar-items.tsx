@@ -3,6 +3,7 @@ import { type NavItem } from '@/types';
 export const sidebarNavItems: NavItem[] = [
     { title: 'Website', href: '/settings/website' },
     { title: 'Profile', href: '/settings/profile' },
+    { title: 'Languages', href: '/settings/locales' },
     {
         title: 'Template',
         href: '/settings/template',
