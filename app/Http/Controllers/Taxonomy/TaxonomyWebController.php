@@ -15,9 +15,10 @@ use Inertia\Response;
 class TaxonomyWebController extends Controller
 {
     public function __construct(
-        protected TaxonomyService     $taxonomyService,
+        protected TaxonomyService $taxonomyService,
         protected TaxonomyTermService $termService,
-    ) {}
+    ) {
+    }
 
     // ──────────────────────────────────────────────────────────────
     // Taxonomy CRUD
@@ -26,12 +27,12 @@ class TaxonomyWebController extends Controller
     public function index(): Response
     {
         $taxonomies = $this->taxonomyService->all()->map(fn($t) => [
-            'id'          => $t->id,
-            'slug'        => $t->slug,
-            'name'        => $t->name('pt'),
+            'id' => $t->id,
+            'slug' => $t->slug,
+            'name' => $t->name('pt'),
             'description' => $t->description('pt'),
             'terms_count' => $t->terms()->count(),
-            'translations'=> $t->translationsArray(),
+            'translations' => $t->translationsArray(),
         ]);
 
         return Inertia::render('taxonomy/all', ['taxonomies' => $taxonomies]);
@@ -45,16 +46,16 @@ class TaxonomyWebController extends Controller
     public function show(string $slug): Response
     {
         $taxonomy = $this->taxonomyService->findOrFail($slug);
-        $locale   = 'pt';
+        $locale = 'pt';
 
         return Inertia::render('taxonomy/show', [
             'taxonomy' => [
-                'id'           => $taxonomy->id,
-                'slug'         => $taxonomy->slug,
-                'name'         => $taxonomy->name($locale),
-                'description'  => $taxonomy->description($locale),
+                'id' => $taxonomy->id,
+                'slug' => $taxonomy->slug,
+                'name' => $taxonomy->name($locale),
+                'description' => $taxonomy->description($locale),
                 'translations' => $taxonomy->translationsArray(),
-                'terms'        => $taxonomy->rootTerms->map(fn($t) => $this->formatTerm($t, $locale)),
+                'terms' => $taxonomy->rootTerms->map(fn($t) => $this->formatTerm($t, $locale)),
             ]
         ]);
     }
@@ -65,8 +66,8 @@ class TaxonomyWebController extends Controller
 
         return Inertia::render('taxonomy/edit', [
             'taxonomy' => [
-                'id'           => $taxonomy->id,
-                'slug'         => $taxonomy->slug,
+                'id' => $taxonomy->id,
+                'slug' => $taxonomy->slug,
                 'translations' => $taxonomy->translationsArray(),
             ]
         ]);
@@ -78,7 +79,7 @@ class TaxonomyWebController extends Controller
 
         return Inertia::render('taxonomy/delete', [
             'taxonomy' => [
-                'id'   => $taxonomy->id,
+                'id' => $taxonomy->id,
                 'slug' => $taxonomy->slug,
                 'name' => $taxonomy->name('pt'),
                 'terms_count' => $taxonomy->terms()->count(),
@@ -96,17 +97,17 @@ class TaxonomyWebController extends Controller
             ->orderByDesc('created_at')
             ->get()
             ->map(fn($l) => [
-                'id'            => $l->id,
-                'action'        => $l->action,
-                'old_values'    => $l->old_values,
-                'new_values'    => $l->new_values,
-                'user'          => $l->user ? ['name' => $l->user->name] : null,
-                'created_at'    => $l->created_at?->toISOString(),
+                'id' => $l->id,
+                'action' => $l->action,
+                'old_values' => $l->old_values,
+                'new_values' => $l->new_values,
+                'user' => $l->user ? ['name' => $l->user->name] : null,
+                'created_at' => $l->created_at?->toISOString(),
             ]);
 
         return Inertia::render('taxonomy/history', [
             'taxonomy' => ['slug' => $taxonomy->slug, 'name' => $taxonomy->name('pt')],
-            'logs'     => $logs,
+            'logs' => $logs,
         ]);
     }
 
@@ -119,8 +120,14 @@ class TaxonomyWebController extends Controller
         $taxonomy = $this->taxonomyService->findOrFail($slug);
 
         return Inertia::render('taxonomy/terms/create', [
-            'taxonomy' => ['slug' => $taxonomy->slug, 'name' => $taxonomy->name('pt')],
-            'terms'    => $taxonomy->terms->map(fn($t) => ['slug' => $t->slug, 'name' => $t->name('pt')]),
+            'taxonomy' => [
+                'slug' => $taxonomy->slug,
+                'name' => $taxonomy->name('pt')
+            ],
+            'terms' => $taxonomy->terms->map(fn($t) => [
+                'slug' => $t->slug,
+                'name' => $t->name('pt')
+            ]),
         ]);
     }
 
@@ -129,12 +136,15 @@ class TaxonomyWebController extends Controller
         $term = $this->termService->findOrFail($slug, $termSlug);
 
         return Inertia::render('taxonomy/terms/edit', [
-            'taxonomy' => ['slug' => $slug, 'name' => $this->taxonomyService->findOrFail($slug)->name('pt')],
-            'term'     => [
-                'id'           => $term->id,
-                'slug'         => $term->slug,
-                'rank'         => $term->rank,
-                'parent_id'    => $term->parent_id,
+            'taxonomy' => [
+                'slug' => $slug,
+                'name' => $this->taxonomyService->findOrFail($slug)->name('pt')
+            ],
+            'term' => [
+                'id' => $term->id,
+                'slug' => $term->slug,
+                'rank' => $term->rank,
+                'parent_id' => $term->parent_id,
                 'translations' => $term->translationsArray(),
             ],
         ]);
@@ -145,8 +155,15 @@ class TaxonomyWebController extends Controller
         $term = $this->termService->findOrFail($slug, $termSlug);
 
         return Inertia::render('taxonomy/terms/delete', [
-            'taxonomy' => ['slug' => $slug, 'name' => $this->taxonomyService->findOrFail($slug)->name('pt')],
-            'term'     => ['slug' => $term->slug, 'name' => $term->name('pt'), 'children_count' => $term->children()->count()],
+            'taxonomy' => [
+                'slug' => $slug,
+                'name' => $this->taxonomyService->findOrFail($slug)->name('pt')
+            ],
+            'term' => [
+                'slug' => $term->slug,
+                'name' => $term->name('pt'),
+                'children_count' => $term->children()->count()
+            ],
         ]);
     }
 
@@ -163,18 +180,24 @@ class TaxonomyWebController extends Controller
             ->orderByDesc('created_at')
             ->get()
             ->map(fn($l) => [
-                'id'         => $l->id,
-                'action'     => $l->action,
+                'id' => $l->id,
+                'action' => $l->action,
                 'old_values' => $l->old_values,
                 'new_values' => $l->new_values,
-                'user'       => $l->user ? ['name' => $l->user->name] : null,
+                'user' => $l->user ? ['name' => $l->user->name] : null,
                 'created_at' => $l->created_at?->toISOString(),
             ]);
 
         return Inertia::render('taxonomy/terms/history', [
-            'taxonomy' => ['slug' => $slug, 'name' => $this->taxonomyService->findOrFail($slug)->name('pt')],
-            'term'     => ['slug' => $term->slug, 'name' => $term->name('pt')],
-            'logs'     => $logs,
+            'taxonomy' => [
+                'slug' => $slug,
+                'name' => $this->taxonomyService->findOrFail($slug)->name('pt')
+            ],
+            'term' => [
+                'slug' => $term->slug,
+                'name' => $term->name('pt')
+            ],
+            'logs' => $logs,
         ]);
     }
 
@@ -183,14 +206,14 @@ class TaxonomyWebController extends Controller
     protected function formatTerm($term, string $locale): array
     {
         return [
-            'id'           => $term->id,
-            'slug'         => $term->slug,
-            'name'         => $term->name($locale),
-            'description'  => $term->description($locale),
-            'rank'         => $term->rank,
-            'parent_id'    => $term->parent_id,
+            'id' => $term->id,
+            'slug' => $term->slug,
+            'name' => $term->name($locale),
+            'description' => $term->description($locale),
+            'rank' => $term->rank,
+            'parent_id' => $term->parent_id,
             'translations' => $term->translationsArray(),
-            'children'     => $term->relationLoaded('children')
+            'children' => $term->relationLoaded('children')
                 ? $term->children->map(fn($c) => $this->formatTerm($c, $locale))->values()->toArray()
                 : [],
         ];
