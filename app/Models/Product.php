@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Contracts\HasContentBlocks;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property int $id
@@ -17,11 +19,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $image
  * @property string $description
  * @property array<string, string>|null $specs
- * @property string|null $usage_text
- * @property string|null $ingredients_text
  */
-#[Fillable(['slug', 'name', 'category', 'price', 'old_price', 'rating', 'reviews', 'image', 'description', 'specs', 'usage_text', 'ingredients_text'])]
-class Product extends Model
+#[Fillable(['slug', 'name', 'category', 'price', 'old_price', 'rating', 'reviews', 'image', 'description', 'specs'])]
+class Product extends Model implements HasContentBlocks
 {
     protected function casts(): array
     {
@@ -29,5 +29,15 @@ class Product extends Model
             'specs' => 'array',
             'reviews' => 'integer',
         ];
+    }
+
+    /**
+     * @return MorphMany<ContentBlock, $this>
+     *
+     * @phpstan-ignore method.childReturnType
+     */
+    public function blocks(): MorphMany
+    {
+        return $this->morphMany(ContentBlock::class, 'blockable')->orderBy('order');
     }
 }

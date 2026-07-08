@@ -121,28 +121,6 @@ export default function ProductCreate() {
                                 <InputError message={errors.specs} />
                             </div>
 
-                            <div className="grid gap-2">
-                                <Label htmlFor="usage_text">Modo de uso</Label>
-                                <Textarea
-                                    id="usage_text"
-                                    name="usage_text"
-                                    required
-                                />
-                                <InputError message={errors.usage_text} />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="ingredients_text">
-                                    Ingredientes
-                                </Label>
-                                <Textarea
-                                    id="ingredients_text"
-                                    name="ingredients_text"
-                                    required
-                                />
-                                <InputError message={errors.ingredients_text} />
-                            </div>
-
                             <div className="flex items-center gap-4">
                                 <Button disabled={processing}>Salvar</Button>
                             </div>

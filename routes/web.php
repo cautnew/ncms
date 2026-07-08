@@ -5,6 +5,7 @@ use App\Templates\PurinaEU\ArticlePage;
 use App\Templates\PurinaEU\BrandLandingPage;
 use App\Templates\PurinaEU\FaqPage;
 use App\Templates\PurinaEU\HomePage;
+use App\Templates\PurinaEU\ProductListPage;
 use App\Templates\PurinaEU\ProductPage;
 use App\Templates\PurinaEU\SearchResultsPage;
 use Illuminate\Http\Request;
@@ -31,6 +32,10 @@ Route::prefix('purinaeu')->name('purinaeu.')->group(function () {
         return (new HomePage)->render();
     })->name('home');
 
+    Route::get('/produtos', function () {
+        return (new ProductListPage())->render();
+    })->name('product.list');
+
     Route::get('/produto/{slug?}', function (?string $slug = null) {
         return (new ProductPage($slug))->render();
     })->name('product');
@@ -45,7 +50,7 @@ Route::prefix('purinaeu')->name('purinaeu.')->group(function () {
 
     Route::get('/artigos', function (Request $request) {
         return (new ArticleListPage($request->query('categoria')))->render();
-    })->name('articles');
+    })->name('article.list');
 
     Route::get('/faq', function () {
         return (new FaqPage)->render();

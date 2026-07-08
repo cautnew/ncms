@@ -1,4 +1,4 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form, Head, Link } from '@inertiajs/react';
 import ProductController from '@/actions/App/Http/Controllers/Admin/ProductController';
 import { RepeaterField } from '@/components/admin/repeater-field';
 import Heading from '@/components/heading';
@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { index } from '@/routes/admin/products';
+import { index as blocksIndex } from '@/routes/admin/products/blocks';
 
 type Product = {
     id: number;
@@ -21,8 +22,6 @@ type Product = {
     image: string;
     description: string;
     specs: Array<{ label: string; value: string }>;
-    usage_text: string;
-    ingredients_text: string;
 };
 
 export default function ProductEdit({ product }: { product: Product }) {
@@ -157,36 +156,18 @@ export default function ProductEdit({ product }: { product: Product }) {
                                 <InputError message={errors.specs} />
                             </div>
 
-                            <div className="grid gap-2">
-                                <Label htmlFor="usage_text">Modo de uso</Label>
-                                <Textarea
-                                    id="usage_text"
-                                    name="usage_text"
-                                    defaultValue={product.usage_text}
-                                    required
-                                />
-                                <InputError message={errors.usage_text} />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="ingredients_text">
-                                    Ingredientes
-                                </Label>
-                                <Textarea
-                                    id="ingredients_text"
-                                    name="ingredients_text"
-                                    defaultValue={product.ingredients_text}
-                                    required
-                                />
-                                <InputError message={errors.ingredients_text} />
-                            </div>
-
                             <div className="flex items-center gap-4">
                                 <Button disabled={processing}>Salvar</Button>
                             </div>
                         </>
                     )}
                 </Form>
+
+                <Button variant="outline" asChild>
+                    <Link href={blocksIndex({ product: product.id })}>
+                        Gerenciar blocos de conteúdo
+                    </Link>
+                </Button>
             </div>
         </>
     );

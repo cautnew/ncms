@@ -21,7 +21,6 @@ class UpdateArticleRequest extends FormRequest
             'published_at' => ['required', 'date'],
             'views' => ['required', 'string', 'max:50'],
             'image' => ['required', 'string', 'max:2048'],
-            'body' => ['nullable', 'string'],
         ];
     }
 }

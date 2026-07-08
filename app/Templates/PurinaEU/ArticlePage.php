@@ -52,18 +52,7 @@ class ArticlePage extends PurinaEUPage
 
     private function buildBody(): TAG
     {
-        $article = TAG::article('article-body');
-
-        $paragraphs = preg_split('/\n\s*\n/', trim((string) $this->article->body)) ?: [];
-
-        foreach ($paragraphs as $paragraph) {
-            if ($paragraph === '') {
-                continue;
-            }
-            $article->append(TAG::p(null, null, $paragraph));
-        }
-
-        return $article;
+        return TAG::article('article-body')->append($this->renderBlocks($this->article->blocks));
     }
 
     private function buildRelatedArticles(): TAG

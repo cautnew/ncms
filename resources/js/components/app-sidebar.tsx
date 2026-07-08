@@ -24,7 +24,7 @@ import {
 import { dashboard } from '@/routes';
 import { index as articlesIndex } from '@/routes/admin/articles';
 import { index as faqCategoriesIndex } from '@/routes/admin/faq-categories';
-import { home as pagesHome } from '@/routes/admin/pages';
+import { index as pagesIndex } from '@/routes/admin/pages';
 import { index as productsIndex } from '@/routes/admin/products';
 import type { NavItem } from '@/types';
 
@@ -51,7 +51,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Páginas',
-        href: pagesHome(),
+        href: pagesIndex(),
         icon: FileText,
     },
 ];

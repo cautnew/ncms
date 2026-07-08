@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('page_contents', function (Blueprint $table) {
+        Schema::create('content_blocks', function (Blueprint $table) {
             $table->id();
-            $table->string('page')->unique();
+            $table->morphs('blockable');
+            $table->string('type');
+            $table->json('data');
+            $table->unsignedInteger('order')->default(0);
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('page_contents');
+        Schema::dropIfExists('content_blocks');
     }
 };

@@ -4,9 +4,7 @@ namespace App\Templates\PurinaEU;
 
 use App\Models\Product;
 use CN\PHTML\ArrayTAG;
-use CN\PHTML\Core\DETAILS;
 use CN\PHTML\Core\STRONG;
-use CN\PHTML\Core\SUMMARY;
 use CN\PHTML\Core\TAG;
 
 class ProductPage extends PurinaEUPage
@@ -92,27 +90,7 @@ class ProductPage extends PurinaEUPage
 
     private function buildProductTabs(): TAG
     {
-        $wrapper = TAG::div('product-tabs');
-
-        $wrapper->append(
-            (new DETAILS('accordion-item', null, null, open: true))
-                ->append(new SUMMARY(null, null, 'Descrição completa'))
-                ->append(TAG::p(null, null, $this->product['description'].' Formulada para atender às necessidades nutricionais diárias, sem corantes artificiais.'))
-        );
-
-        $wrapper->append(
-            (new DETAILS('accordion-item'))
-                ->append(new SUMMARY(null, null, 'Modo de uso'))
-                ->append(TAG::p(null, null, $this->product->usage_text))
-        );
-
-        $wrapper->append(
-            (new DETAILS('accordion-item'))
-                ->append(new SUMMARY(null, null, 'Ingredientes'))
-                ->append(TAG::p(null, null, $this->product->ingredients_text))
-        );
-
-        return $wrapper;
+        return TAG::div('product-tabs')->append($this->renderBlocks($this->product->blocks));
     }
 
     private function buildRelatedProducts(): TAG

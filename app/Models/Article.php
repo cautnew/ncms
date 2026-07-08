@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Contracts\HasContentBlocks;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -16,16 +18,25 @@ use Illuminate\Support\Carbon;
  * @property Carbon $published_at
  * @property string $views
  * @property string $image
- * @property string|null $body
  */
-#[Fillable(['slug', 'title', 'excerpt', 'category', 'author', 'published_at', 'views', 'image', 'body'])]
-class Article extends Model
+#[Fillable(['slug', 'title', 'excerpt', 'category', 'author', 'published_at', 'views', 'image'])]
+class Article extends Model implements HasContentBlocks
 {
     protected function casts(): array
     {
         return [
             'published_at' => 'date:Y-m-d',
         ];
+    }
+
+    /**
+     * @return MorphMany<ContentBlock, $this>
+     *
+     * @phpstan-ignore method.childReturnType
+     */
+    public function blocks(): MorphMany
+    {
+        return $this->morphMany(ContentBlock::class, 'blockable')->orderBy('order');
     }
 
     public function displayDate(): string

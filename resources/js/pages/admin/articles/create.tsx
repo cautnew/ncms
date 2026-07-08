@@ -94,12 +94,6 @@ export default function ArticleCreate() {
                                 <InputError message={errors.image} />
                             </div>
 
-                            <div className="grid gap-2">
-                                <Label htmlFor="body">Corpo do artigo</Label>
-                                <Textarea id="body" name="body" rows={10} />
-                                <InputError message={errors.body} />
-                            </div>
-
                             <div className="flex items-center gap-4">
                                 <Button disabled={processing}>Salvar</Button>
                             </div>

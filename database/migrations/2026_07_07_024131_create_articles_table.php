@@ -21,7 +21,6 @@ return new class extends Migration
             $table->date('published_at');
             $table->string('views')->default('0');
             $table->string('image');
-            $table->text('body')->nullable();
             $table->timestamps();
         });
     }

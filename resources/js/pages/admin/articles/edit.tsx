@@ -1,4 +1,4 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form, Head, Link } from '@inertiajs/react';
 import ArticleController from '@/actions/App/Http/Controllers/Admin/ArticleController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { index } from '@/routes/admin/articles';
+import { index as blocksIndex } from '@/routes/admin/articles/blocks';
 
 type Article = {
     id: number;
@@ -18,7 +19,6 @@ type Article = {
     published_at: string;
     views: string;
     image: string;
-    body: string | null;
 };
 
 export default function ArticleEdit({ article }: { article: Article }) {
@@ -128,23 +128,18 @@ export default function ArticleEdit({ article }: { article: Article }) {
                                 <InputError message={errors.image} />
                             </div>
 
-                            <div className="grid gap-2">
-                                <Label htmlFor="body">Corpo do artigo</Label>
-                                <Textarea
-                                    id="body"
-                                    name="body"
-                                    rows={10}
-                                    defaultValue={article.body ?? ''}
-                                />
-                                <InputError message={errors.body} />
-                            </div>
-
                             <div className="flex items-center gap-4">
                                 <Button disabled={processing}>Salvar</Button>
                             </div>
                         </>
                     )}
                 </Form>
+
+                <Button variant="outline" asChild>
+                    <Link href={blocksIndex({ article: article.id })}>
+                        Gerenciar blocos de conteúdo
+                    </Link>
+                </Button>
             </div>
         </>
     );

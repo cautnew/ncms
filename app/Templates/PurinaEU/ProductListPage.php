@@ -2,13 +2,13 @@
 
 namespace App\Templates\PurinaEU;
 
-use App\Models\Article;
+use App\Models\Product;
 use App\Models\PageContent;
 use CN\PHTML\ArrayTAG;
 use CN\PHTML\Core\ASIDE;
 use CN\PHTML\Core\TAG;
 
-class ArticleListPage extends PurinaEUPage
+class ProductListPage extends PurinaEUPage
 {
     private ?string $categoria;
 
@@ -21,23 +21,23 @@ class ArticleListPage extends PurinaEUPage
 
     protected function pageTitle(): string
     {
-        return 'Artigos';
+        return 'Produtos';
     }
 
     protected function metaDescription(): string
     {
-        return 'Explore todos os artigos da Purina EU sobre nutrição, cuidados e comportamento de cães e gatos.';
+        return 'Explore todos os produtos da Purina EU para cães e gatos.';
     }
 
     protected function buildContent(): TAG|ArrayTAG|string
     {
-        $articlesPage = PageContent::query()->where('page', 'articles')->firstOrFail();
+        $productsPage = PageContent::query()->where('page', 'products')->firstOrFail();
 
         return new ArrayTAG([
-            $this->renderBlocks($articlesPage->blocks),
+            $this->renderBlocks($productsPage->blocks),
             $this->buildCategoryFilters(),
-            TAG::div('article-list-layout')
-                ->append($this->buildArticleGrid())
+            TAG::div('product-list-layout')
+                ->append($this->buildProductGrid())
                 ->append($this->buildSidebar()),
         ]);
     }
@@ -47,21 +47,21 @@ class ArticleListPage extends PurinaEUPage
      */
     private function categories(): array
     {
-        return Article::query()->distinct()->orderBy('category')->pluck('category')->all();
+        return Product::query()->distinct()->orderBy('category')->pluck('category')->all();
     }
 
     private function buildCategoryFilters(): TAG
     {
         $filters = TAG::div('category-filters');
 
-        $allLink = TAG::a('/purinaeu/artigos', 'Todos');
+        $allLink = TAG::a('/purinaeu/produtos', 'Todos');
         if (empty($this->categoria)) {
             $allLink->addClass('active');
         }
         $filters->append($allLink);
 
         foreach ($this->categories() as $category) {
-            $link = TAG::a('/purinaeu/artigos?categoria='.rawurlencode($category), $category);
+            $link = TAG::a('/purinaeu/produtos?categoria='.rawurlencode($category), $category);
             if ($this->categoria === $category) {
                 $link->addClass('active');
             }
@@ -71,24 +71,24 @@ class ArticleListPage extends PurinaEUPage
         return $filters;
     }
 
-    private function buildArticleGrid(): TAG
+    private function buildProductGrid(): TAG
     {
         $wrapper = TAG::div(null);
 
-        $articles = Article::query()
+        $products = Product::query()
             ->when($this->categoria, fn ($query) => $query->where('category', $this->categoria))
             ->orderByDesc('published_at')
             ->get();
 
-        if ($articles->isEmpty()) {
-            $wrapper->append(TAG::p(null, null, 'Nenhum artigo encontrado para esta categoria.'));
+        if ($products->isEmpty()) {
+            $wrapper->append(TAG::p(null, null, 'Nenhum produto encontrado para esta categoria.'));
 
             return $wrapper;
         }
 
         $grid = TAG::div('grid grid-2');
-        foreach ($articles as $article) {
-            $grid->append($this->articleCard($article));
+        foreach ($products as $product) {
+            $grid->append($this->ProductCard($product));
         }
         $wrapper->append($grid);
 
@@ -108,8 +108,8 @@ class ArticleListPage extends PurinaEUPage
         $mostRead = TAG::div('sidebar-box');
         $mostRead->append(TAG::h3(null, 'Mais lidos'));
         $list = TAG::ul('sidebar-list');
-        foreach (Article::query()->orderByDesc('published_at')->limit(4)->get() as $article) {
-            $list->append(TAG::li(null)->append(TAG::a("/purinaeu/artigo/{$article['slug']}", $article['title'])));
+        foreach (Product::query()->orderByDesc('published_at')->limit(4)->get() as $Product) {
+            $list->append(TAG::li(null)->append(TAG::a("/purinaeu/produto/{$Product['slug']}", $Product['title'])));
         }
         $mostRead->append($list);
         $aside->append($mostRead);
@@ -119,7 +119,7 @@ class ArticleListPage extends PurinaEUPage
         $categoryList = TAG::ul('sidebar-list');
         foreach ($this->categories() as $category) {
             $categoryList->append(
-                TAG::li(null)->append(TAG::a('/purinaeu/artigos?categoria='.rawurlencode($category), $category))
+                TAG::li(null)->append(TAG::a('/purinaeu/produtos?categoria='.rawurlencode($category), $category))
             );
         }
         $categoriesBox->append($categoryList);

@@ -23,8 +23,6 @@ return new class extends Migration
             $table->string('image');
             $table->text('description');
             $table->json('specs')->nullable();
-            $table->text('usage_text')->nullable();
-            $table->text('ingredients_text')->nullable();
             $table->timestamps();
         });
     }

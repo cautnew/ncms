@@ -24,8 +24,6 @@ class StoreProductRequest extends FormRequest
             'specs' => ['required', 'array', 'min:1'],
             'specs.*.label' => ['required', 'string', 'max:100'],
             'specs.*.value' => ['required', 'string', 'max:100'],
-            'usage_text' => ['required', 'string'],
-            'ingredients_text' => ['required', 'string'],
         ];
     }
 }
