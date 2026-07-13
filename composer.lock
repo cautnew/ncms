@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2bcb3c3250b0e31756e8fc029fd6709a",
+    "content-hash": "9147224e0f7721cca8e37a6bcd811306",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -188,6 +188,135 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "cautnew/pcss",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cautnew/pcss.git",
+                "reference": "6e7a91ab95c2068b2efb895971b7a17502ebec97"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cautnew/pcss/zipball/6e7a91ab95c2068b2efb895971b7a17502ebec97",
+                "reference": "6e7a91ab95c2068b2efb895971b7a17502ebec97",
+                "shasum": ""
+            },
+            "require": {
+                "cautnew/typedarr": "dev-main",
+                "vlucas/phpdotenv": "^5.6@dev"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CN\\PCSS\\": "src/",
+                    "CautNew\\PCSS\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Felipe Martins",
+                    "email": "felipedesmartins@gmail.com",
+                    "homepage": "http://www.cautnew.com.br",
+                    "role": "Back-End Developer"
+                }
+            ],
+            "description": "An easy way to create and manipulate CSS styles",
+            "support": {
+                "issues": "https://github.com/cautnew/pcss/issues",
+                "source": "https://github.com/cautnew/pcss/tree/main"
+            },
+            "time": "2026-07-05T01:45:11+00:00"
+        },
+        {
+            "name": "cautnew/phtml",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cautnew/phtml.git",
+                "reference": "0088006bc8f7e7a7d8c9f84d756f411e8c66d119"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cautnew/phtml/zipball/0088006bc8f7e7a7d8c9f84d756f411e8c66d119",
+                "reference": "0088006bc8f7e7a7d8c9f84d756f411e8c66d119",
+                "shasum": ""
+            },
+            "require": {
+                "cautnew/pcss": "dev-main",
+                "cautnew/typedarr": "dev-main",
+                "vlucas/phpdotenv": "^5.6@dev"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CN\\PHTML\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Felipe Martins",
+                    "email": "felipedesmartins@gmail.com",
+                    "homepage": "http://www.cautnew.com.br",
+                    "role": "Back-End Developer"
+                }
+            ],
+            "description": "An easy way to create and manipulate HTML tags",
+            "support": {
+                "issues": "https://github.com/cautnew/phtml/issues",
+                "source": "https://github.com/cautnew/phtml/tree/main"
+            },
+            "time": "2026-07-06T13:01:16+00:00"
+        },
+        {
+            "name": "cautnew/typedarr",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cautnew/typedarr.git",
+                "reference": "416653d96e58a010e7da644773f4ad1f9ee7d08c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cautnew/typedarr/zipball/416653d96e58a010e7da644773f4ad1f9ee7d08c",
+                "reference": "416653d96e58a010e7da644773f4ad1f9ee7d08c",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CN\\TypedArr\\": "src/",
+                    "CautNew\\TypedArr\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Felipe Martins",
+                    "email": "felipedesmartins@gmail.com"
+                }
+            ],
+            "description": "Create typed arrays in PHP.",
+            "support": {
+                "issues": "https://github.com/cautnew/typedarr/issues",
+                "source": "https://github.com/cautnew/typedarr/tree/main"
+            },
+            "time": "2026-07-06T12:49:31+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -1748,6 +1877,69 @@
                 "source": "https://github.com/laravel/prompts/tree/v0.3.21"
             },
             "time": "2026-06-26T00:11:25+00:00"
+        },
+        {
+            "name": "laravel/sanctum",
+            "version": "v4.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/sanctum.git",
+                "reference": "2a9bccc18e9907808e0018dd15fa643937886b1e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/sanctum/zipball/2a9bccc18e9907808e0018dd15fa643937886b1e",
+                "reference": "2a9bccc18e9907808e0018dd15fa643937886b1e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "illuminate/console": "^11.0|^12.0|^13.0",
+                "illuminate/contracts": "^11.0|^12.0|^13.0",
+                "illuminate/database": "^11.0|^12.0|^13.0",
+                "illuminate/support": "^11.0|^12.0|^13.0",
+                "php": "^8.2",
+                "symfony/console": "^7.0|^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.6",
+                "orchestra/testbench": "^9.15|^10.8|^11.0",
+                "phpstan/phpstan": "^1.10"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Sanctum\\SanctumServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Sanctum\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Laravel Sanctum provides a featherweight authentication system for SPAs and simple APIs.",
+            "keywords": [
+                "auth",
+                "laravel",
+                "sanctum"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/sanctum/issues",
+                "source": "https://github.com/laravel/sanctum"
+            },
+            "time": "2026-04-30T11:46:25+00:00"
         },
         {
             "name": "laravel/serializable-closure",
@@ -11265,8 +11457,12 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": {},
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "cautnew/pcss": 20,
+        "cautnew/phtml": 20,
+        "cautnew/typedarr": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
