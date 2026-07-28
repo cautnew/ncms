@@ -4,12 +4,11 @@ use App\Models\User;
 use App\Models\Websites\Website;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    private string $table = 'pages';
+    private string $table = 'settings';
 
     /**
      * Run the migrations.
@@ -18,15 +17,16 @@ return new class extends Migration
     {
         Schema::create($this->table, function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignIdFor(Website::class)->constrained()->cascadeOnDelete();
-            $table->string('slug')->unique();
-            $table->string('name');
-            $table->boolean('is_active')->default(true);
+            $table->foreignUuidFor(Website::class)->constrained()->cascadeOnDelete();
+            $table->string('key');
+            $table->text('data');
             $table->foreignUuidFor(User::class, 'created_by')->constrained()->cascadeOnDelete();
             $table->foreignUuidFor(User::class, 'updated_by')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignUuidFor(User::class, 'deleted_by')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['website_id', 'key']);
         });
     }
 
@@ -35,8 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::unprepared('DROP TRIGGER IF EXISTS trigger_before_insert_pages');
-        DB::unprepared('DROP TRIGGER IF EXISTS trigger_before_update_pages');
         Schema::dropIfExists($this->table);
     }
 };

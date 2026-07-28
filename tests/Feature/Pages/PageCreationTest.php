@@ -3,6 +3,7 @@
 use App\Models\Pages\Page;
 use App\Models\User;
 use App\Models\Websites\Website;
+use Illuminate\Support\Facades\Auth;
 
 test('Creates a page successfully', function () {
     $user = User::factory()->admin()->create();

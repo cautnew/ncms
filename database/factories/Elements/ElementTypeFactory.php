@@ -1,16 +1,15 @@
 <?php
 
-namespace Database\Factories\Pages;
+namespace Database\Factories\Elements;
 
-use App\Models\Pages\PageLayout;
+use App\Models\Elements\ElementType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 /**
- * @extends Factory<PageLayout>
+ * @extends Factory<ElementType>
  */
-class PageLayoutFactory extends Factory
+class ElementTypeFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -22,10 +21,8 @@ class PageLayoutFactory extends Factory
         $currentUserId = User::where('is_admin', true)->first()->id;
 
         return [
-            'id' => (string) Str::uuid(),
-            'slug' => $this->faker->unique()->slug(),
-            'name' => $this->faker->name(),
-            'template_class_name' => $this->faker->word(),
+            'name' => $this->faker->word(),
+            'element_class_name' => $this->faker->word(),
             'created_by' => $currentUserId,
             'created_at' => now(),
         ];

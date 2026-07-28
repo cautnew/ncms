@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Pages;
+namespace App\Services\Page;
 
 use App\Models\Pages\Page;
 use App\Models\Pages\PageVersion;

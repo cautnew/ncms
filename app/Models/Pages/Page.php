@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -117,11 +118,6 @@ class Page extends Model
         });
     }
 
-    public function website()
-    {
-        return $this->belongsTo(Website::class);
-    }
-
     public static function findById(string $id): ?self
     {
         return self::where(self::getKey(), $id)->first();
@@ -142,6 +138,25 @@ class Page extends Model
         return self::where(self::SLUG_COLUMN, $slug)->exists();
     }
 
+    public static function joinAll()
+    {
+        return self::join((new Website())->getTable(), 'pages.website_id', '=', 'websites.id')
+          ->join((new PageLayout())->getTable(), 'pages.page_layout_id', '=', 'page_layouts.id')
+          ->select([
+            'pages.*',
+            'websites.slug as website_slug',
+            'websites.name as website_name',
+            'page_layouts.slug as page_layout_slug',
+            'page_layouts.name as page_layout_name',
+            'page_layouts.template_class_name as page_layout_template_class_name',
+          ])->get();
+    }
+
+    public function website()
+    {
+        return $this->belongsTo(Website::class);
+    }
+
     public function pageData()
     {
         return $this->hasMany(PageData::class);
@@ -150,5 +165,10 @@ class Page extends Model
     public function versions()
     {
         return $this->hasMany(PageVersion::class);
+    }
+
+    public function pageLayout()
+    {
+        return $this->belongsTo(PageLayout::class);
     }
 }

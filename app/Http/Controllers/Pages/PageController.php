@@ -4,11 +4,26 @@ namespace App\Http\Controllers\Pages;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pages\Page;
-use App\Services\Pages\CreatePageService;
+use App\Services\Page\CreatePageService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PageController extends Controller
 {
+    public function index(Request $request)
+    {
+        $pages = Page::joinAll();
+        $response = [];
+        foreach ($pages as $page) {
+            $response[] = [
+                ...$page->toArray(),
+                'website_name' => $page->website_name ?? null,
+                'layout_name' => $page->page_layout_name ?? null,
+            ];
+        }
+        return Inertia::render('pages/index', ['page_list' => $response]);
+    }
+
     public function create(Request $request)
     {
         try {
@@ -48,13 +63,23 @@ class PageController extends Controller
 
     public function update(Request $request)
     {
-        
+        return response()->json([
+            'update-page' => [
+                'message' => 'Page updated successfully.',
+            ],
+        ]);
     }
 
     public function list(Request $request)
     {
-        $pages = Page::all();
+        $response = [];
+        foreach (Page::get() as $page) {
+            $response[] = [
+                ...$page->toArray(),
+                'layout-name' => $page->pageLayout?->name ?? null,
+            ];
+        }
 
-        return response()->json(['page-list' => $pages]);
+        return response()->json(['page-list' => $response]);
     }
 }

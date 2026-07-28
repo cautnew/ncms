@@ -8,15 +8,9 @@ import { cn, toUrl } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
-import websites from '@/routes/settings/websites';
 import type { NavItem } from '@/types';
 
 const sidebarNavItems: NavItem[] = [
-    {
-        title: 'Website',
-        href: websites.index(),
-        icon: null,
-    },
     {
         title: 'Profile',
         href: edit(),
@@ -40,7 +34,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     return (
         <div className="px-4 py-6">
             <Heading
-                title="Settings"
+                title="Settings 00"
                 description="Manage your profile and account settings"
             />
 
@@ -74,7 +68,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                 <Separator className="my-6 lg:hidden" />
 
                 <div className="flex-1 md:max-w-2xl">
-                    <section className="w-full space-y-12">
+                    <section className="max-w-xl space-y-12">
                         {children}
                     </section>
                 </div>

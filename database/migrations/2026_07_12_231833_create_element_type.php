@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    private string $table = "element_types";
+    private string $table = 'element_types';
 
     /**
      * Run the migrations.
@@ -16,16 +16,14 @@ return new class extends Migration
     {
         Schema::create($this->table, function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->string('name');
-            $table->text('structure')->default('{}');
+            $table->string('element_class_name');
             $table->foreignUuidFor(User::class, 'created_by')->constrained()->cascadeOnDelete();
             $table->foreignUuidFor(User::class, 'updated_by')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignUuidFor(User::class, 'deleted_by')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
-
-            $table->unique(['page_version_id', 'key']);
         });
     }
 
@@ -34,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists($this->table);
     }
 };

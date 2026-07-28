@@ -3,6 +3,7 @@
 namespace Database\Factories\Pages;
 
 use App\Models\Pages\Page;
+use App\Models\Pages\PageLayout;
 use App\Models\User;
 use App\Models\Websites\Website;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -27,6 +28,7 @@ class PageFactory extends Factory
             'name' => $this->faker->sentence(3),
             'slug' => $this->faker->unique()->slug(),
             'website_id' => Website::all()->pluck('id')->random(),
+            'page_layout_id' => PageLayout::all()->pluck('id')->random(),
             'created_by' => $currentUserId,
             'created_at' => now(),
         ];

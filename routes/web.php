@@ -12,4 +12,5 @@ Route::get('/artigos', function () {
     return 'foi';
 })->name('artigos');
 
+require __DIR__.'/pages.php';
 require __DIR__.'/settings.php';

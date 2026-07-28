@@ -28,6 +28,15 @@ class AppServiceProvider extends ServiceProvider
         $this->configureDefaults();
 
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
+        DB::listen(function ($query) {
+            // Mostra a query com bindings
+            logger()->info(
+                vsprintf(str_replace('?', '%s', $query->sql), collect($query->bindings)->map(function ($binding) {
+                    return is_numeric($binding) ? $binding : "'{$binding}'";
+                })->toArray())
+            );
+        });
     }
 
     /**

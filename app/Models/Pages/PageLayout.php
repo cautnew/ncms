@@ -2,6 +2,7 @@
 
 namespace App\Models\Pages;
 
+use Database\Factories\Pages\PageLayoutFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -12,7 +13,7 @@ use Illuminate\Support\Str;
  * @property string $id
  * @property string $slug
  * @property string $name
- * @property string|null $structure
+ * @property string|null $template_class_name
  * @property string|null $created_by
  * @property string|null $updated_by
  * @property string|null $deleted_by
@@ -25,12 +26,10 @@ class PageLayout extends Model
     /** @use HasFactory<PageLayoutFactory> */
     use HasFactory;
 
-    protected $table = "page_layouts";
-
     protected $fillable = [
         "slug",
         "name",
-        "structure",
+        "template_class_name",
     ];
 
     /**
@@ -44,7 +43,7 @@ class PageLayout extends Model
             'id' => 'string',
             'slug' => 'string',
             'name' => 'string',
-            'structure' => 'json',
+            'template_class_name' => 'string',
             'created_by' => 'string',
             'updated_by' => 'string',
             'deleted_by' => 'string',
