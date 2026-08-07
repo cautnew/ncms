@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use App\Models\Website;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,6 +25,7 @@ class WebsiteFactory extends Factory
             'locale' => 'pt-BR',
             'timezone' => 'America/Sao_Paulo',
             'status' => 'active',
+            'created_by' => User::factory(),
         ];
     }
 

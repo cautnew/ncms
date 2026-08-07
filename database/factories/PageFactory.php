@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Layout;
 use App\Models\Page;
+use App\Models\User;
 use App\Models\Website;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -29,6 +30,7 @@ class PageFactory extends Factory
             'published_version_id' => null,
             'slug' => $slug,
             'status' => 'active',
+            'created_by' => User::factory(),
         ];
     }
 

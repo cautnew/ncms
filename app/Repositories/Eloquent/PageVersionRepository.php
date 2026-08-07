@@ -40,8 +40,15 @@ final class PageVersionRepository implements PageVersionRepositoryInterface
         return $pageVersion->fresh();
     }
 
+    /**
+     * Soft-deletes the version and, explicitly, every piece belonging to it —
+     * pieces.page_version_id's cascade FK only fires on a hard DELETE, never
+     * on the soft-delete UPDATE both models now perform.
+     */
     public function delete(PageVersion $pageVersion): void
     {
+        $pageVersion->pieces()->get()->each->delete();
+
         $pageVersion->delete();
     }
 }

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Support\Database\UserstampSchema;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -24,6 +25,7 @@ return new class extends Migration
 
             $table->string('slug');
             $table->enum('status', ['active', 'archived'])->default('active');
+            UserstampSchema::columns($table);
             $table->timestamps();
             $table->softDeletes();
 
@@ -33,6 +35,8 @@ return new class extends Migration
 
             $table->comment('Pages belonging to a website. published_version_id points to the currently live, immutable page_version.');
         });
+
+        UserstampSchema::installTriggers('pages');
     }
 
     /**
@@ -40,6 +44,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        UserstampSchema::dropTriggers('pages');
+
         Schema::dropIfExists('pages');
     }
 };

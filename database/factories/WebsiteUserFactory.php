@@ -27,6 +27,7 @@ class WebsiteUserFactory extends Factory
             'invited_by' => null,
             'invited_at' => now(),
             'accepted_at' => now(),
+            'created_by' => User::factory(),
         ];
     }
 

@@ -54,8 +54,23 @@ final class PieceRepository implements PieceRepositoryInterface
         return $piece->fresh();
     }
 
+    /**
+     * Soft-deletes the piece and its entire subtree. Pieces no longer rely on
+     * the parent_piece_id cascade FK for this (that only fires on a hard
+     * DELETE, never on a soft-delete UPDATE), so descendants are walked and
+     * deleted explicitly, deepest first.
+     */
     public function delete(Piece $piece): void
     {
+        $this->deleteWithDescendants($this->withDescendants($piece));
+    }
+
+    private function deleteWithDescendants(Piece $piece): void
+    {
+        foreach ($piece->children as $child) {
+            $this->deleteWithDescendants($child);
+        }
+
         $piece->delete();
     }
 

@@ -121,7 +121,14 @@ class DemoContentSeeder extends Seeder
 
         WebsiteUser::query()->firstOrCreate(
             ['website_id' => $website->id, 'user_id' => $user->id],
-            ['role' => $role, 'invited_by' => $inviter->id, 'invited_at' => now(), 'accepted_at' => now()],
+            [
+                'role' => $role,
+                'invited_by' => $inviter->id,
+                'invited_at' => now(),
+                'accepted_at' => now(),
+                'created_by' => $inviter->id,
+                'updated_by' => $inviter->id,
+            ],
         );
 
         return $user;
@@ -132,6 +139,8 @@ class DemoContentSeeder extends Seeder
      */
     private function seedLayouts(Website $website): Collection
     {
+        $admin = $this->users['admin'];
+
         return collect(self::LAYOUT_DEFINITIONS)->map(fn (array $definition): Layout => Layout::factory()->create([
             'website_id' => $website->id,
             'name' => $definition['name'],
@@ -140,6 +149,8 @@ class DemoContentSeeder extends Seeder
             'schema' => $definition['schema'],
             'status' => 'active',
             'is_default' => $definition['is_default'],
+            'created_by' => $admin->id,
+            'updated_by' => $admin->id,
         ]));
     }
 
@@ -162,6 +173,7 @@ class DemoContentSeeder extends Seeder
 
             return $factory->forLayout($layout)->create([
                 'uploaded_by' => $admin->id,
+                'updated_by' => $admin->id,
                 'filename' => "layout-asset-{$i}.".($i === 1 ? 'svg' : 'jpg'),
                 'alt_text' => "Demo asset {$i} for {$layout->name}",
             ]);
@@ -191,6 +203,8 @@ class DemoContentSeeder extends Seeder
                 'layout_id' => $layout->id,
                 'slug' => "pagina-demo-{$i}",
                 'status' => 'active',
+                'created_by' => $editor->id,
+                'updated_by' => $editor->id,
             ]);
 
             // v1: an early draft that was eventually superseded — archived.
@@ -199,10 +213,11 @@ class DemoContentSeeder extends Seeder
                 'layout_id' => $layout->id,
                 'version_number' => 1,
                 'created_by' => $editor->id,
+                'updated_by' => $admin->id,
                 'qa_user_id' => $qa->id,
                 'published_by' => $admin->id,
             ]);
-            $this->seedPiecesForVersion($v1, $layoutAssets->random());
+            $this->seedPiecesForVersion($v1, $layoutAssets->random(), $editor);
 
             // v2: submitted again, but QA sent it back for changes.
             $v2 = PageVersion::factory()->rejected()->create([
@@ -210,9 +225,10 @@ class DemoContentSeeder extends Seeder
                 'layout_id' => $layout->id,
                 'version_number' => 2,
                 'created_by' => $editor->id,
+                'updated_by' => $qa->id,
                 'qa_user_id' => $qa->id,
             ]);
-            $this->seedPiecesForVersion($v2, $layoutAssets->random());
+            $this->seedPiecesForVersion($v2, $layoutAssets->random(), $editor);
 
             // v3: the current, live, published version.
             $v3 = PageVersion::factory()->published()->create([
@@ -220,17 +236,22 @@ class DemoContentSeeder extends Seeder
                 'layout_id' => $layout->id,
                 'version_number' => 3,
                 'created_by' => $editor->id,
+                'updated_by' => $owner->id,
                 'qa_user_id' => $qa->id,
                 'published_by' => $owner->id,
             ]);
             $featuredAsset = Asset::factory()->forPageVersion($v3)->create([
                 'uploaded_by' => $editor->id,
+                'updated_by' => $editor->id,
                 'filename' => "page-{$i}-featured.jpg",
                 'alt_text' => "Featured image for page {$i}",
             ]);
-            $this->seedPiecesForVersion($v3, $featuredAsset);
+            $this->seedPiecesForVersion($v3, $featuredAsset, $editor);
 
-            $page->update(['published_version_id' => $v3->id]);
+            // Both an explicit updated_by (for DatabaseSeeder's WithoutModelEvents run,
+            // where HasUserstamps' listeners never fire) and asActor() (for a standalone
+            // run of this seeder, where they do) are needed to cover both invocation paths.
+            $page->asActor($owner)->update(['published_version_id' => $v3->id, 'updated_by' => $owner->id]);
 
             return $page->fresh();
         });
@@ -241,24 +262,30 @@ class DemoContentSeeder extends Seeder
      * paragraph, and a two-column wrapper whose left/right slots hold a
      * paragraph and an image — enough to exercise the tree in every demo page.
      */
-    private function seedPiecesForVersion(PageVersion $version, Asset $imageAsset): void
+    private function seedPiecesForVersion(PageVersion $version, Asset $imageAsset, User $actor): void
     {
         Piece::factory()->heading(1)->create([
             'page_version_id' => $version->id,
             'position' => 0,
+            'created_by' => $actor->id,
+            'updated_by' => $actor->id,
         ]);
 
         Piece::factory()->paragraph()->create([
             'page_version_id' => $version->id,
             'position' => 1,
+            'created_by' => $actor->id,
+            'updated_by' => $actor->id,
         ]);
 
         $wrapper = Piece::factory()->twoColumnsWrapper()->create([
             'page_version_id' => $version->id,
             'position' => 2,
+            'created_by' => $actor->id,
+            'updated_by' => $actor->id,
         ]);
 
-        Piece::factory()->paragraph()->childOf($wrapper, 'left')->create(['position' => 0]);
-        Piece::factory()->image($imageAsset)->childOf($wrapper, 'right')->create(['position' => 1]);
+        Piece::factory()->paragraph()->childOf($wrapper, 'left')->create(['position' => 0, 'created_by' => $actor->id, 'updated_by' => $actor->id]);
+        Piece::factory()->image($imageAsset)->childOf($wrapper, 'right')->create(['position' => 1, 'created_by' => $actor->id, 'updated_by' => $actor->id]);
     }
 }

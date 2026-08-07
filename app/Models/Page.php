@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\Auditable;
+use App\Models\Concerns\HasUserstamps;
 use Database\Factories\PageFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,11 +16,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['website_id', 'layout_id', 'published_version_id', 'slug', 'status'])]
+#[Fillable(['website_id', 'layout_id', 'published_version_id', 'slug', 'status', 'created_by', 'deleted_by'])]
 class Page extends Model
 {
     /** @use HasFactory<PageFactory> */
-    use Auditable, HasFactory, HasUuids, SoftDeletes;
+    use Auditable, HasFactory, HasUserstamps, HasUuids, SoftDeletes;
 
     /**
      * The website this page belongs to.
@@ -116,5 +117,35 @@ class Page extends Model
     public function scopePublished(Builder $query): Builder
     {
         return $query->whereNotNull('published_version_id');
+    }
+
+    /**
+     * The user who created this page.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * The user who last updated this page.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    /**
+     * The user who deleted this page, if it has been deleted.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function deleter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }

@@ -17,6 +17,21 @@ it('computes host as subdomain + domain when a subdomain is set', function () {
     expect($website->host)->toBe('blog.example.com');
 });
 
+it('resolves the users who created, last updated and deleted it', function () {
+    $creator = User::factory()->create();
+    $updater = User::factory()->create();
+    $deleter = User::factory()->create();
+
+    $website = Website::factory()->create(['created_by' => $creator->id, 'updated_by' => $updater->id]);
+    $website->asActor($deleter)->delete();
+
+    $trashed = Website::withTrashed()->find($website->id);
+
+    expect($trashed->creator->is($creator))->toBeTrue();
+    expect($trashed->updater->is($updater))->toBeTrue();
+    expect($trashed->deleter->is($deleter))->toBeTrue();
+});
+
 it('scopes to a given domain', function () {
     Website::factory()->create(['domain' => 'match.test']);
     Website::factory()->create(['domain' => 'other.test']);

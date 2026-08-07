@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Support\Database\UserstampSchema;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -30,6 +31,7 @@ return new class extends Migration
             $table->text('qa_notes')->nullable();
             $table->timestamp('published_at')->nullable();
             $table->foreignUuid('published_by')->nullable()->constrained('users')->nullOnDelete();
+            UserstampSchema::columns($table, includeCreatedBy: false);
             $table->timestamps();
             $table->softDeletes();
 
@@ -47,6 +49,8 @@ return new class extends Migration
         DB::statement(
             'ALTER TABLE page_versions ADD CONSTRAINT chk_page_versions_version_number CHECK (version_number > 0)'
         );
+
+        UserstampSchema::installTriggers('page_versions');
     }
 
     /**
@@ -54,6 +58,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        UserstampSchema::dropTriggers('page_versions');
+
         Schema::dropIfExists('page_versions');
     }
 };

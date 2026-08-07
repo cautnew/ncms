@@ -7,6 +7,7 @@ use App\Models\PageVersion;
 use App\Models\Piece;
 use App\Models\Website;
 use App\Services\ContentService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -19,7 +20,7 @@ it('resolves a PublishedContentData with the full tree and both asset sets, in a
     $layout = Layout::factory()->create(['website_id' => $website->id]);
     $page = Page::factory()->create(['website_id' => $website->id, 'layout_id' => $layout->id, 'slug' => 'integration-page']);
     $version = PageVersion::factory()->published()->create(['page_id' => $page->id, 'layout_id' => $layout->id]);
-    $page->update(['published_version_id' => $version->id]);
+    $page->asActor($page->created_by)->update(['published_version_id' => $version->id]);
 
     Asset::factory()->forLayout($layout)->create();
     Asset::factory()->forPageVersion($version)->create();
@@ -45,5 +46,5 @@ it('throws a not-found exception when the website is inactive, without ever quer
     $website = Website::factory()->suspended()->create();
 
     expect(fn () => app(ContentService::class)->findPublished($website, 'anything'))
-        ->toThrow(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        ->toThrow(ModelNotFoundException::class);
 });

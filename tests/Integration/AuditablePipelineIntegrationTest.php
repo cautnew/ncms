@@ -17,6 +17,7 @@ use App\Support\RequestAuditContext;
  */
 it('records create, update and delete audit entries for writes made through a service, with no HTTP request at all', function () {
     $creator = User::factory()->create();
+    $this->actingAs($creator);
     $service = app(WebsiteService::class);
 
     $website = $service->create($creator, new CreateWebsiteData(

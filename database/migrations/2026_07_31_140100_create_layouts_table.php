@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Support\Database\UserstampSchema;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->json('schema')->nullable();
             $table->enum('status', ['draft', 'active', 'archived'])->default('active');
             $table->boolean('is_default')->default(false);
+            UserstampSchema::columns($table);
             $table->timestamps();
             $table->softDeletes();
 
@@ -31,6 +33,8 @@ return new class extends Migration
 
             $table->comment('Reusable page layout templates, scoped per website.');
         });
+
+        UserstampSchema::installTriggers('layouts');
     }
 
     /**
@@ -38,6 +42,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        UserstampSchema::dropTriggers('layouts');
+
         Schema::dropIfExists('layouts');
     }
 };

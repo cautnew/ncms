@@ -5,6 +5,21 @@ use App\Models\User;
 use App\Models\Website;
 use App\Models\WebsiteUser;
 
+it('resolves the users who created, last updated and deleted it', function () {
+    $creator = User::factory()->create();
+    $updater = User::factory()->create();
+    $deleter = User::factory()->create();
+
+    $membership = WebsiteUser::factory()->create(['created_by' => $creator->id, 'updated_by' => $updater->id]);
+    $membership->asActor($deleter)->delete();
+
+    $trashed = WebsiteUser::withTrashed()->find($membership->id);
+
+    expect($trashed->creator->is($creator))->toBeTrue();
+    expect($trashed->updater->is($updater))->toBeTrue();
+    expect($trashed->deleter->is($deleter))->toBeTrue();
+});
+
 it('resolves the website, the member and the inviter', function () {
     $website = Website::factory()->create();
     $member = User::factory()->create();

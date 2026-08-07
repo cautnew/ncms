@@ -7,6 +7,19 @@ use App\Models\Piece;
 use App\Models\User;
 use App\Models\Website;
 
+it('resolves the users who last updated and deleted it', function () {
+    $updater = User::factory()->create();
+    $deleter = User::factory()->create();
+
+    $asset = Asset::factory()->create(['updated_by' => $updater->id]);
+    $asset->asActor($deleter)->delete();
+
+    $trashed = Asset::withTrashed()->find($asset->id);
+
+    expect($trashed->updater->is($updater))->toBeTrue();
+    expect($trashed->deleter->is($deleter))->toBeTrue();
+});
+
 it('resolves its layout, page version and uploader', function () {
     $layout = Layout::factory()->create();
     $uploader = User::factory()->create();

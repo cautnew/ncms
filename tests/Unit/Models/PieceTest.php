@@ -4,6 +4,22 @@ use App\Enums\PieceType;
 use App\Models\Asset;
 use App\Models\PageVersion;
 use App\Models\Piece;
+use App\Models\User;
+
+it('resolves the users who created, last updated and deleted it', function () {
+    $creator = User::factory()->create();
+    $updater = User::factory()->create();
+    $deleter = User::factory()->create();
+
+    $piece = Piece::factory()->create(['created_by' => $creator->id, 'updated_by' => $updater->id]);
+    $piece->asActor($deleter)->delete();
+
+    $trashed = Piece::withTrashed()->find($piece->id);
+
+    expect($trashed->creator->is($creator))->toBeTrue();
+    expect($trashed->updater->is($updater))->toBeTrue();
+    expect($trashed->deleter->is($deleter))->toBeTrue();
+});
 
 it('resolves its parent piece', function () {
     $version = PageVersion::factory()->create();

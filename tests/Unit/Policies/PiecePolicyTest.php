@@ -49,7 +49,7 @@ it('only lets owner, admin and editor create, update or delete pieces', function
 it('allows piece writes while draft/rejected/published, denies while under_review/approved/archived', function (PageVersionStatus $status, bool $expected) {
     $owner = User::factory()->create();
     createWebsiteMembership($this->website, $owner, WebsiteRole::Owner);
-    $this->version->update(['status' => $status]);
+    $this->version->asActor($this->version->created_by)->update(['status' => $status]);
     $piece = Piece::factory()->create(['page_version_id' => $this->version->id]);
 
     expect($this->policy->create($owner, $this->version->fresh()))->toBe($expected);

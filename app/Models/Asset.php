@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\Auditable;
+use App\Models\Concerns\HasUserstamps;
 use Database\Factories\AssetFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,11 +20,22 @@ use Illuminate\Support\Str;
 #[Fillable([
     'website_id', 'layout_id', 'page_version_id', 'disk', 'path', 'filename',
     'mime_type', 'size', 'width', 'height', 'alt_text', 'metadata', 'uploaded_by',
+    'deleted_by',
 ])]
 class Asset extends Model
 {
     /** @use HasFactory<AssetFactory> */
-    use Auditable, HasFactory, HasUuids, SoftDeletes;
+    use Auditable, HasFactory, HasUserstamps, HasUuids, SoftDeletes;
+
+    /**
+     * Assets already track their creator via the domain-specific
+     * "uploaded_by" column — reuse it instead of adding a redundant
+     * generic created_by that would always hold the same value.
+     */
+    public function getCreatedByColumn(): string
+    {
+        return 'uploaded_by';
+    }
 
     /**
      * Get the attributes that should be cast.
@@ -78,6 +90,26 @@ class Asset extends Model
     public function uploadedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    /**
+     * The user who last updated this asset.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    /**
+     * The user who deleted this asset, if it has been deleted.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function deleter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 
     /**

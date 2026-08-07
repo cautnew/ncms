@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Support\Database\UserstampSchema;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
@@ -25,7 +26,9 @@ return new class extends Migration
             $table->unsignedInteger('position')->default(0);
             $table->json('content')->default(new Expression('(JSON_OBJECT())'));
             $table->json('settings')->default(new Expression('(JSON_OBJECT())'));
+            UserstampSchema::columns($table);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index(['page_version_id', 'parent_piece_id', 'position'], 'pieces_tree_order_index');
 
@@ -55,6 +58,8 @@ return new class extends Migration
                     END IF;
                 END"
         );
+
+        UserstampSchema::installTriggers('pieces');
     }
 
     /**
@@ -62,6 +67,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        UserstampSchema::dropTriggers('pieces');
+
         DB::unprepared('DROP TRIGGER IF EXISTS trg_pieces_no_self_parent_insert');
         DB::unprepared('DROP TRIGGER IF EXISTS trg_pieces_no_self_parent_update');
 

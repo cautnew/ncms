@@ -321,7 +321,7 @@ it('archives the previously published version and repoints the page when a new v
         'layout_id' => $layout->id,
         'version_number' => 1,
     ]);
-    $page->update(['published_version_id' => $oldVersion->id]);
+    $page->asActor($page->created_by)->update(['published_version_id' => $oldVersion->id]);
 
     $newVersion = PageVersion::factory()->approved()->create([
         'page_id' => $page->id,

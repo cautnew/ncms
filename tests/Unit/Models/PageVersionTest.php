@@ -2,6 +2,7 @@
 
 use App\Enums\PageVersionStatus;
 use App\Models\Asset;
+use App\Models\Page;
 use App\Models\PageVersion;
 use App\Models\User;
 
@@ -10,6 +11,19 @@ it('resolves the user who created it', function () {
     $version = PageVersion::factory()->create(['created_by' => $creator->id]);
 
     expect($version->creator->is($creator))->toBeTrue();
+});
+
+it('resolves the users who last updated and deleted it', function () {
+    $updater = User::factory()->create();
+    $deleter = User::factory()->create();
+
+    $version = PageVersion::factory()->create(['updated_by' => $updater->id]);
+    $version->asActor($deleter)->delete();
+
+    $trashed = PageVersion::withTrashed()->find($version->id);
+
+    expect($trashed->updater->is($updater))->toBeTrue();
+    expect($trashed->deleter->is($deleter))->toBeTrue();
 });
 
 it('resolves the QA user who reviewed it and the user who published it', function () {
@@ -36,7 +50,7 @@ it('lists assets owned directly by it', function () {
 });
 
 it('scopes to draft and to published versions', function () {
-    $page = \App\Models\Page::factory()->create();
+    $page = Page::factory()->create();
     PageVersion::factory()->create(['page_id' => $page->id, 'layout_id' => $page->layout_id, 'version_number' => 1]);
     PageVersion::factory()->published()->create(['page_id' => $page->id, 'layout_id' => $page->layout_id, 'version_number' => 2]);
 
@@ -45,7 +59,7 @@ it('scopes to draft and to published versions', function () {
 });
 
 it('scopes to a specific given status', function () {
-    $page = \App\Models\Page::factory()->create();
+    $page = Page::factory()->create();
     PageVersion::factory()->rejected()->create(['page_id' => $page->id, 'layout_id' => $page->layout_id, 'version_number' => 1]);
 
     expect(PageVersion::query()->status(PageVersionStatus::Rejected)->where('page_id', $page->id)->count())->toBe(1);

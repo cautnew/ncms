@@ -3,7 +3,23 @@
 use App\Models\Asset;
 use App\Models\Layout;
 use App\Models\PageVersion;
+use App\Models\User;
 use App\Models\Website;
+
+it('resolves the users who created, last updated and deleted it', function () {
+    $creator = User::factory()->create();
+    $updater = User::factory()->create();
+    $deleter = User::factory()->create();
+
+    $layout = Layout::factory()->create(['created_by' => $creator->id, 'updated_by' => $updater->id]);
+    $layout->asActor($deleter)->delete();
+
+    $trashed = Layout::withTrashed()->find($layout->id);
+
+    expect($trashed->creator->is($creator))->toBeTrue();
+    expect($trashed->updater->is($updater))->toBeTrue();
+    expect($trashed->deleter->is($deleter))->toBeTrue();
+});
 
 it('belongs to a website', function () {
     $website = Website::factory()->create();

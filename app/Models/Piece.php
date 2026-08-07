@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PieceType;
 use App\Models\Concerns\Auditable;
+use App\Models\Concerns\HasUserstamps;
 use Database\Factories\PieceFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,12 +14,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['page_version_id', 'parent_piece_id', 'asset_id', 'type', 'slot', 'position', 'content', 'settings'])]
+#[Fillable(['page_version_id', 'parent_piece_id', 'asset_id', 'type', 'slot', 'position', 'content', 'settings', 'created_by', 'deleted_by'])]
 class Piece extends Model
 {
     /** @use HasFactory<PieceFactory> */
-    use Auditable, HasFactory, HasUuids;
+    use Auditable, HasFactory, HasUserstamps, HasUuids, SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
@@ -126,5 +128,35 @@ class Piece extends Model
     public function auditWebsiteId(): ?string
     {
         return $this->pageVersion?->page?->website_id;
+    }
+
+    /**
+     * The user who created this piece.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * The user who last updated this piece.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    /**
+     * The user who deleted this piece, if it has been deleted.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function deleter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }

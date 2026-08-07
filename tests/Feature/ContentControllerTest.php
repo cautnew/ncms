@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\PageVersionStatus;
 use App\Models\Asset;
 use App\Models\Layout;
 use App\Models\Page;
@@ -8,6 +7,7 @@ use App\Models\PageVersion;
 use App\Models\Piece;
 use App\Models\Website;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * Creates a page with a published version and points Page::published_version_id
@@ -24,7 +24,7 @@ function publishPage(Website $website, Layout $layout, array $versionAttributes 
         ...$versionAttributes,
     ]);
 
-    $page->update(['published_version_id' => $version->id]);
+    $page->asActor($page->created_by)->update(['published_version_id' => $version->id]);
 
     return [$page->fresh(), $version];
 }
@@ -84,7 +84,7 @@ it('reflects the layout as it was at publish time, not later live edits', functi
     $layout = Layout::factory()->create(['website_id' => $website->id, 'name' => 'Original name', 'schema' => ['v' => 1]]);
     [$page] = publishPage($website, $layout);
 
-    $layout->update(['name' => 'Changed after publish', 'schema' => ['v' => 2]]);
+    $layout->asActor($layout->created_by)->update(['name' => 'Changed after publish', 'schema' => ['v' => 2]]);
 
     $data = $this->getJson(route('api.v1.content.show', [$website, $page->slug]))->json('data');
 
@@ -109,7 +109,7 @@ it('always resolves the latest published version, not an older archived one', fu
         'version_number' => 2,
         'data' => ['title' => 'New'],
     ]);
-    $page->update(['published_version_id' => $newVersion->id]);
+    $page->asActor($page->created_by)->update(['published_version_id' => $newVersion->id]);
 
     $data = $this->getJson(route('api.v1.content.show', [$website, $page->slug]))->json('data');
 
@@ -136,7 +136,7 @@ it('returns 404 when the page is archived, even with a published version', funct
     $website = Website::factory()->create();
     $layout = Layout::factory()->create(['website_id' => $website->id]);
     [$page] = publishPage($website, $layout);
-    $page->update(['status' => 'archived']);
+    $page->asActor($page->created_by)->update(['status' => 'archived']);
 
     $this->getJson(route('api.v1.content.show', [$website, $page->slug]))->assertNotFound();
 });
@@ -153,7 +153,7 @@ it('returns 404 when the website is not active', function (string $state) {
 ]);
 
 it('returns 404 for a non-existent website', function () {
-    $this->getJson('/api/v1/content/'.\Illuminate\Support\Str::uuid().'/some-slug')->assertNotFound();
+    $this->getJson('/api/v1/content/'.Str::uuid().'/some-slug')->assertNotFound();
 });
 
 it('only includes assets scoped to the specific published version, not other versions of the same page', function () {
@@ -165,7 +165,7 @@ it('only includes assets scoped to the specific published version, not other ver
         'layout_id' => $layout->id,
         'version_number' => 1,
     ]);
-    $page->update(['published_version_id' => $publishedVersion->id]);
+    $page->asActor($page->created_by)->update(['published_version_id' => $publishedVersion->id]);
     $draftVersion = PageVersion::factory()->create([
         'page_id' => $page->id,
         'layout_id' => $layout->id,

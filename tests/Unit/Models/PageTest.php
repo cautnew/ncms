@@ -2,6 +2,22 @@
 
 use App\Models\Page;
 use App\Models\PageVersion;
+use App\Models\User;
+
+it('resolves the users who created, last updated and deleted it', function () {
+    $creator = User::factory()->create();
+    $updater = User::factory()->create();
+    $deleter = User::factory()->create();
+
+    $page = Page::factory()->create(['created_by' => $creator->id, 'updated_by' => $updater->id]);
+    $page->asActor($deleter)->delete();
+
+    $trashed = Page::withTrashed()->find($page->id);
+
+    expect($trashed->creator->is($creator))->toBeTrue();
+    expect($trashed->updater->is($updater))->toBeTrue();
+    expect($trashed->deleter->is($deleter))->toBeTrue();
+});
 
 it('lists all of its versions', function () {
     $page = Page::factory()->create();
@@ -41,7 +57,7 @@ it('reports is_published based on whether published_version_id is set', function
     expect($page->is_published)->toBeFalse();
 
     $version = PageVersion::factory()->published()->create(['page_id' => $page->id, 'layout_id' => $page->layout_id]);
-    $page->update(['published_version_id' => $version->id]);
+    $page->asActor($page->created_by)->update(['published_version_id' => $version->id]);
 
     expect($page->fresh()->is_published)->toBeTrue();
 });
@@ -49,7 +65,7 @@ it('reports is_published based on whether published_version_id is set', function
 it('scopes to active pages and to pages with a published version', function () {
     $published = Page::factory()->create();
     $version = PageVersion::factory()->published()->create(['page_id' => $published->id, 'layout_id' => $published->layout_id]);
-    $published->update(['published_version_id' => $version->id]);
+    $published->asActor($published->created_by)->update(['published_version_id' => $version->id]);
 
     Page::factory()->archived()->create();
     Page::factory()->create();

@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\PieceType;
+use App\Enums\PageVersionStatus;
 use App\Enums\WebsiteRole;
 use App\Models\Asset;
 use App\Models\Layout;
@@ -474,7 +474,7 @@ it('never allows mutating pieces once the page version is no longer editable', f
     $owner = User::factory()->create();
     createWebsiteMembership($website, $owner, WebsiteRole::Owner);
     $version = makeEditableVersion($website);
-    $version->update(['status' => \App\Enums\PageVersionStatus::UnderReview]);
+    $version->asActor($version->created_by)->update(['status' => PageVersionStatus::UnderReview]);
     $piece = Piece::factory()->paragraph()->create(['page_version_id' => $version->id]);
 
     $this->actingAs($owner)

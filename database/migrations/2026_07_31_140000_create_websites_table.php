@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Support\Database\UserstampSchema;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->string('locale', 10)->default('pt-BR');
             $table->string('timezone', 64)->nullable();
             $table->enum('status', ['active', 'suspended', 'archived'])->default('active');
+            UserstampSchema::columns($table);
             $table->timestamps();
             $table->softDeletes();
 
@@ -29,6 +31,8 @@ return new class extends Migration
 
             $table->comment('Root tenant entity for each managed site: domain, subdomain and locale.');
         });
+
+        UserstampSchema::installTriggers('websites');
     }
 
     /**
@@ -36,6 +40,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        UserstampSchema::dropTriggers('websites');
+
         Schema::dropIfExists('websites');
     }
 };

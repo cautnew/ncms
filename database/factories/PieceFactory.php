@@ -6,6 +6,7 @@ use App\Enums\PieceType;
 use App\Models\Asset;
 use App\Models\PageVersion;
 use App\Models\Piece;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -31,6 +32,7 @@ class PieceFactory extends Factory
                 'text' => fake()->paragraph(),
             ],
             'settings' => [],
+            'created_by' => User::factory(),
         ];
     }
 

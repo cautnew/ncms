@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PageVersionStatus;
 use App\Models\Concerns\Auditable;
+use App\Models\Concerns\HasUserstamps;
 use Database\Factories\PageVersionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,11 +19,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[Fillable([
     'page_id', 'layout_id', 'cloned_from_id', 'version_number', 'status', 'data', 'layout_snapshot', 'seo_snapshot',
     'created_by', 'qa_user_id', 'qa_reviewed_at', 'qa_notes', 'published_at', 'published_by',
+    'deleted_by',
 ])]
 class PageVersion extends Model
 {
     /** @use HasFactory<PageVersionFactory> */
-    use Auditable, HasFactory, HasUuids, SoftDeletes;
+    use Auditable, HasFactory, HasUserstamps, HasUuids, SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
@@ -102,6 +104,26 @@ class PageVersion extends Model
     public function publisher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'published_by');
+    }
+
+    /**
+     * The user who last updated this version.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    /**
+     * The user who deleted this version, if it has been deleted.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function deleter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 
     /**

@@ -46,7 +46,7 @@ final class PageVersionCloningService
             ]);
 
             $assetIdMap = $this->cloneAssets($source, $draft);
-            $pieceIdMap = $this->clonePieces($source, $draft, $assetIdMap);
+            $pieceIdMap = $this->clonePieces($source, $draft, $assetIdMap, $actor);
 
             return new PageVersionCloneResult($draft, $pieceIdMap, $assetIdMap);
         });
@@ -102,13 +102,13 @@ final class PageVersionCloningService
      * @param  array<string, string>  $assetIdMap
      * @return array<string, string>
      */
-    private function clonePieces(PageVersion $source, PageVersion $draft, array $assetIdMap): array
+    private function clonePieces(PageVersion $source, PageVersion $draft, array $assetIdMap, User $actor): array
     {
         $grouped = $source->pieces()->orderBy('position')->get()
             ->groupBy(fn (Piece $piece): string => $piece->parent_piece_id ?? 'root');
 
         $pieceIdMap = [];
-        $this->clonePieceLevel($grouped, 'root', $draft, null, $assetIdMap, $pieceIdMap);
+        $this->clonePieceLevel($grouped, 'root', $draft, null, $assetIdMap, $pieceIdMap, $actor);
 
         return $pieceIdMap;
     }
@@ -125,6 +125,7 @@ final class PageVersionCloningService
         ?string $newParentId,
         array $assetIdMap,
         array &$pieceIdMap,
+        User $actor,
     ): void {
         foreach ($grouped->get($parentKey, collect()) as $piece) {
             $clone = $this->pieces->create($draft, [
@@ -135,11 +136,12 @@ final class PageVersionCloningService
                 'position' => $piece->position,
                 'content' => $piece->content,
                 'settings' => $piece->settings,
+                'created_by' => $actor->id,
             ]);
 
             $pieceIdMap[$piece->id] = $clone->id;
 
-            $this->clonePieceLevel($grouped, $piece->id, $draft, $clone->id, $assetIdMap, $pieceIdMap);
+            $this->clonePieceLevel($grouped, $piece->id, $draft, $clone->id, $assetIdMap, $pieceIdMap, $actor);
         }
     }
 }

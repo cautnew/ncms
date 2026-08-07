@@ -33,6 +33,8 @@ class WebsiteSeeder extends Seeder
                 'locale' => 'pt-BR',
                 'timezone' => 'America/Sao_Paulo',
                 'status' => 'active',
+                'created_by' => $owner->id,
+                'updated_by' => $owner->id,
             ],
         );
 
@@ -43,6 +45,8 @@ class WebsiteSeeder extends Seeder
                 'invited_by' => null,
                 'invited_at' => now(),
                 'accepted_at' => now(),
+                'created_by' => $owner->id,
+                'updated_by' => $owner->id,
             ],
         );
 

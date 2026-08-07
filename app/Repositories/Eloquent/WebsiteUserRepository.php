@@ -34,6 +34,7 @@ final class WebsiteUserRepository implements WebsiteUserRepositoryInterface
             'role' => $role,
             'invited_by' => $inviter->id,
             'invited_at' => now(),
+            'created_by' => $inviter->id,
         ])->fresh(['user']);
     }
 

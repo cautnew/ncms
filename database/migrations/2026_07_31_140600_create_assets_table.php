@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Support\Database\UserstampSchema;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +30,7 @@ return new class extends Migration
             $table->string('alt_text')->nullable();
             $table->json('metadata')->nullable();
             $table->foreignUuid('uploaded_by')->constrained('users')->restrictOnDelete();
+            UserstampSchema::columns($table, includeCreatedBy: false);
             $table->timestamps();
             $table->softDeletes();
 
@@ -64,6 +66,8 @@ return new class extends Migration
                     END IF;
                 END"
         );
+
+        UserstampSchema::installTriggers('assets');
     }
 
     /**
@@ -71,6 +75,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        UserstampSchema::dropTriggers('assets');
+
         DB::unprepared('DROP TRIGGER IF EXISTS trg_assets_single_owner_insert');
         DB::unprepared('DROP TRIGGER IF EXISTS trg_assets_single_owner_update');
 

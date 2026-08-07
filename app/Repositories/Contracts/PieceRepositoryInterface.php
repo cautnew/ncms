@@ -40,8 +40,7 @@ interface PieceRepositoryInterface
     public function update(Piece $piece, array $attributes): Piece;
 
     /**
-     * Deletes the piece and, via the pieces.parent_piece_id cascade FK, its
-     * entire subtree.
+     * Soft-deletes the piece and its entire subtree.
      */
     public function delete(Piece $piece): void;
 }

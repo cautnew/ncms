@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Layout;
+use App\Models\User;
 use App\Models\Website;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -30,6 +31,7 @@ class LayoutFactory extends Factory
             ],
             'status' => 'active',
             'is_default' => false,
+            'created_by' => User::factory(),
         ];
     }
 

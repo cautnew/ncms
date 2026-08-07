@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\Auditable;
+use App\Models\Concerns\HasUserstamps;
 use Database\Factories\LayoutFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,11 +14,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['website_id', 'name', 'slug', 'description', 'schema', 'status', 'is_default'])]
+#[Fillable(['website_id', 'name', 'slug', 'description', 'schema', 'status', 'is_default', 'created_by', 'deleted_by'])]
 class Layout extends Model
 {
     /** @use HasFactory<LayoutFactory> */
-    use Auditable, HasFactory, HasUuids, SoftDeletes;
+    use Auditable, HasFactory, HasUserstamps, HasUuids, SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
@@ -104,5 +105,35 @@ class Layout extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', 'active');
+    }
+
+    /**
+     * The user who created this layout.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * The user who last updated this layout.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    /**
+     * The user who deleted this layout, if it has been deleted.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function deleter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }
