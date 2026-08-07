@@ -1,0 +1,57 @@
+<?php
+
+use App\Enums\WebsiteRole;
+use App\Models\AuditLog;
+use App\Models\User;
+use App\Models\Website;
+
+it('computes host as the root domain when there is no subdomain', function () {
+    $website = Website::factory()->create(['domain' => 'example.com', 'subdomain' => '']);
+
+    expect($website->host)->toBe('example.com');
+});
+
+it('computes host as subdomain + domain when a subdomain is set', function () {
+    $website = Website::factory()->create(['domain' => 'example.com', 'subdomain' => 'blog']);
+
+    expect($website->host)->toBe('blog.example.com');
+});
+
+it('scopes to a given domain', function () {
+    Website::factory()->create(['domain' => 'match.test']);
+    Website::factory()->create(['domain' => 'other.test']);
+
+    $results = Website::query()->forDomain('match.test')->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->domain)->toBe('match.test');
+});
+
+it('lists users through the website_users pivot with role/timestamps', function () {
+    $website = Website::factory()->create();
+    $user = User::factory()->create();
+    createWebsiteMembership($website, $user, WebsiteRole::Editor);
+
+    $found = $website->users()->first();
+
+    expect($found->is($user))->toBeTrue();
+    // The pivot's own columns aren't cast through WebsiteUser's enum cast —
+    // only the dedicated WebsiteUser model (used by roleOn(), etc.) is.
+    expect($found->pivot->role)->toBe(WebsiteRole::Editor->value);
+});
+
+it('exposes its audit log entries', function () {
+    // Creating the website itself already produces one "create" AuditLog row
+    // (Website uses the Auditable trait) — assert the explicit one is
+    // included rather than an exact count coupled to that side effect.
+    $website = Website::factory()->create();
+    $log = AuditLog::factory()->forModel($website)->create(['action' => 'update']);
+
+    expect($website->auditLogs()->pluck('id'))->toContain($log->id);
+});
+
+it('reports its own id as the audit scope', function () {
+    $website = Website::factory()->create();
+
+    expect($website->auditWebsiteId())->toBe($website->id);
+});
