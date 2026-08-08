@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "cautnew/kautch",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
     "keywords": [
@@ -10,9 +10,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "cautnew/pcss": "dev-main",
-        "cautnew/phtml": "dev-main",
-        "cautnew/typedarr": "dev-main",
+        "cautnew/pcss": "^1.0",
+        "cautnew/phtml": "^1.0",
+        "cautnew/typedarr": "^1.0",
         "dedoc/scramble": "^0.13.38",
         "laravel/framework": "^13.8",
         "laravel/reverb": "^1.0",
