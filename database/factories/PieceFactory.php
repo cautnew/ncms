@@ -27,6 +27,7 @@ class PieceFactory extends Factory
             'asset_id' => null,
             'type' => PieceType::Paragraph,
             'slot' => null,
+            'region' => null,
             'position' => 0,
             'content' => [
                 'text' => fake()->paragraph(),
@@ -126,6 +127,17 @@ class PieceFactory extends Factory
             'page_version_id' => $parent->page_version_id,
             'parent_piece_id' => $parent->id,
             'slot' => $slot,
+            'region' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that this root-level piece is assigned to a given layout region.
+     */
+    public function inRegion(string $region): static
+    {
+        return $this->state(fn () => [
+            'region' => $region,
         ]);
     }
 }

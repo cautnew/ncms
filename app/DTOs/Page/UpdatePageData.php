@@ -7,6 +7,7 @@ use App\Http\Requests\Page\UpdatePageRequest;
 final readonly class UpdatePageData
 {
     public function __construct(
+        public ?string $name = null,
         public ?string $slug = null,
         public ?string $layoutId = null,
         public ?string $status = null,
@@ -15,6 +16,7 @@ final readonly class UpdatePageData
     public static function fromRequest(UpdatePageRequest $request): self
     {
         return new self(
+            name: $request->filled('name') ? $request->string('name')->toString() : null,
             slug: $request->filled('slug') ? $request->string('slug')->toString() : null,
             layoutId: $request->filled('layout_id') ? $request->string('layout_id')->toString() : null,
             status: $request->filled('status') ? $request->string('status')->toString() : null,
@@ -29,6 +31,7 @@ final readonly class UpdatePageData
     public function toArray(): array
     {
         return array_filter([
+            'name' => $this->name,
             'slug' => $this->slug,
             'layout_id' => $this->layoutId,
             'status' => $this->status,

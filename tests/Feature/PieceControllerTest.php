@@ -252,6 +252,57 @@ it('rejects a slot on a root-level piece', function () {
         ->assertJsonValidationErrors(['slot']);
 });
 
+it('creates a root piece assigned to a region declared by the layout', function () {
+    $website = Website::factory()->create();
+    $owner = User::factory()->create();
+    createWebsiteMembership($website, $owner, WebsiteRole::Owner);
+    $version = makeEditableVersion($website);
+
+    $this->actingAs($owner)
+        ->postJson(route('api.v1.versions.pieces.store', $version), [
+            'type' => 'paragraph',
+            'region' => 'header',
+            'content' => ['text' => 'In the header'],
+        ])
+        ->assertCreated()
+        ->assertJsonPath('data.region', 'header');
+});
+
+it('rejects a region the layout does not declare', function () {
+    $website = Website::factory()->create();
+    $owner = User::factory()->create();
+    createWebsiteMembership($website, $owner, WebsiteRole::Owner);
+    $version = makeEditableVersion($website);
+
+    $this->actingAs($owner)
+        ->postJson(route('api.v1.versions.pieces.store', $version), [
+            'type' => 'paragraph',
+            'region' => 'not-a-real-region',
+            'content' => ['text' => 'Nope'],
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['region']);
+});
+
+it('rejects a region on a non-root piece', function () {
+    $website = Website::factory()->create();
+    $owner = User::factory()->create();
+    createWebsiteMembership($website, $owner, WebsiteRole::Owner);
+    $version = makeEditableVersion($website);
+    $wrapper = Piece::factory()->twoColumnsWrapper()->create(['page_version_id' => $version->id]);
+
+    $this->actingAs($owner)
+        ->postJson(route('api.v1.versions.pieces.store', $version), [
+            'type' => 'paragraph',
+            'parent_piece_id' => $wrapper->id,
+            'slot' => 'left',
+            'region' => 'header',
+            'content' => ['text' => 'Nope'],
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['region']);
+});
+
 it('rejects a parent_piece_id belonging to a different page version', function () {
     $website = Website::factory()->create();
     $owner = User::factory()->create();
@@ -392,6 +443,50 @@ it('updates a piece content, settings and position', function () {
         ->assertJsonPath('data.content.text', 'Updated text')
         ->assertJsonPath('data.settings.align', 'center')
         ->assertJsonPath('data.position', 5);
+});
+
+it('updates a root piece to a region declared by the layout', function () {
+    $website = Website::factory()->create();
+    $owner = User::factory()->create();
+    createWebsiteMembership($website, $owner, WebsiteRole::Owner);
+    $version = makeEditableVersion($website);
+    $piece = Piece::factory()->paragraph()->create(['page_version_id' => $version->id]);
+
+    $this->actingAs($owner)
+        ->putJson(route('api.v1.pieces.update', $piece), ['region' => 'footer'])
+        ->assertSuccessful()
+        ->assertJsonPath('data.region', 'footer');
+});
+
+it('rejects updating a root piece to a region the layout does not declare', function () {
+    $website = Website::factory()->create();
+    $owner = User::factory()->create();
+    createWebsiteMembership($website, $owner, WebsiteRole::Owner);
+    $version = makeEditableVersion($website);
+    $piece = Piece::factory()->paragraph()->create(['page_version_id' => $version->id]);
+
+    $this->actingAs($owner)
+        ->putJson(route('api.v1.pieces.update', $piece), ['region' => 'not-a-real-region'])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['region']);
+});
+
+it('rejects assigning a region while reparenting a piece into a container', function () {
+    $website = Website::factory()->create();
+    $owner = User::factory()->create();
+    createWebsiteMembership($website, $owner, WebsiteRole::Owner);
+    $version = makeEditableVersion($website);
+    $wrapper = Piece::factory()->twoColumnsWrapper()->create(['page_version_id' => $version->id]);
+    $piece = Piece::factory()->paragraph()->create(['page_version_id' => $version->id, 'region' => 'header']);
+
+    $this->actingAs($owner)
+        ->putJson(route('api.v1.pieces.update', $piece), [
+            'parent_piece_id' => $wrapper->id,
+            'slot' => 'left',
+            'region' => 'header',
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['region']);
 });
 
 it('reparents a piece into a different container and slot', function () {

@@ -25,12 +25,8 @@ return new class extends Migration
             $table->string('filename');
             $table->string('mime_type', 100);
             $table->unsignedBigInteger('size');
-            $table->unsignedInteger('width')->nullable();
-            $table->unsignedInteger('height')->nullable();
-            $table->string('alt_text')->nullable();
             $table->json('metadata')->nullable();
-            $table->foreignUuid('uploaded_by')->constrained('users')->restrictOnDelete();
-            UserstampSchema::columns($table, includeCreatedBy: false);
+            UserstampSchema::columns($table);
             $table->timestamps();
             $table->softDeletes();
 

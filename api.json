@@ -2458,6 +2458,10 @@
             "StorePageRequest": {
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
                     "slug": {
                         "type": "string",
                         "maxLength": 255
@@ -2475,6 +2479,7 @@
                     }
                 },
                 "required": [
+                    "name",
                     "slug",
                     "layout_id"
                 ],
@@ -2486,15 +2491,6 @@
                     "layout_id": {
                         "type": "string",
                         "format": "uuid"
-                    },
-                    "data": {
-                        "type": [
-                            "array",
-                            "null"
-                        ],
-                        "items": {
-                            "type": "string"
-                        }
                     },
                     "seo": {
                         "type": "object",
@@ -2580,6 +2576,13 @@
                         "format": "uuid"
                     },
                     "slot": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 50
+                    },
+                    "region": {
                         "type": [
                             "string",
                             "null"
@@ -2734,6 +2737,10 @@
             "UpdatePageRequest": {
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
                     "slug": {
                         "type": "string",
                         "maxLength": 255
@@ -2837,6 +2844,13 @@
                         "format": "uuid"
                     },
                     "slot": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 50
+                    },
+                    "region": {
                         "type": [
                             "string",
                             "null"

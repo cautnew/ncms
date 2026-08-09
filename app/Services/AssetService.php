@@ -62,6 +62,12 @@ final class AssetService
 
         [$width, $height] = $this->extractDimensions($data->file);
 
+        $metadata = array_filter([
+            'width' => $width,
+            'height' => $height,
+            'alt_text' => $data->altText,
+        ], fn (mixed $value): bool => $value !== null) + ($data->metadata ?? []);
+
         return $this->assets->create([
             'website_id' => $website->id,
             'layout_id' => $data->layoutId,
@@ -71,11 +77,8 @@ final class AssetService
             'filename' => $data->file->getClientOriginalName(),
             'mime_type' => $data->file->getMimeType(),
             'size' => $data->file->getSize(),
-            'width' => $width,
-            'height' => $height,
-            'alt_text' => $data->altText,
-            'metadata' => $data->metadata,
-            'uploaded_by' => $uploader->id,
+            'metadata' => $metadata,
+            'created_by' => $uploader->id,
         ]);
     }
 
@@ -93,7 +96,9 @@ final class AssetService
             $asset = Asset::findOrFail($clone->asset($asset->id));
         }
 
-        return $this->assets->update($asset, $data->toArray());
+        $metadata = array_merge($asset->metadata ?? [], $data->metadataPatch());
+
+        return $this->assets->update($asset, ['metadata' => $metadata]);
     }
 
     /**

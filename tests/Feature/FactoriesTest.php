@@ -2,8 +2,8 @@
 
 use App\Enums\PageVersionStatus;
 use App\Enums\PieceType;
-use App\Models\AuditLog;
 use App\Models\Asset;
+use App\Models\AuditLog;
 use App\Models\Layout;
 use App\Models\Page;
 use App\Models\PageVersion;
@@ -147,12 +147,12 @@ it('creates versions in every workflow status with consistent qa/publish fields'
 
     $approved = PageVersion::factory()->approved()->create();
     expect($approved->status)->toBe(PageVersionStatus::Approved);
-    expect($approved->qa_user_id)->not->toBeNull();
-    expect($approved->qa_reviewed_at)->not->toBeNull();
+    expect($approved->reviews)->toHaveCount(1);
+    expect($approved->reviews->first()->qa_user_id)->not->toBeNull();
 
     $rejected = PageVersion::factory()->rejected()->create();
     expect($rejected->status)->toBe(PageVersionStatus::Rejected);
-    expect($rejected->qa_notes)->not->toBeNull();
+    expect($rejected->reviews->first()->notes)->not->toBeNull();
 
     $published = PageVersion::factory()->published()->create();
     expect($published->status)->toBe(PageVersionStatus::Published);

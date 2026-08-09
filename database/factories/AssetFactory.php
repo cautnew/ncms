@@ -30,11 +30,12 @@ class AssetFactory extends Factory
             'filename' => fake()->word().'.jpg',
             'mime_type' => 'image/jpeg',
             'size' => fake()->numberBetween(1_000, 500_000),
-            'width' => 800,
-            'height' => 600,
-            'alt_text' => fake()->sentence(3),
-            'metadata' => null,
-            'uploaded_by' => User::factory(),
+            'metadata' => [
+                'width' => 800,
+                'height' => 600,
+                'alt_text' => fake()->sentence(3),
+            ],
+            'created_by' => User::factory(),
         ];
     }
 
@@ -72,13 +73,12 @@ class AssetFactory extends Factory
             'path' => 'assets/'.fake()->uuid().'.svg',
             'filename' => fake()->word().'.svg',
             'mime_type' => 'image/svg+xml',
-            'width' => null,
-            'height' => null,
+            'metadata' => ['alt_text' => $attributes['metadata']['alt_text'] ?? null],
         ]);
     }
 
     /**
-     * Indicate that this asset is a PDF document (no pixel dimensions).
+     * Indicate that this asset is a PDF document (no pixel dimensions, no alt text).
      */
     public function document(): static
     {
@@ -86,9 +86,7 @@ class AssetFactory extends Factory
             'path' => 'assets/'.fake()->uuid().'.pdf',
             'filename' => fake()->word().'.pdf',
             'mime_type' => 'application/pdf',
-            'width' => null,
-            'height' => null,
-            'alt_text' => null,
+            'metadata' => [],
         ]);
     }
 
@@ -101,9 +99,12 @@ class AssetFactory extends Factory
             'path' => 'assets/'.fake()->uuid().'.mp4',
             'filename' => fake()->word().'.mp4',
             'mime_type' => 'video/mp4',
-            'width' => 1920,
-            'height' => 1080,
             'size' => fake()->numberBetween(500_000, 20_000_000),
+            'metadata' => [
+                'width' => 1920,
+                'height' => 1080,
+                'alt_text' => $attributes['metadata']['alt_text'] ?? null,
+            ],
         ]);
     }
 }

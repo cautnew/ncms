@@ -31,6 +31,7 @@ class StorePageRequest extends FormRequest
         $website = $this->route('website');
 
         return [
+            'name' => ['required', 'string', 'max:255'],
             'slug' => [
                 'required',
                 'string',

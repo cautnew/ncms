@@ -37,7 +37,6 @@ it('returns the full published content payload', function () {
         'schema' => ['blocks' => ['hero']],
     ]);
     [$page, $version] = publishPage($website, $layout, [
-        'data' => ['title' => 'Homepage'],
         'seo_snapshot' => ['title' => 'Welcome | Site', 'description' => 'A great site.'],
     ]);
     $layoutAsset = Asset::factory()->create(['website_id' => $website->id, 'layout_id' => $layout->id]);
@@ -58,8 +57,8 @@ it('returns the full published content payload', function () {
     expect(collect($data['layout_assets'])->pluck('id')->all())->toBe([$layoutAsset->id]);
     expect($data['page']['id'])->toBe($page->id);
     expect($data['page']['slug'])->toBe($page->slug);
+    expect($data['page']['name'])->toBe($page->name);
     expect($data['version']['id'])->toBe($version->id);
-    expect($data['version']['data'])->toBe(['title' => 'Homepage']);
     expect(collect($data['version_assets'])->pluck('id')->all())->toBe([$versionAsset->id]);
     expect($data['seo'])->toBe(['title' => 'Welcome | Site', 'description' => 'A great site.']);
 
@@ -101,20 +100,17 @@ it('always resolves the latest published version, not an older archived one', fu
         'page_id' => $page->id,
         'layout_id' => $layout->id,
         'version_number' => 1,
-        'data' => ['title' => 'Old'],
     ]);
     $newVersion = PageVersion::factory()->published()->create([
         'page_id' => $page->id,
         'layout_id' => $layout->id,
         'version_number' => 2,
-        'data' => ['title' => 'New'],
     ]);
     $page->asActor($page->created_by)->update(['published_version_id' => $newVersion->id]);
 
     $data = $this->getJson(route('api.v1.content.show', [$website, $page->slug]))->json('data');
 
     expect($data['version']['id'])->toBe($newVersion->id);
-    expect($data['version']['data'])->toBe(['title' => 'New']);
 });
 
 it('returns 404 when the page has no published version yet', function () {

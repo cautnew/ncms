@@ -18,6 +18,8 @@ class AdminSeeder extends Seeder
 {
     public const EMAIL = 'admin@kautch.test';
 
+    public const PASSWORD = 'password';
+
     public function run(): void
     {
         User::query()->firstOrCreate(
@@ -25,10 +27,13 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'System Admin',
                 'email_verified_at' => now(),
-                'password' => Hash::make('password'),
+                'password' => Hash::make(self::PASSWORD),
             ],
         );
 
-        $this->command?->info('Admin user ready: '.self::EMAIL.' / password');
+        $this->command?->info(sprintf('Admin user ready: %s / %s',
+            self::EMAIL,
+            self::PASSWORD,
+        ));
     }
 }

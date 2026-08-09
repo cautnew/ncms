@@ -40,7 +40,6 @@ class StorePageVersionRequest extends FormRequest
                     }
                 },
             ],
-            'data' => ['nullable', 'array'],
             'seo' => ['nullable', 'array'],
             'seo.title' => ['nullable', 'string', 'max:255'],
             'seo.description' => ['nullable', 'string', 'max:500'],

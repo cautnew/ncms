@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['page_version_id', 'parent_piece_id', 'asset_id', 'type', 'slot', 'position', 'content', 'settings', 'created_by', 'deleted_by'])]
+#[Fillable(['page_version_id', 'parent_piece_id', 'asset_id', 'type', 'slot', 'region', 'position', 'content', 'settings', 'created_by', 'deleted_by'])]
 class Piece extends Model
 {
     /** @use HasFactory<PieceFactory> */
@@ -120,6 +120,17 @@ class Piece extends Model
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('position');
+    }
+
+    /**
+     * Scope a query to root pieces assigned to a given layout region.
+     *
+     * @param  Builder<Piece>  $query
+     * @return Builder<Piece>
+     */
+    public function scopeInRegion(Builder $query, string $region): Builder
+    {
+        return $query->whereNull('parent_piece_id')->where('region', $region);
     }
 
     /**

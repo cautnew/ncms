@@ -9,6 +9,7 @@ use App\Repositories\Contracts\AssetRepositoryInterface;
 use App\Repositories\Contracts\LayoutRepositoryInterface;
 use App\Repositories\Contracts\PageRepositoryInterface;
 use App\Repositories\Contracts\PageVersionRepositoryInterface;
+use App\Repositories\Contracts\PageVersionReviewRepositoryInterface;
 use App\Repositories\Contracts\PieceRepositoryInterface;
 use App\Repositories\Contracts\WebsiteRepositoryInterface;
 use App\Repositories\Contracts\WebsiteUserRepositoryInterface;
@@ -16,6 +17,7 @@ use App\Repositories\Eloquent\AssetRepository;
 use App\Repositories\Eloquent\LayoutRepository;
 use App\Repositories\Eloquent\PageRepository;
 use App\Repositories\Eloquent\PageVersionRepository;
+use App\Repositories\Eloquent\PageVersionReviewRepository;
 use App\Repositories\Eloquent\PieceRepository;
 use App\Repositories\Eloquent\WebsiteRepository;
 use App\Repositories\Eloquent\WebsiteUserRepository;
@@ -37,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AssetRepositoryInterface::class, AssetRepository::class);
         $this->app->bind(PageRepositoryInterface::class, PageRepository::class);
         $this->app->bind(PageVersionRepositoryInterface::class, PageVersionRepository::class);
+        $this->app->bind(PageVersionReviewRepositoryInterface::class, PageVersionReviewRepository::class);
         $this->app->bind(PieceRepositoryInterface::class, PieceRepository::class);
 
         $this->app->singleton(RequestAuditContext::class);

@@ -21,24 +21,23 @@ it('lists its website memberships and the websites reached through them', functi
 
 it('lists assets it uploaded', function () {
     $user = User::factory()->create();
-    Asset::factory()->create(['uploaded_by' => $user->id]);
+    Asset::factory()->create(['created_by' => $user->id]);
 
     expect($user->uploadedAssets()->count())->toBe(1);
 });
 
-it('lists page versions it created, reviewed as qa, and published', function () {
+it('lists page versions it created and published, and reviews it made as qa', function () {
     $creator = User::factory()->create();
     $qa = User::factory()->create();
     $publisher = User::factory()->create();
 
-    PageVersion::factory()->published()->create([
+    PageVersion::factory()->published($qa)->create([
         'created_by' => $creator->id,
-        'qa_user_id' => $qa->id,
         'published_by' => $publisher->id,
     ]);
 
     expect($creator->createdPageVersions()->count())->toBe(1);
-    expect($qa->qaReviewedPageVersions()->count())->toBe(1);
+    expect($qa->pageVersionReviews()->count())->toBe(1);
     expect($publisher->publishedPageVersions()->count())->toBe(1);
 });
 

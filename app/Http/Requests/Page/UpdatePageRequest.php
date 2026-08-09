@@ -34,6 +34,7 @@ class UpdatePageRequest extends FormRequest
         $page = $this->route('page');
 
         return [
+            'name' => ['sometimes', 'string', 'max:255'],
             'slug' => [
                 'sometimes',
                 'string',

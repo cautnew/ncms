@@ -50,6 +50,7 @@ class UpdatePieceRequest extends FormRequest
                 },
             ],
             'slot' => ['sometimes', 'nullable', 'string', 'max:50'],
+            'region' => ['sometimes', 'nullable', 'string', 'max:50'],
             'asset_id' => [
                 'sometimes',
                 'nullable',
@@ -74,6 +75,7 @@ class UpdatePieceRequest extends FormRequest
     {
         $validator->after(function (Validator $validator): void {
             $this->validateParentSlotCompatibility($validator);
+            $this->validateRootRegion($validator);
         });
     }
 
@@ -114,6 +116,34 @@ class UpdatePieceRequest extends FormRequest
 
         if ($slot === null || ! in_array($slot, $allowedSlots, true)) {
             $validator->errors()->add('slot', 'Slot must be one of: '.implode(', ', $allowedSlots).'.');
+        }
+    }
+
+    /**
+     * Same rule as on creation, applied against the *effective* parent/region.
+     */
+    private function validateRootRegion(Validator $validator): void
+    {
+        /** @var Piece $piece */
+        $piece = $this->route('piece');
+
+        $parentId = $this->has('parent_piece_id') ? $this->input('parent_piece_id') : $piece->parent_piece_id;
+        $region = $this->has('region') ? $this->input('region') : $piece->region;
+
+        if ($region === null) {
+            return;
+        }
+
+        if ($parentId !== null) {
+            $validator->errors()->add('region', 'Only a root-level piece can have a region.');
+
+            return;
+        }
+
+        $allowedRegions = $piece->pageVersion->layout_snapshot['schema']['regions'] ?? [];
+
+        if (! in_array($region, $allowedRegions, true)) {
+            $validator->errors()->add('region', 'Region must be one of: '.implode(', ', $allowedRegions).'.');
         }
     }
 

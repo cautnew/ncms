@@ -12,7 +12,7 @@ final class PageVersionRepository implements PageVersionRepositoryInterface
 {
     public function paginateForPage(Page $page, int $perPage = 15): LengthAwarePaginator
     {
-        return $page->versions()->latest('version_number')->paginate($perPage);
+        return $page->versions()->with('reviews')->latest('version_number')->paginate($perPage);
     }
 
     /**

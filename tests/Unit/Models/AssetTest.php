@@ -20,14 +20,28 @@ it('resolves the users who last updated and deleted it', function () {
     expect($trashed->deleter->is($deleter))->toBeTrue();
 });
 
-it('resolves its layout, page version and uploader', function () {
+it('resolves its layout, page version and creator', function () {
     $layout = Layout::factory()->create();
     $uploader = User::factory()->create();
-    $asset = Asset::factory()->forLayout($layout)->create(['uploaded_by' => $uploader->id]);
+    $asset = Asset::factory()->forLayout($layout)->create(['created_by' => $uploader->id]);
 
     expect($asset->layout->is($layout))->toBeTrue();
     expect($asset->pageVersion)->toBeNull();
-    expect($asset->uploadedBy->is($uploader))->toBeTrue();
+    expect($asset->creator->is($uploader))->toBeTrue();
+});
+
+it('reads alt_text/width/height from metadata rather than dedicated columns', function () {
+    $asset = Asset::factory()->create(['metadata' => ['alt_text' => 'A picture', 'width' => 1024, 'height' => 768]]);
+
+    expect($asset->alt_text)->toBe('A picture');
+    expect($asset->width)->toBe(1024);
+    expect($asset->height)->toBe(768);
+
+    $withoutMetadata = Asset::factory()->create(['metadata' => []]);
+
+    expect($withoutMetadata->alt_text)->toBeNull();
+    expect($withoutMetadata->width)->toBeNull();
+    expect($withoutMetadata->height)->toBeNull();
 });
 
 it('resolves pieces referencing it', function () {

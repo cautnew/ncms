@@ -35,7 +35,7 @@ class DemoContentSeeder extends Seeder
         [
             'name' => 'Home Layout',
             'slug' => 'home-layout',
-            'description' => 'Landing layout for the site\'s home page.',
+            'description' => "Landing layout for the site's home page.",
             'schema' => ['regions' => ['header', 'hero', 'main', 'footer']],
             'is_default' => true,
         ],
@@ -78,7 +78,14 @@ class DemoContentSeeder extends Seeder
         $userCount = 4 + count($this->users['editors']); // owner, admin, qa, viewer + editors
 
         $this->command?->info(sprintf(
-            'Demo content seeded: %d users, %d layouts, %d assets, %d pages, %d page versions.',
+            implode(' ', [
+                'Demo content seeded:',
+                '%d users,',
+                '%d layouts,',
+                '%d assets,',
+                '%d pages,',
+                '%d page versions.',
+            ]),
             $userCount,
             $layouts->count(),
             $layoutAssets->count() + self::PAGE_COUNT,
@@ -91,7 +98,10 @@ class DemoContentSeeder extends Seeder
      * The Owner already exists (created by WebsiteSeeder); the other five
      * roles are created here, each with a membership on the demo website.
      *
-     * @return array{owner: User, admin: User, qa: User, editors: array<int, User>, viewer: User}
+     * @return array {
+     *               owner: User, admin: User, qa: User, viewer: User,
+     *               editors: array<int, User>
+     *               }
      */
     private function seedUsers(Website $website): array
     {
@@ -171,12 +181,17 @@ class DemoContentSeeder extends Seeder
 
             $factory = $i === 1 ? Asset::factory()->svg() : Asset::factory();
 
-            return $factory->forLayout($layout)->create([
-                'uploaded_by' => $admin->id,
-                'updated_by' => $admin->id,
-                'filename' => "layout-asset-{$i}.".($i === 1 ? 'svg' : 'jpg'),
-                'alt_text' => "Demo asset {$i} for {$layout->name}",
-            ]);
+            return $factory->forLayout($layout)
+                ->state(fn (array $attributes) => [
+                    'metadata' => array_merge($attributes['metadata'] ?? [], [
+                        'alt_text' => "Demo asset {$i} for {$layout->name}",
+                    ]),
+                ])
+                ->create([
+                    'created_by' => $admin->id,
+                    'updated_by' => $admin->id,
+                    'filename' => "layout-asset-{$i}.".($i === 1 ? 'svg' : 'jpg'),
+                ]);
         });
     }
 
@@ -201,6 +216,7 @@ class DemoContentSeeder extends Seeder
             $page = Page::factory()->create([
                 'website_id' => $website->id,
                 'layout_id' => $layout->id,
+                'name' => "Página Demo {$i}",
                 'slug' => "pagina-demo-{$i}",
                 'status' => 'active',
                 'created_by' => $editor->id,
@@ -208,44 +224,46 @@ class DemoContentSeeder extends Seeder
             ]);
 
             // v1: an early draft that was eventually superseded — archived.
-            $v1 = PageVersion::factory()->archived()->create([
+            $v1 = PageVersion::factory()->archived($qa)->create([
                 'page_id' => $page->id,
                 'layout_id' => $layout->id,
                 'version_number' => 1,
                 'created_by' => $editor->id,
                 'updated_by' => $admin->id,
-                'qa_user_id' => $qa->id,
                 'published_by' => $admin->id,
             ]);
             $this->seedPiecesForVersion($v1, $layoutAssets->random(), $editor);
 
             // v2: submitted again, but QA sent it back for changes.
-            $v2 = PageVersion::factory()->rejected()->create([
+            $v2 = PageVersion::factory()->rejected($qa)->create([
                 'page_id' => $page->id,
                 'layout_id' => $layout->id,
                 'version_number' => 2,
                 'created_by' => $editor->id,
                 'updated_by' => $qa->id,
-                'qa_user_id' => $qa->id,
             ]);
             $this->seedPiecesForVersion($v2, $layoutAssets->random(), $editor);
 
             // v3: the current, live, published version.
-            $v3 = PageVersion::factory()->published()->create([
+            $v3 = PageVersion::factory()->published($qa)->create([
                 'page_id' => $page->id,
                 'layout_id' => $layout->id,
                 'version_number' => 3,
                 'created_by' => $editor->id,
                 'updated_by' => $owner->id,
-                'qa_user_id' => $qa->id,
                 'published_by' => $owner->id,
             ]);
-            $featuredAsset = Asset::factory()->forPageVersion($v3)->create([
-                'uploaded_by' => $editor->id,
-                'updated_by' => $editor->id,
-                'filename' => "page-{$i}-featured.jpg",
-                'alt_text' => "Featured image for page {$i}",
-            ]);
+            $featuredAsset = Asset::factory()->forPageVersion($v3)
+                ->state(fn (array $attributes) => [
+                    'metadata' => array_merge($attributes['metadata'] ?? [], [
+                        'alt_text' => "Featured image for page {$i}",
+                    ]),
+                ])
+                ->create([
+                    'created_by' => $editor->id,
+                    'updated_by' => $editor->id,
+                    'filename' => "page-{$i}-featured.jpg",
+                ]);
             $this->seedPiecesForVersion($v3, $featuredAsset, $editor);
 
             // Both an explicit updated_by (for DatabaseSeeder's WithoutModelEvents run,
@@ -264,9 +282,14 @@ class DemoContentSeeder extends Seeder
      */
     private function seedPiecesForVersion(PageVersion $version, Asset $imageAsset, User $actor): void
     {
+        $regions = $version->layout_snapshot['schema']['regions'] ?? [];
+        $headingRegion = $regions[0] ?? null;
+        $mainRegion = $regions[1] ?? $headingRegion;
+
         Piece::factory()->heading(1)->create([
             'page_version_id' => $version->id,
             'position' => 0,
+            'region' => $headingRegion,
             'created_by' => $actor->id,
             'updated_by' => $actor->id,
         ]);
@@ -274,6 +297,7 @@ class DemoContentSeeder extends Seeder
         Piece::factory()->paragraph()->create([
             'page_version_id' => $version->id,
             'position' => 1,
+            'region' => $mainRegion,
             'created_by' => $actor->id,
             'updated_by' => $actor->id,
         ]);
@@ -281,6 +305,7 @@ class DemoContentSeeder extends Seeder
         $wrapper = Piece::factory()->twoColumnsWrapper()->create([
             'page_version_id' => $version->id,
             'position' => 2,
+            'region' => $mainRegion,
             'created_by' => $actor->id,
             'updated_by' => $actor->id,
         ]);

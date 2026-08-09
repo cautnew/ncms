@@ -1,15 +1,13 @@
 <?php
 
 use App\Exceptions\MissingActingUserException;
-use App\Models\Asset;
 use App\Models\User;
 use App\Models\Website;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Exercises App\Models\Concerns\HasUserstamps directly through Website (a
- * plain, representative user of the trait) and Asset (the one model that
- * overrides getCreatedByColumn() to reuse a domain-specific column).
+ * Exercises App\Models\Concerns\HasUserstamps directly through Website — a
+ * plain, representative user of the trait.
  */
 it('refuses to create a row with no authenticated user and no explicit actor', function () {
     expect(fn () => Website::create([
@@ -110,16 +108,4 @@ it('clears deleted_by when a soft-deleted row is restored', function () {
 
     expect($website->fresh()->deleted_by)->toBeNull();
     expect($website->fresh()->deleted_at)->toBeNull();
-});
-
-it('lets Asset reuse uploaded_by as its created-by column instead of a redundant created_by', function () {
-    expect((new Asset)->getCreatedByColumn())->toBe('uploaded_by');
-
-    $uploader = User::factory()->create();
-    Auth::login($uploader);
-
-    $asset = Asset::factory()->create(['uploaded_by' => null]);
-
-    expect($asset->uploaded_by)->toBe($uploader->id);
-    expect($asset->getAttributes())->not->toHaveKey('created_by');
 });

@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\Auth;
  *
  * created_by, uniquely, also accepts a plain explicit attribute (mass-
  * assigned or set directly) — matching the pre-existing pattern of
- * PageVersion.created_by/Asset.uploaded_by — since "was it null before
- * insert" is unambiguous. updated_by/deleted_by are not: an update that
+ * PageVersion.created_by — since "was it null before insert" is
+ * unambiguous. updated_by/deleted_by are not: an update that
  * explicitly re-sets them to the value they already hold is indistinguishable
  * from an untouched attribute via Eloquent's dirty-tracking, so asActor() is
  * the only explicit override for those two.

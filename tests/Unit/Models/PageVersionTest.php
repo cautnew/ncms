@@ -26,12 +26,13 @@ it('resolves the users who last updated and deleted it', function () {
     expect($trashed->deleter->is($deleter))->toBeTrue();
 });
 
-it('resolves the QA user who reviewed it and the user who published it', function () {
+it('resolves the review history and the user who published it', function () {
     $qa = User::factory()->create();
     $publisher = User::factory()->create();
-    $version = PageVersion::factory()->published()->create(['qa_user_id' => $qa->id, 'published_by' => $publisher->id]);
+    $version = PageVersion::factory()->published($qa)->create(['published_by' => $publisher->id]);
 
-    expect($version->qaUser->is($qa))->toBeTrue();
+    expect($version->reviews)->toHaveCount(1);
+    expect($version->reviews->first()->qaUser->is($qa))->toBeTrue();
     expect($version->publisher->is($publisher))->toBeTrue();
 });
 
