@@ -1,16 +1,17 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AssetController;
 use App\Http\Controllers\Api\V1\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Api\V1\Auth\NewPasswordController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
-use App\Http\Controllers\Api\V1\AssetController;
 use App\Http\Controllers\Api\V1\ContentController;
 use App\Http\Controllers\Api\V1\LayoutController;
 use App\Http\Controllers\Api\V1\PageController;
 use App\Http\Controllers\Api\V1\PageVersionController;
 use App\Http\Controllers\Api\V1\PieceController;
+use App\Http\Controllers\Api\V1\RouteController;
 use App\Http\Controllers\Api\V1\WebsiteController;
 use App\Http\Controllers\Api\V1\WebsiteUserController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,13 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     // Public content-delivery endpoint — no auth:sanctum, never exposes draft/unpublished content.
     Route::get('content/{website}/{slug}', [ContentController::class, 'show'])
         ->name('content.show');
+
+    // Public URL-routing resolution — a live site's frontend needs to resolve
+    // an arbitrary visited path before it knows anything else about it.
+    // Registered ahead of the authenticated websites.routes resource below so
+    // "resolve" is never swallowed by that resource's {route} wildcard.
+    Route::get('websites/{website}/routes/resolve', [RouteController::class, 'resolve'])
+        ->name('websites.routes.resolve');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('websites', WebsiteController::class);
@@ -34,6 +42,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             ->name('websites.assets.download');
 
         Route::apiResource('websites.pages', PageController::class);
+
+        Route::apiResource('websites.routes', RouteController::class);
 
         Route::get('pages/{page}/versions', [PageVersionController::class, 'index'])
             ->name('pages.versions.index');

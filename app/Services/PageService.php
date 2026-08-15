@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DTOs\Page\CreatePageData;
 use App\DTOs\Page\UpdatePageData;
+use App\Events\PageCreated;
 use App\Models\Page;
 use App\Models\Website;
 use App\Repositories\Contracts\PageRepositoryInterface;
@@ -30,7 +31,11 @@ final class PageService
 
     public function create(Website $website, CreatePageData $data): Page
     {
-        return $this->pages->create($website, $data->toArray());
+        $page = $this->pages->create($website, $data->toArray());
+
+        event(new PageCreated($page));
+
+        return $page;
     }
 
     public function update(Website $website, Page $page, UpdatePageData $data): Page
