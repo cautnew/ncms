@@ -55,6 +55,7 @@ final class PieceService
             'parent_piece_id' => $parentPieceId,
             'asset_id' => $assetId,
             'slot' => $data->slot,
+            'region' => $data->region,
             'content' => $data->content ?? [],
             'settings' => $data->settings ?? [],
             'position' => $position,

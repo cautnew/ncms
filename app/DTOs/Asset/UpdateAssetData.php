@@ -23,15 +23,17 @@ final readonly class UpdateAssetData
     }
 
     /**
-     * Only the attributes that were actually provided.
+     * The metadata keys that were actually provided, to be merged into the
+     * asset's existing metadata (alt_text/width/height/etc. all live inside
+     * that JSON column — there's no dedicated attributes array to return here).
      *
      * @return array<string, mixed>
      */
-    public function toArray(): array
+    public function metadataPatch(): array
     {
         return array_filter([
             'alt_text' => $this->altText,
-            'metadata' => $this->metadata,
+            ...($this->metadata ?? []),
         ], fn (mixed $value): bool => $value !== null);
     }
 }

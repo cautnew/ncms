@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
-    'page_id', 'layout_id', 'cloned_from_id', 'version_number', 'status', 'data', 'layout_snapshot', 'seo_snapshot',
-    'created_by', 'qa_user_id', 'qa_reviewed_at', 'qa_notes', 'published_at', 'published_by',
+    'page_id', 'layout_id', 'cloned_from_id', 'version_number', 'status', 'layout_snapshot', 'seo_snapshot',
+    'created_by', 'published_at', 'published_by',
     'deleted_by',
 ])]
 class PageVersion extends Model
@@ -36,10 +36,8 @@ class PageVersion extends Model
         return [
             'version_number' => 'integer',
             'status' => PageVersionStatus::class,
-            'data' => 'array',
             'layout_snapshot' => 'array',
             'seo_snapshot' => 'array',
-            'qa_reviewed_at' => 'datetime',
             'published_at' => 'datetime',
         ];
     }
@@ -87,13 +85,14 @@ class PageVersion extends Model
     }
 
     /**
-     * The QA user who reviewed (approved/rejected) this version.
+     * The full QA review history for this version (one row per
+     * approve/reject decision), oldest first.
      *
-     * @return BelongsTo<User, $this>
+     * @return HasMany<PageVersionReview, $this>
      */
-    public function qaUser(): BelongsTo
+    public function reviews(): HasMany
     {
-        return $this->belongsTo(User::class, 'qa_user_id');
+        return $this->hasMany(PageVersionReview::class)->oldest();
     }
 
     /**

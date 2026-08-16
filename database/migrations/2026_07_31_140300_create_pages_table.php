@@ -23,6 +23,7 @@ return new class extends Migration
             // once the page_versions table exists — pages and page_versions reference each other.
             $table->uuid('published_version_id')->nullable();
 
+            $table->string('name');
             $table->string('slug');
             $table->enum('status', ['active', 'archived'])->default('active');
             UserstampSchema::columns($table);

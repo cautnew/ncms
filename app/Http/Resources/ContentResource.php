@@ -41,7 +41,6 @@ class ContentResource extends JsonResource
                 'id' => $version->id,
                 'version_number' => $version->version_number,
                 'published_at' => $version->published_at?->toIso8601String(),
-                'data' => $version->data,
             ],
             'version_assets' => AssetResource::collection($version->assets),
             'pieces' => PieceResource::collection($this->pieces),

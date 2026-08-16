@@ -22,6 +22,7 @@ class PageResource extends JsonResource
             'id' => $this->id,
             'website_id' => $this->website_id,
             'layout_id' => $this->layout_id,
+            'name' => $this->name,
             'slug' => $this->slug,
             'status' => $this->status,
             'published_version_id' => $this->published_version_id,

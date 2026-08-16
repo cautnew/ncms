@@ -6,6 +6,7 @@ use App\Enums\PageVersionStatus;
 use App\Models\Layout;
 use App\Models\Page;
 use App\Models\PageVersion;
+use App\Models\PageVersionReview;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -28,9 +29,6 @@ class PageVersionFactory extends Factory
             ])->id,
             'version_number' => 1,
             'status' => PageVersionStatus::Draft,
-            'data' => [
-                'title' => fake()->sentence(4),
-            ],
             'layout_snapshot' => fn (array $attributes) => Layout::find($attributes['layout_id'])
                 ->only(['name', 'slug', 'description', 'schema']),
             'seo_snapshot' => [
@@ -39,9 +37,6 @@ class PageVersionFactory extends Factory
                 'canonical_url' => fake()->url(),
             ],
             'created_by' => User::factory(),
-            'qa_user_id' => null,
-            'qa_reviewed_at' => null,
-            'qa_notes' => null,
             'published_at' => null,
             'published_by' => null,
         ];
@@ -58,56 +53,79 @@ class PageVersionFactory extends Factory
     }
 
     /**
-     * Indicate that the version is approved by QA.
+     * Indicate that the version is approved by QA — records an approved
+     * entry in its review history (see PageVersionReview). Pass $qa to
+     * control who made the decision; otherwise a random user is generated.
      */
-    public function approved(): static
+    public function approved(?User $qa = null, ?string $notes = null): static
     {
         return $this->state(fn () => [
             'status' => PageVersionStatus::Approved,
-            'qa_user_id' => User::factory(),
-            'qa_reviewed_at' => now(),
-        ]);
+        ])->afterCreating(function (PageVersion $version) use ($qa, $notes): void {
+            PageVersionReview::factory()->approved()->create([
+                'page_version_id' => $version->id,
+                'qa_user_id' => $qa?->id ?? User::factory(),
+                'notes' => $notes,
+            ]);
+        });
     }
 
     /**
-     * Indicate that the version was rejected by QA.
+     * Indicate that the version was rejected by QA — records a rejected
+     * entry in its review history (see PageVersionReview). Pass $qa to
+     * control who made the decision; otherwise a random user is generated.
      */
-    public function rejected(): static
+    public function rejected(?User $qa = null, ?string $notes = null): static
     {
         return $this->state(fn () => [
             'status' => PageVersionStatus::Rejected,
-            'qa_user_id' => User::factory(),
-            'qa_reviewed_at' => now(),
-            'qa_notes' => 'Needs changes.',
-        ]);
+        ])->afterCreating(function (PageVersion $version) use ($qa, $notes): void {
+            PageVersionReview::factory()->rejected()->create([
+                'page_version_id' => $version->id,
+                'qa_user_id' => $qa?->id ?? User::factory(),
+                'notes' => $notes ?? 'Needs changes.',
+            ]);
+        });
     }
 
     /**
-     * Indicate that the version is published.
+     * Indicate that the version is published. A published version must have
+     * already been approved — if this state is used on its own (without
+     * ->approved() chained first), an approved review is backfilled here.
      */
-    public function published(): static
+    public function published(?User $qa = null): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn () => [
             'status' => PageVersionStatus::Published,
-            'qa_user_id' => $attributes['qa_user_id'] ?? User::factory(),
-            'qa_reviewed_at' => $attributes['qa_reviewed_at'] ?? now(),
             'published_at' => now(),
             'published_by' => User::factory(),
-        ]);
+        ])->afterCreating(function (PageVersion $version) use ($qa): void {
+            if (! $version->reviews()->exists()) {
+                PageVersionReview::factory()->approved()->create([
+                    'page_version_id' => $version->id,
+                    'qa_user_id' => $qa?->id ?? User::factory(),
+                ]);
+            }
+        });
     }
 
     /**
      * Indicate that the version has been superseded by a newer publication.
      */
-    public function archived(): static
+    public function archived(?User $qa = null): static
     {
         return $this->state(fn (array $attributes) => [
             'status' => PageVersionStatus::Archived,
-            'qa_user_id' => $attributes['qa_user_id'] ?? User::factory(),
-            'qa_reviewed_at' => $attributes['qa_reviewed_at'] ?? now(),
             'published_at' => $attributes['published_at'] ?? now(),
             'published_by' => $attributes['published_by'] ?? User::factory(),
-        ]);
+        ])->afterCreating(function (PageVersion $version) use ($qa): void {
+            if (! $version->reviews()->exists()) {
+                PageVersionReview::factory()->approved()->create([
+                    'page_version_id' => $version->id,
+                    'qa_user_id' => $qa?->id ?? User::factory(),
+                ]);
+            }
+        });
     }
 
     /**
@@ -123,7 +141,6 @@ class PageVersionFactory extends Factory
             'cloned_from_id' => $source->id,
             'layout_snapshot' => $source->layout_snapshot,
             'seo_snapshot' => $source->seo_snapshot,
-            'data' => $source->data,
         ]);
     }
 }

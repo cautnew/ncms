@@ -44,6 +44,19 @@ it('scopes to pieces of a given type', function () {
     expect(Piece::query()->ofType(PieceType::Heading)->where('page_version_id', $version->id)->count())->toBe(1);
 });
 
+it('scopes to root pieces assigned to a given region', function () {
+    $version = PageVersion::factory()->create();
+    $header = Piece::factory()->paragraph()->create(['page_version_id' => $version->id, 'region' => 'header']);
+    Piece::factory()->paragraph()->create(['page_version_id' => $version->id, 'region' => 'footer']);
+    $wrapper = Piece::factory()->twoColumnsWrapper()->create(['page_version_id' => $version->id, 'region' => 'header']);
+    // A non-root piece is never returned, even if it somehow shared the region name.
+    Piece::factory()->paragraph()->childOf($wrapper, 'left')->create();
+
+    $results = Piece::query()->where('page_version_id', $version->id)->inRegion('header')->get();
+
+    expect($results->pluck('id')->all())->toEqualCanonicalizing([$header->id, $wrapper->id]);
+});
+
 it('orders pieces by position', function () {
     $version = PageVersion::factory()->create();
     Piece::factory()->paragraph()->create(['page_version_id' => $version->id, 'position' => 2]);

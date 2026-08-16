@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['website_id', 'layout_id', 'published_version_id', 'slug', 'status', 'created_by', 'deleted_by'])]
+#[Fillable(['website_id', 'layout_id', 'published_version_id', 'name', 'slug', 'status', 'created_by', 'deleted_by'])]
 class Page extends Model
 {
     /** @use HasFactory<PageFactory> */

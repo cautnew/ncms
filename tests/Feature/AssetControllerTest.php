@@ -8,6 +8,8 @@ use App\Models\Page;
 use App\Models\PageVersion;
 use App\Models\User;
 use App\Models\Website;
+use Carbon\CarbonInterface;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -69,7 +71,7 @@ it('uploads an image asset attached to a layout and extracts its dimensions', fu
 
     $asset = Asset::first();
     expect($asset->website_id)->toBe($website->id);
-    expect($asset->uploaded_by)->toBe($owner->id);
+    expect($asset->created_by)->toBe($owner->id);
 
     Storage::disk('public')->assertExists($asset->path);
 });
@@ -252,7 +254,7 @@ it('updates asset metadata without touching the file', function () {
     $asset = Asset::factory()->create([
         'website_id' => $website->id,
         'layout_id' => $layout->id,
-        'alt_text' => 'Old alt',
+        'metadata' => ['alt_text' => 'Old alt'],
         'path' => 'assets/original.jpg',
     ]);
 
@@ -302,7 +304,10 @@ it('updating an asset attached to a published page version clones it and updates
         'layout_id' => $layout->id,
         'created_by' => $owner->id,
     ]);
-    $asset = Asset::factory()->forPageVersion($version)->create(['uploaded_by' => $owner->id, 'alt_text' => 'Original']);
+    $asset = Asset::factory()->forPageVersion($version)->create([
+        'created_by' => $owner->id,
+        'metadata' => ['alt_text' => 'Original'],
+    ]);
 
     $response = $this->actingAs($owner)
         ->putJson(route('api.v1.websites.assets.update', [$website, $asset]), ['alt_text' => 'Nope']);
@@ -328,7 +333,7 @@ it('deleting an asset attached to a published page version clones it and deletes
         'layout_id' => $layout->id,
         'created_by' => $owner->id,
     ]);
-    $asset = Asset::factory()->forPageVersion($version)->create(['uploaded_by' => $owner->id]);
+    $asset = Asset::factory()->forPageVersion($version)->create(['created_by' => $owner->id]);
 
     $this->actingAs($owner)
         ->deleteJson(route('api.v1.websites.assets.destroy', [$website, $asset]))
@@ -389,10 +394,10 @@ it('returns a temporary signed url when the disk driver supports it', function (
         'path' => 'assets/photo.jpg',
     ]);
 
-    $mockDisk = Mockery::mock(\Illuminate\Filesystem\FilesystemAdapter::class);
+    $mockDisk = Mockery::mock(FilesystemAdapter::class);
     $mockDisk->shouldReceive('temporaryUrl')
         ->once()
-        ->with('assets/photo.jpg', Mockery::type(\Carbon\CarbonInterface::class))
+        ->with('assets/photo.jpg', Mockery::type(CarbonInterface::class))
         ->andReturn('https://cdn.example.com/signed-url');
     Storage::shouldReceive('disk')->once()->with('public')->andReturn($mockDisk);
 
@@ -414,7 +419,7 @@ it('falls back to the disk\'s plain url when the driver does not support tempora
         'path' => 'assets/photo.jpg',
     ]);
 
-    $mockDisk = Mockery::mock(\Illuminate\Filesystem\FilesystemAdapter::class);
+    $mockDisk = Mockery::mock(FilesystemAdapter::class);
     $mockDisk->shouldReceive('temporaryUrl')->once()->andThrow(new RuntimeException('This driver does not support creating temporary URLs.'));
     $mockDisk->shouldReceive('url')->once()->with('assets/photo.jpg')->andReturn('https://kautch-beta-3.ddev.site/storage/assets/photo.jpg');
     Storage::shouldReceive('disk')->once()->with('public')->andReturn($mockDisk);

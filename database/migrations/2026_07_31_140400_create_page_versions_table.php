@@ -22,13 +22,9 @@ return new class extends Migration
             $table->foreignUuid('cloned_from_id')->nullable()->constrained('page_versions')->nullOnDelete();
             $table->unsignedInteger('version_number');
             $table->enum('status', ['draft', 'under_review', 'approved', 'rejected', 'published', 'archived'])->default('draft');
-            $table->json('data')->nullable();
             $table->json('layout_snapshot');
             $table->json('seo_snapshot')->nullable();
             $table->foreignUuid('created_by')->constrained('users')->restrictOnDelete();
-            $table->foreignUuid('qa_user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->timestamp('qa_reviewed_at')->nullable();
-            $table->text('qa_notes')->nullable();
             $table->timestamp('published_at')->nullable();
             $table->foreignUuid('published_by')->nullable()->constrained('users')->nullOnDelete();
             UserstampSchema::columns($table, includeCreatedBy: false);
@@ -42,10 +38,10 @@ return new class extends Migration
         });
 
         // Only version_number is checked at the database level: MariaDB (error 1901) refuses a CHECK
-        // constraint that references a column governed by a non-RESTRICT foreign key action (qa_user_id
-        // and published_by both use ON DELETE SET NULL), since a cascading update could violate it outside
-        // of a normal write. The "published requires published_at/published_by" and "approved/published
-        // requires qa_user_id" invariants are therefore enforced by PublishPageVersionAction in the domain layer.
+        // constraint that references a column governed by a non-RESTRICT foreign key action (published_by
+        // uses ON DELETE SET NULL), since a cascading update could violate it outside of a normal write.
+        // The "published requires published_at/published_by" invariant is therefore enforced by
+        // PageVersionService in the application layer.
         DB::statement(
             'ALTER TABLE page_versions ADD CONSTRAINT chk_page_versions_version_number CHECK (version_number > 0)'
         );

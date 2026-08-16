@@ -27,6 +27,7 @@ class PieceResource extends JsonResource
             'asset_id' => $this->asset_id,
             'type' => $this->type->value,
             'slot' => $this->slot,
+            'region' => $this->region,
             'position' => $this->position,
             'content' => $this->content,
             'settings' => $this->settings,

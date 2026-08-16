@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreignUuid('asset_id')->nullable()->constrained('assets')->nullOnDelete();
             $table->string('type', 50);
             $table->string('slot', 50)->nullable();
+            $table->string('region', 50)->nullable();
             $table->unsignedInteger('position')->default(0);
             $table->json('content')->default(new Expression('(JSON_OBJECT())'));
             $table->json('settings')->default(new Expression('(JSON_OBJECT())'));

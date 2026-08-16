@@ -28,6 +28,7 @@ class PageFactory extends Factory
                 'website_id' => $attributes['website_id'],
             ])->id,
             'published_version_id' => null,
+            'name' => fake()->sentence(3),
             'slug' => $slug,
             'status' => 'active',
             'created_by' => User::factory(),

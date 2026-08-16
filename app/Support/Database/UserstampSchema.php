@@ -24,8 +24,8 @@ final class UserstampSchema
 {
     /**
      * Adds updated_by/deleted_by, and created_by unless the table already
-     * has its own actor column serving that role (page_versions.created_by,
-     * assets.uploaded_by) that HasUserstamps has been told to reuse instead.
+     * has its own actor column serving that role (page_versions.created_by)
+     * that HasUserstamps has been told to reuse instead.
      */
     public static function columns(Blueprint $table, bool $includeCreatedBy = true): void
     {

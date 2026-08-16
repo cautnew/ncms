@@ -40,7 +40,6 @@ final class PageVersionCloningService
                 'cloned_from_id' => $source->id,
                 'layout_snapshot' => $source->layout_snapshot,
                 'seo_snapshot' => $source->seo_snapshot,
-                'data' => $source->data,
                 'status' => PageVersionStatus::Draft,
                 'created_by' => $actor->id,
             ]);
@@ -79,11 +78,8 @@ final class PageVersionCloningService
                 'filename' => $asset->filename,
                 'mime_type' => $asset->mime_type,
                 'size' => $asset->size,
-                'width' => $asset->width,
-                'height' => $asset->height,
-                'alt_text' => $asset->alt_text,
                 'metadata' => $asset->metadata,
-                'uploaded_by' => $asset->uploaded_by,
+                'created_by' => $asset->created_by,
             ]);
 
             $map[$asset->id] = $clone->id;
@@ -133,6 +129,7 @@ final class PageVersionCloningService
                 'asset_id' => $piece->asset_id !== null ? ($assetIdMap[$piece->asset_id] ?? null) : null,
                 'type' => $piece->type,
                 'slot' => $piece->slot,
+                'region' => $piece->region,
                 'position' => $piece->position,
                 'content' => $piece->content,
                 'settings' => $piece->settings,

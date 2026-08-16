@@ -5,11 +5,13 @@ namespace App\Services;
 use App\DTOs\PageVersion\CreatePageVersionData;
 use App\DTOs\PageVersion\UpdatePageVersionData;
 use App\Enums\PageVersionStatus;
+use App\Enums\ReviewDecision;
 use App\Models\Layout;
 use App\Models\Page;
 use App\Models\PageVersion;
 use App\Models\User;
 use App\Repositories\Contracts\PageVersionRepositoryInterface;
+use App\Repositories\Contracts\PageVersionReviewRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -17,6 +19,7 @@ final class PageVersionService
 {
     public function __construct(
         private readonly PageVersionRepositoryInterface $versions,
+        private readonly PageVersionReviewRepositoryInterface $reviews,
         private readonly PageVersionCloningService $cloning,
     ) {}
 
@@ -40,7 +43,6 @@ final class PageVersionService
             'layout_id' => $layout->id,
             'layout_snapshot' => $layout->only(['name', 'slug', 'description', 'schema']),
             'seo_snapshot' => $data->seo,
-            'data' => $data->data,
             'status' => PageVersionStatus::Draft,
             'created_by' => $creator->id,
         ]);
@@ -89,29 +91,39 @@ final class PageVersionService
     }
 
     /**
-     * QA approves a version under review, clearing it for publication.
+     * QA approves a version under review, clearing it for publication. The
+     * decision is appended to the version's review history, not stored on
+     * the version itself — see PageVersionReview.
      */
     public function approve(PageVersion $pageVersion, User $qa, ?string $notes): PageVersion
     {
-        return $this->versions->update($pageVersion, [
-            'status' => PageVersionStatus::Approved,
+        $pageVersion = $this->versions->update($pageVersion, ['status' => PageVersionStatus::Approved]);
+
+        $this->reviews->create($pageVersion, [
+            'decision' => ReviewDecision::Approved,
             'qa_user_id' => $qa->id,
-            'qa_reviewed_at' => now(),
-            'qa_notes' => $notes,
+            'notes' => $notes,
         ]);
+
+        return $pageVersion->fresh();
     }
 
     /**
-     * QA rejects a version under review, sending it back for edits.
+     * QA rejects a version under review, sending it back for edits. The
+     * decision is appended to the version's review history, not stored on
+     * the version itself — see PageVersionReview.
      */
     public function reject(PageVersion $pageVersion, User $qa, string $notes): PageVersion
     {
-        return $this->versions->update($pageVersion, [
-            'status' => PageVersionStatus::Rejected,
+        $pageVersion = $this->versions->update($pageVersion, ['status' => PageVersionStatus::Rejected]);
+
+        $this->reviews->create($pageVersion, [
+            'decision' => ReviewDecision::Rejected,
             'qa_user_id' => $qa->id,
-            'qa_reviewed_at' => now(),
-            'qa_notes' => $notes,
+            'notes' => $notes,
         ]);
+
+        return $pageVersion->fresh();
     }
 
     /**

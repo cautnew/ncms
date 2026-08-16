@@ -38,12 +38,14 @@ it('creates a page referencing a layout', function () {
     $layout = Layout::factory()->create(['website_id' => $website->id]);
 
     $response = $this->actingAs($owner)->postJson(route('api.v1.websites.pages.store', $website), [
+        'name' => 'Home',
         'slug' => 'home',
         'layout_id' => $layout->id,
     ]);
 
     $response->assertCreated()
         ->assertJson(['success' => true, 'message' => 'Page created.'])
+        ->assertJsonPath('data.name', 'Home')
         ->assertJsonPath('data.slug', 'home')
         ->assertJsonPath('data.layout_id', $layout->id)
         ->assertJsonPath('data.status', 'active')
@@ -63,7 +65,7 @@ it('validates required fields on create', function () {
         ->postJson(route('api.v1.websites.pages.store', $website), [])
         ->assertUnprocessable()
         ->assertJson(['success' => false])
-        ->assertJsonValidationErrors(['slug', 'layout_id']);
+        ->assertJsonValidationErrors(['name', 'slug', 'layout_id']);
 });
 
 it('rejects a duplicate slug on the same website', function () {
@@ -75,6 +77,7 @@ it('rejects a duplicate slug on the same website', function () {
 
     $this->actingAs($owner)
         ->postJson(route('api.v1.websites.pages.store', $website), [
+            'name' => 'Taken',
             'slug' => 'taken',
             'layout_id' => $layout->id,
         ])
@@ -94,6 +97,7 @@ it('allows the same slug across different websites', function () {
 
     $this->actingAs($owner)
         ->postJson(route('api.v1.websites.pages.store', $websiteB), [
+            'name' => 'Shared',
             'slug' => 'shared',
             'layout_id' => $layoutB->id,
         ])
@@ -109,6 +113,7 @@ it('rejects a layout that belongs to a different website', function () {
 
     $this->actingAs($owner)
         ->postJson(route('api.v1.websites.pages.store', $website), [
+            'name' => 'Home',
             'slug' => 'home',
             'layout_id' => $foreignLayout->id,
         ])
@@ -123,6 +128,7 @@ it('only allows owner, admin and editor to create pages', function (WebsiteRole 
     $layout = Layout::factory()->create(['website_id' => $website->id]);
 
     $response = $this->actingAs($actor)->postJson(route('api.v1.websites.pages.store', $website), [
+        'name' => 'Page '.$role->value,
         'slug' => 'page-'.$role->value,
         'layout_id' => $layout->id,
     ]);

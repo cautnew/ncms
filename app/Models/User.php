@@ -66,7 +66,7 @@ class User extends Authenticatable
      */
     public function uploadedAssets(): HasMany
     {
-        return $this->hasMany(Asset::class, 'uploaded_by');
+        return $this->hasMany(Asset::class, 'created_by');
     }
 
     /**
@@ -80,13 +80,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Page versions reviewed (approved/rejected) by this user as QA.
+     * QA review decisions (approve/reject) made by this user.
      *
-     * @return HasMany<PageVersion, $this>
+     * @return HasMany<PageVersionReview, $this>
      */
-    public function qaReviewedPageVersions(): HasMany
+    public function pageVersionReviews(): HasMany
     {
-        return $this->hasMany(PageVersion::class, 'qa_user_id');
+        return $this->hasMany(PageVersionReview::class, 'qa_user_id');
     }
 
     /**

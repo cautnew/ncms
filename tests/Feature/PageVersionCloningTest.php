@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\PageVersionStatus;
+use App\Enums\PieceType;
 use App\Enums\WebsiteRole;
 use App\Events\PageVersionCloned;
 use App\Models\Asset;
@@ -13,7 +14,6 @@ use App\Models\User;
 use App\Models\Website;
 use App\Repositories\Contracts\PieceRepositoryInterface;
 use App\Services\PageVersionCloningService;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 
@@ -86,7 +86,7 @@ it('creating a nested piece against a published version remaps parent_piece_id t
 
     expect($newParentId)->not->toBe($wrapper->id);
     $clonedWrapper = Piece::find($newParentId);
-    expect($clonedWrapper->type)->toBe(App\Enums\PieceType::TwoColumnsWrapper);
+    expect($clonedWrapper->type)->toBe(PieceType::TwoColumnsWrapper);
     expect($clonedWrapper->page_version_id)->not->toBe($version->id);
 
     // The original wrapper on the published version has no children.
@@ -195,14 +195,14 @@ it('clones a multi-level tree preserving structure, slots and order', function (
     expect(Piece::where('page_version_id', $draft->id)->count())->toBe(5);
 
     $clonedOuter = Piece::where('page_version_id', $draft->id)->whereNull('parent_piece_id')
-        ->where('type', App\Enums\PieceType::TwoColumnsWrapper->value)->sole();
+        ->where('type', PieceType::TwoColumnsWrapper->value)->sole();
     $clonedInner = Piece::where('parent_piece_id', $clonedOuter->id)->where('slot', 'left')->sole();
     $clonedLeafA = Piece::where('parent_piece_id', $clonedInner->id)->sole();
     $clonedLeafB = Piece::where('parent_piece_id', $clonedOuter->id)->where('slot', 'right')->sole();
 
-    expect($clonedInner->type)->toBe(App\Enums\PieceType::TwoColumnsWrapper);
+    expect($clonedInner->type)->toBe(PieceType::TwoColumnsWrapper);
     expect($clonedLeafA->content['text'])->toBe('A');
-    expect($clonedLeafB->type)->toBe(App\Enums\PieceType::Heading);
+    expect($clonedLeafB->type)->toBe(PieceType::Heading);
 
     // The original published tree is fully intact.
     expect(Piece::where('page_version_id', $version->id)->count())->toBe(5);
@@ -321,7 +321,7 @@ it('cloning a version duplicates its page-version-owned assets onto the new draf
     $page = Page::factory()->create(['website_id' => $website->id, 'layout_id' => $layout->id]);
     $version = makePublishedVersion($website, $layout, $page, $owner);
     $asset = Asset::factory()->forPageVersion($version)->create([
-        'uploaded_by' => $owner->id,
+        'created_by' => $owner->id,
         'path' => 'assets/original.jpg',
         'disk' => 'public',
     ]);
@@ -337,7 +337,7 @@ it('cloning a version duplicates its page-version-owned assets onto the new draf
     expect($clonedAsset->id)->not->toBe($asset->id);
     expect($clonedAsset->path)->toBe('assets/original.jpg');
     expect($clonedAsset->disk)->toBe('public');
-    expect($clonedAsset->uploaded_by)->toBe($owner->id);
+    expect($clonedAsset->created_by)->toBe($owner->id);
 
     // The original asset is still attached to the published version.
     expect($asset->fresh()->page_version_id)->toBe($version->id);

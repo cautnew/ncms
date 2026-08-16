@@ -46,6 +46,7 @@ class StorePieceRequest extends FormRequest
                 },
             ],
             'slot' => ['nullable', 'string', 'max:50'],
+            'region' => ['nullable', 'string', 'max:50'],
             'asset_id' => [
                 'required_if:type,'.PieceType::Image->value,
                 'nullable',
@@ -74,6 +75,7 @@ class StorePieceRequest extends FormRequest
     {
         $validator->after(function (Validator $validator): void {
             $this->validateParentSlotCompatibility($validator);
+            $this->validateRootRegion($validator);
         });
     }
 
@@ -112,6 +114,36 @@ class StorePieceRequest extends FormRequest
 
         if ($slot === null || ! in_array($slot, $allowedSlots, true)) {
             $validator->errors()->add('slot', 'Slot must be one of: '.implode(', ', $allowedSlots).'.');
+        }
+    }
+
+    /**
+     * A piece's region describes which named zone of the LAYOUT (header,
+     * footer, main, sidebar, ...) it renders into — only meaningful for
+     * root-level pieces, and only valid when it's one of the regions the
+     * version's frozen layout_snapshot actually declares.
+     */
+    private function validateRootRegion(Validator $validator): void
+    {
+        $parentId = $this->input('parent_piece_id');
+        $region = $this->input('region');
+
+        if ($region === null) {
+            return;
+        }
+
+        if ($parentId !== null) {
+            $validator->errors()->add('region', 'Only a root-level piece can have a region.');
+
+            return;
+        }
+
+        /** @var PageVersion $version */
+        $version = $this->route('version');
+        $allowedRegions = $version->layout_snapshot['schema']['regions'] ?? [];
+
+        if (! in_array($region, $allowedRegions, true)) {
+            $validator->errors()->add('region', 'Region must be one of: '.implode(', ', $allowedRegions).'.');
         }
     }
 }

@@ -63,6 +63,16 @@ class Website extends Model
     }
 
     /**
+     * URL routes registered for this website.
+     *
+     * @return HasMany<Route, $this>
+     */
+    public function routes(): HasMany
+    {
+        return $this->hasMany(Route::class);
+    }
+
+    /**
      * Users with access to this website.
      *
      * @return BelongsToMany<User, $this>

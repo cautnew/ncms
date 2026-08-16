@@ -103,12 +103,15 @@ it('lets qa approve a version under review, with optional notes', function () {
         ->assertSuccessful()
         ->assertJson(['success' => true, 'message' => 'Page version approved.'])
         ->assertJsonPath('data.status', 'approved')
-        ->assertJsonPath('data.qa_notes', 'Looks good.');
+        ->assertJsonPath('data.reviews.0.decision', 'approved')
+        ->assertJsonPath('data.reviews.0.qa_user_id', $qa->id)
+        ->assertJsonPath('data.reviews.0.notes', 'Looks good.');
 
     $version->refresh();
     expect($version->status)->toBe(PageVersionStatus::Approved);
-    expect($version->qa_user_id)->toBe($qa->id);
-    expect($version->qa_reviewed_at)->not->toBeNull();
+    expect($version->reviews)->toHaveCount(1);
+    expect($version->reviews->first()->qa_user_id)->toBe($qa->id);
+    expect($version->reviews->first()->created_at)->not->toBeNull();
 });
 
 it('does not require notes to approve', function () {
@@ -172,7 +175,8 @@ it('lets qa reject a version under review with required notes', function () {
         ->assertSuccessful()
         ->assertJson(['success' => true, 'message' => 'Page version rejected.'])
         ->assertJsonPath('data.status', 'rejected')
-        ->assertJsonPath('data.qa_notes', 'Broken image links.');
+        ->assertJsonPath('data.reviews.0.decision', 'rejected')
+        ->assertJsonPath('data.reviews.0.notes', 'Broken image links.');
 
     expect($version->fresh()->status)->toBe(PageVersionStatus::Rejected);
 });

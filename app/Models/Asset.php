@@ -19,23 +19,12 @@ use Illuminate\Support\Str;
 
 #[Fillable([
     'website_id', 'layout_id', 'page_version_id', 'disk', 'path', 'filename',
-    'mime_type', 'size', 'width', 'height', 'alt_text', 'metadata', 'uploaded_by',
-    'deleted_by',
+    'mime_type', 'size', 'metadata', 'created_by', 'deleted_by',
 ])]
 class Asset extends Model
 {
     /** @use HasFactory<AssetFactory> */
     use Auditable, HasFactory, HasUserstamps, HasUuids, SoftDeletes;
-
-    /**
-     * Assets already track their creator via the domain-specific
-     * "uploaded_by" column — reuse it instead of adding a redundant
-     * generic created_by that would always hold the same value.
-     */
-    public function getCreatedByColumn(): string
-    {
-        return 'uploaded_by';
-    }
 
     /**
      * Get the attributes that should be cast.
@@ -46,8 +35,6 @@ class Asset extends Model
     {
         return [
             'size' => 'integer',
-            'width' => 'integer',
-            'height' => 'integer',
             'metadata' => 'array',
         ];
     }
@@ -83,13 +70,13 @@ class Asset extends Model
     }
 
     /**
-     * The user who uploaded this asset.
+     * The user who created (uploaded) this asset.
      *
      * @return BelongsTo<User, $this>
      */
-    public function uploadedBy(): BelongsTo
+    public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'uploaded_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     /**
@@ -143,6 +130,44 @@ class Asset extends Model
     {
         return Attribute::make(
             get: fn (): bool => Str::startsWith($this->mime_type, 'image/'),
+        );
+    }
+
+    /**
+     * Alt text isn't a universal asset property (it applies to images, not
+     * every file type), so it lives inside metadata rather than its own column.
+     *
+     * @return Attribute<string|null, never>
+     */
+    protected function altText(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?string => $this->metadata['alt_text'] ?? null,
+        );
+    }
+
+    /**
+     * Pixel width isn't a universal asset property (only images/videos have
+     * one), so it lives inside metadata rather than its own column.
+     *
+     * @return Attribute<int|null, never>
+     */
+    protected function width(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?int => $this->metadata['width'] ?? null,
+        );
+    }
+
+    /**
+     * Pixel height — see width() above.
+     *
+     * @return Attribute<int|null, never>
+     */
+    protected function height(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?int => $this->metadata['height'] ?? null,
         );
     }
 

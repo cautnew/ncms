@@ -1,5 +1,7 @@
 <?php
 
+use App\Exceptions\RouteLoopException;
+use App\Exceptions\TooManyRedirectsException;
 use App\Http\Middleware\CaptureAuditContext;
 use App\Http\Middleware\EnsureWebsiteRole;
 use App\Http\Responses\ApiResponse;
@@ -66,6 +68,18 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (AuthorizationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return ApiResponse::error($e->getMessage() ?: 'This action is unauthorized.', status: 403);
+            }
+        });
+
+        $exceptions->render(function (RouteLoopException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return ApiResponse::error($e->getMessage(), status: 422);
+            }
+        });
+
+        $exceptions->render(function (TooManyRedirectsException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return ApiResponse::error($e->getMessage(), status: 422);
             }
         });
 
