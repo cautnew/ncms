@@ -1805,6 +1805,327 @@
                 }
             }
         },
+        "/v1/websites/{website}/routes/resolve": {
+            "get": {
+                "operationId": "v1.websites.routes.resolve",
+                "summary": "Resolve a path (+ HTTP method) to whatever it serves: a page, an\nasset, a redirect's target, or nothing. Public \u2014 a live site's\nfrontend needs this before it knows anything else about the URL",
+                "tags": [
+                    "Route"
+                ],
+                "parameters": [
+                    {
+                        "name": "website",
+                        "in": "path",
+                        "required": true,
+                        "description": "The website ID",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "path",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 2048
+                        }
+                    },
+                    {
+                        "name": "method",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/HttpMethod"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {}
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/v1/websites/{website}/routes": {
+            "get": {
+                "operationId": "v1.websites.routes.index",
+                "description": "Route::class must be given explicitly: passing only the 'website' route\nparam would let Laravel infer the policy from Website's class (WebsitePolicy,\nwhose viewAny() is unconditionally true for any member) instead of the\nRoutePolicy::viewAny() we actually want here.",
+                "summary": "List the website's routes",
+                "tags": [
+                    "Route"
+                ],
+                "parameters": [
+                    {
+                        "name": "website",
+                        "in": "path",
+                        "required": true,
+                        "description": "The website ID",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {}
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.websites.routes.store",
+                "summary": "Create a new route for the website",
+                "tags": [
+                    "Route"
+                ],
+                "parameters": [
+                    {
+                        "name": "website",
+                        "in": "path",
+                        "required": true,
+                        "description": "The website ID",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreRouteRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {}
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/v1/websites/{website}/routes/{route}": {
+            "get": {
+                "operationId": "v1.websites.routes.show",
+                "summary": "Show a single route",
+                "tags": [
+                    "Route"
+                ],
+                "parameters": [
+                    {
+                        "name": "website",
+                        "in": "path",
+                        "required": true,
+                        "description": "The website ID",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "route",
+                        "in": "path",
+                        "required": true,
+                        "description": "The route ID",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {}
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.websites.routes.update",
+                "summary": "Update a route's path, method, status, or (for a redirect) target",
+                "tags": [
+                    "Route"
+                ],
+                "parameters": [
+                    {
+                        "name": "website",
+                        "in": "path",
+                        "required": true,
+                        "description": "The website ID",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "route",
+                        "in": "path",
+                        "required": true,
+                        "description": "The route ID",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRouteRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {}
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.websites.routes.destroy",
+                "summary": "Delete (soft-delete) a route",
+                "tags": [
+                    "Route"
+                ],
+                "parameters": [
+                    {
+                        "name": "website",
+                        "in": "path",
+                        "required": true,
+                        "description": "The website ID",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "route",
+                        "in": "path",
+                        "required": true,
+                        "description": "The route ID",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {}
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/v1/websites": {
             "get": {
                 "operationId": "v1.websites.index",
@@ -2273,6 +2594,19 @@
                 ],
                 "title": "ForgotPasswordRequest"
             },
+            "HttpMethod": {
+                "type": "string",
+                "enum": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "PATCH",
+                    "DELETE",
+                    "HEAD",
+                    "OPTIONS"
+                ],
+                "title": "HttpMethod"
+            },
             "InviteWebsiteUserRequest": {
                 "type": "object",
                 "properties": {
@@ -2368,6 +2702,15 @@
                     "password_confirmation"
                 ],
                 "title": "ResetPasswordRequest"
+            },
+            "RouteDestinationType": {
+                "type": "string",
+                "enum": [
+                    "page",
+                    "asset",
+                    "redirect"
+                ],
+                "title": "RouteDestinationType"
             },
             "StoreAssetRequest": {
                 "type": "object",
@@ -2637,6 +2980,52 @@
                     "type"
                 ],
                 "title": "StorePieceRequest"
+            },
+            "StoreRouteRequest": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "maxLength": 2048
+                    },
+                    "http_method": {
+                        "$ref": "#/components/schemas/HttpMethod"
+                    },
+                    "http_status": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 599
+                    },
+                    "destination_type": {
+                        "$ref": "#/components/schemas/RouteDestinationType"
+                    },
+                    "page_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
+                    "asset_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
+                    "redirect_to_route_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    }
+                },
+                "required": [
+                    "path",
+                    "destination_type"
+                ],
+                "title": "StoreRouteRequest"
             },
             "StoreWebsiteRequest": {
                 "type": "object",
@@ -2911,6 +3300,28 @@
                 ],
                 "title": "UpdateProfileRequest"
             },
+            "UpdateRouteRequest": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "maxLength": 2048
+                    },
+                    "http_method": {
+                        "$ref": "#/components/schemas/HttpMethod"
+                    },
+                    "http_status": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 599
+                    },
+                    "redirect_to_route_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "title": "UpdateRouteRequest"
+            },
             "UpdateWebsiteRequest": {
                 "type": "object",
                 "properties": {
@@ -2996,6 +3407,36 @@
                     }
                 }
             },
+            "ValidationException": {
+                "description": "Validation error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Errors overview."
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "description": "A detailed description of each field that failed validation.",
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "message",
+                                "errors"
+                            ]
+                        }
+                    }
+                }
+            },
             "AuthorizationException": {
                 "description": "Authorization error",
                 "content": {
@@ -3029,36 +3470,6 @@
                             },
                             "required": [
                                 "message"
-                            ]
-                        }
-                    }
-                }
-            },
-            "ValidationException": {
-                "description": "Validation error",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "description": "Errors overview."
-                                },
-                                "errors": {
-                                    "type": "object",
-                                    "description": "A detailed description of each field that failed validation.",
-                                    "additionalProperties": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            },
-                            "required": [
-                                "message",
-                                "errors"
                             ]
                         }
                     }
